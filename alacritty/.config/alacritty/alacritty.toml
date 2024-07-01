@@ -1,0 +1,43 @@
+[window]
+opacity = 0.77
+decorations = 'Full'
+
+[window.dimensions]
+lines = 35
+columns = 180
+
+[[keyboard.bindings]]
+action = "ToggleFullscreen"
+key = "F11"
+mods = "Control"
+
+[colors.primary]
+background = "#15141b"
+#foreground = "#edecee"
+
+[cursor.style]
+shape = "block"
+
+[colors.selection]
+text = "CellForeground"
+background = "#29263c"
+
+[colors.normal]
+black = "#110f18"
+red = "#dba5c5"
+green = "#61ffca"
+yellow = "#ffca85"
+blue = "#6ca9ff"
+magenta = "#a277ff"
+cyan = "#61ffca"
+white = "#edecee"
+
+[colors.bright]
+black = "#4d4d4d"
+red = "#ff6767"
+green = "#61ffca"
+yellow = "#ffca85"
+blue = "#6ca9ff"
+magenta = "#a277ff"
+cyan = "#61ffca"
+white = "#edecee"
