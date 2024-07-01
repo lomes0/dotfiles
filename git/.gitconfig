@@ -1,0 +1,46 @@
+[user]
+	name = eran.sbt0
+	email = eran.sbt0@gmail.com
+[core]
+	filemode = false
+	autocrlf = false
+	pager = diff-so-fancy | less --tabs=4 -RF
+[diff]
+	prompt = false
+	editor = nvim
+	tool = nvimdiff
+[difftool "nvimdiff"]
+	cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+	prompt = false
+[merge]
+	prompt = false
+	tool = nvimdiff
+[mergetool]
+	prompt = false
+	keepBackup = false
+	conflictstyle = diff3
+[mergetool "nvimdiff"]
+	cmd = "nvim -d $LOCAL $BASE $REMOTE $MERGED -c 'wincmd w' -c 'wincmd J' -c 'wincmd j' -c 'horizontal resize 30'"
+[oh-my-zsh]
+	hide-dirty = 1
+[status]
+	showUntrackedFiles = no
+[init]
+	templatedir = ~/.git-templates
+[interactive]
+	diffFilter = diff-so-fancy --patch
+[color]
+	ui = true
+[color "diff-highlight"]
+	oldNormal = white bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
+[color "diff"]
+	meta = 11
+	frag = magenta bold
+	func = 146 bold
+	commit = yellow bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse
