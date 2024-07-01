@@ -1,0 +1,14 @@
+# [[manager.prepend_keymap]]
+# on   = [ "p" ]
+# run  = "plugin --sync smart-paste"
+# desc = "Paste into the hovered directory or CWD"
+
+[[manager.prepend_keymap]]
+on = [ "d" ]
+run = "remove --force"
+desc = "Delete file/s"
+
+[[manager.prepend_keymap]]
+on = [ "\\" ]
+run = "quit"
+desc = "Quit yazi"
