@@ -118,7 +118,7 @@ export LC_ALL=en_IN.UTF-8
 export LANG=en_IN.UTF-8
 
 alias zl="zellij"
-alias lz="lazygit --ucd ${HOME}/.env/lazygit"
+alias lz="lazygit"
 alias yz="yazi"
 alias tmux='TERM=screen-256color tmux'
 alias fzf="fzf --preview 'bat --style=numbers --color=always {}'"
