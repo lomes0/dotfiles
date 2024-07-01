@@ -1,0 +1,28 @@
+gui:
+  showIcons: false
+  sidePanelWidth: 0.2
+  theme:
+    activeBorderColor:
+      - '#b9e1eb'
+      - bold
+    optionsTextColor:
+      - black
+    inactiveBorderColor:
+      - '#0af7f3'
+    selectedLineBgColor:
+      - '#609c7e'
+    unstagedChangesColor:
+      - '#d5e2f7'
+    defaultFgColor:
+      - '#b9e1eb'
+  showFileTree: true # for rendering changes files in a tree format
+os:
+  editCommand: "nvim"
+  editCommandTemplate: "{{editor}} {{filename}}"
+keybinding:
+  universal:
+    quit: "q"
+git:
+  paging:
+    colorArg: never
+    pager: ydiff -s -p cat --wrap --width={{columnWidth}}
