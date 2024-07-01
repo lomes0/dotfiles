@@ -1,0 +1,24 @@
+-- Define the function to get references
+--_G.get_references = function()
+--  local params = vim.lsp.util.make_position_params()
+--  local result = vim.lsp.buf_request_sync(0, 'textDocument/references', params, 1000)  -- 1000ms timeout
+--  if not result or vim.tbl_isempty(result) then
+--    return {}
+--  end
+--
+--  local references = {}
+--  for client_id, res in pairs(result) do
+--    if res.result then
+--      for _, ref in ipairs(res.result) do
+--        table.insert(references, ref)
+--      end
+--    end
+--  end
+--  return references
+--end
+--
+--vim.opt.rtp:append('~/foobar')
+--local foo = require("foo")
+--print(foo)
+
+
