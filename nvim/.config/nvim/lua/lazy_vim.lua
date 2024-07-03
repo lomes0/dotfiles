@@ -783,9 +783,9 @@ require('lazy').setup({
 			local refs_opts = {
 				layout_strategy = "vertical",
 				layout_config = {
-					height = math.ceil(vim.o.lines * 0.75), -- maximally available lines
-  				    width = math.ceil(vim.o.columns * 0.32), -- maximally available columns
-  				    prompt_position = "top",
+					height = math.ceil(vim.o.lines * 0.8), -- maximally available lines
+  				    width = math.ceil(vim.o.columns * 0.35), -- maximally available columns
+  				    prompt_position = "bottom",
   				    preview_height = 0.70, -- 60% of available lines
   				},
 				hide_preview = false,
