@@ -117,9 +117,17 @@ export ENV=$ENV/.env
 export LC_ALL=en_IN.UTF-8
 export LANG=en_IN.UTF-8
 
-alias zl="zellij"
+function yz() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
+
+alias zl="zellij --layout ~/.config/zellij/layout.kdl"
 alias lz="lazygit"
-alias yz="yazi"
 alias tmux='TERM=screen-256color tmux'
 alias fzf="fzf --preview 'bat --style=numbers --color=always {}'"
 alias fd="fdfind"
