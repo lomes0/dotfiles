@@ -489,7 +489,7 @@ require('lazy').setup({
 				local git_dir_cmd = "git -C " .. buf_dir .. " rev-parse --show-toplevel"
 				local git_dir     = vim.fn.system(git_dir_cmd)
 				local lazygit = Terminal:new({
-					cmd = "lazygit -ucd=${HOME}/.env/lazygit -p=" .. git_dir,
+					cmd = "lazygit -p=" .. git_dir,
 					dir = "",
 					direction = "float",
 					float_opts = {
