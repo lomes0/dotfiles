@@ -4,53 +4,47 @@ local folderOfThisFile = (...):match("(.-)[^%.]+$")
 -- settings
 --
 vim.g.mapleader = "<"
-vim.opt.guicursor = ""
--- tabs
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.shiftwidth = 4
-vim.opt.expandtab = false
-vim.opt.smartindent = true
-vim.opt.autoindent = true
-vim.opt.breakindent = true
--- backup
-vim.opt.swapfile = false
-vim.opt.backup = false
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
-vim.opt.undofile = true
-vim.opt.wrap = false
--- search
-vim.opt.incsearch = true
-vim.opt.hlsearch = true
-vim.opt.ignorecase = true
-vim.opt.scrolloff = 999
-vim.opt.updatetime = 50
-vim.opt.nu = true
-vim.opt.relativenumber = true
-vim.opt.signcolumn = "number"
-vim.opt.exrc = true
-vim.opt.termguicolors = true
-vim.opt.ea = false
-vim.opt.winfixwidth = false
-vim.opt.winfixheight = false
 vim.o.autowriteall = true
-vim.opt.conceallevel = 2
-vim.opt.report = 999
-vim.opt.title = true
-vim.opt.showcmd = true
-vim.opt.cmdheight = 0
-vim.opt.guicursor = "n-v-c-i:block"
 vim.o.guifont = "Hack"
-vim.opt.encoding='UTF-8'
 
--- Function to save and restore the cursor position after yank in visual mode
-function Preserve_cursor_after_yank()
-    local start_pos = vim.fn.getpos("'<")
-    local end_pos = vim.fn.getpos("'>")
-    vim.cmd('normal! `<y`>')
-    vim.fn.setpos('.', end_pos)
-    vim.fn.setpos("'<", start_pos)
-    vim.fn.setpos("'>", end_pos)
+local opt_settings = {
+	{ "tabstop",        4 },
+	{ "softtabstop",    4 },
+	{ "shiftwidth",     4 },
+	{ "scrolloff",      999 },
+	{ "updatetime",     50 },
+	{ "conceallevel",   2 },
+	{ "report",         999 },
+	{ "cmdheight",      0 },
+	{ "title",          true },
+	{ "showcmd",        true },
+	{ "smartindent",    true },
+	{ "autoindent",     true },
+	{ "breakindent",    true },
+	{ "expandtab",      false },
+	{ "swapfile",       false },
+	{ "backup",         false },
+	{ "wrap",           false },
+	{ "undofile",       true },
+	{ "incsearch",      true },
+	{ "hlsearch",       true },
+	{ "nu",             true },
+	{ "relativenumber", true },
+	{ "exrc",           true },
+	{ "termguicolors",  true },
+	{ "ignorecase",     false },
+	{ "ea",             false },
+	{ "winfixwidth",    false },
+	{ "winfixheight",   false },
+	{ "signcolumn",     "number" },
+	{ "guicursor",      "n-v-c-i:block" },
+	{ "encoding",       "UTF-8" },
+	{ "guicursor",      "" },
+	{ "undodir", os.getenv("HOME") .. "/.vim/undodir" },
+}
+
+for _, entry in ipairs(opt_settings) do
+	vim.api.nvim_set_option_value(entry[1], entry[2], {})
 end
 
 --
@@ -70,7 +64,7 @@ vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv")
 
 -- copy paste delete
 vim.keymap.set({"v", "n"}, "<C-c>", "\"+y", {noremap = true})
-vim.api.nvim_set_keymap('x', 'y', ':lua Preserve_cursor_after_yank()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('v', 'y', 'ygv<esc>', { noremap = true, silent = true })
 
 -- tabs
 vim.keymap.set("n", "<tab>", "<cmd>tabnext<cr>")
