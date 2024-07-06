@@ -43,56 +43,132 @@ local opt_settings = {
 	{ "undodir", os.getenv("HOME") .. "/.vim/undodir" },
 }
 
-for _, entry in ipairs(opt_settings) do
-	vim.api.nvim_set_option_value(entry[1], entry[2], {})
-end
+local keymaps = {
+	{ "n", "<C-_>",     "gcc",                                                                                     { noremap = false, silent = true, desc = "comment line"             } },
+	{ "v", "<C-_>",     'gc:lua vim.fn.setpos(".", vim.fn.getpos("\'>"))<cr>0',                                    { noremap = false, silent = true, desc = "comment selection"        } },
+	{ "n", "<leader>a", ":lua vim.api.nvim_command(\"cd \" .. vim.api.nvim_buf_get_name(0):match(\"(.*/)\"))<cr>", { noremap = true,  silent = true, desc = "change workdir"           } },
+	{ "v", "J",         ":m '>+1<cr>gv=gv",                                                                        { noremap = true,  silent = true, desc = "move lines up"            } },
+	{ "v", "K",         ":m '<-2<cr>gv=gv",                                                                        { noremap = true,  silent = true, desc = "move lines down"          } },
+	{ "v", "<C-c>",     "\"+y",                                                                                    { noremap = true,  silent = true, desc = "copy to system clipboard" } },
+	{ "v", "y",         "ygv<esc>",                                                                                { noremap = true,  silent = true, desc = "yank and keep cursor"     } },
+	{ "n", "<tab>",     "<cmd>tabnext<cr>",                                                                        { noremap = true,  silent = true, desc = "next tab"                 } },
+	{ "n", "<s-tab>",   "<cmd>tabprev<cr>",                                                                        { noremap = true,  silent = true, desc = "prev tab"                 } },
+	{ "n", "<leader>v", "<cmd>vsplit<cr><C-\\><C-n><C-w>l<cmd>enew<cr>",                                           { noremap = true,  silent = true, desc = "split vertical"           } },
+	{ "n", "<leader>s", "<cmd>split<cr><C-\\><C-n><C-w>j<cmd>enew<cr>",                                            { noremap = true,  silent = true, desc = "split horizontal"         } },
+	{ "n", "tt",        ":lua Terminal_open()<cr>",                                                                { noremap = true,  silent = true, desc = "terminal"                 } },
+	{ "t", "<C-w>",     "<C-\\><C-n><C-w>" ,                                                                       { noremap = true,  silent = true, desc = "terminal window cmd"      } },
+	{ "t", "<C-_>",     "<C-\\><C-n>/",                                                                            { noremap = true,  silent = true, desc = "terminal search buffer"   } },
+	{ "t", ":",         "<C-\\><C-n>:",                                                                            { noremap = true,  silent = true, desc = "terminal command"         } },
+	{ "t", "<C-f>",     "<C-\\><C-n>",                                                                             { noremap = true,  silent = true, desc = "terminal escape"          } },
+	{ "t", "<C-h>",     "<C-\\><C-n><C-w>h",                                                                       { noremap = true,  silent = true, desc = "terminal move"            } },
+	{ "t", "<C-j>",     "<C-\\><C-n><C-w>j",                                                                       { noremap = true,  silent = true, desc = "terminal move"            } },
+	{ "t", "<C-k>",     "<C-\\><C-n><C-w>k",                                                                       { noremap = true,  silent = true, desc = "terminal move"            } },
+	{ "t", "<C-l>",     "<C-\\><C-n><C-w>l",                                                                       { noremap = true,  silent = true, desc = "terminal move"            } },
+	{ "t", "<C-w>h",    "<C-\\><C-n><C-w>h",                                                                       { noremap = true,  silent = true, desc = "terminal move"            } },
+	{ "t", "<C-w>j",    "<C-\\><C-n><C-w>j",                                                                       { noremap = true,  silent = true, desc = "terminal move"            } },
+	{ "t", "<C-w>k",    "<C-\\><C-n><C-w>k",                                                                       { noremap = true,  silent = true, desc = "terminal move"            } },
+	{ "t", "<C-w>l",    "<C-\\><C-n><C-w>l",                                                                       { noremap = true,  silent = true, desc = "terminal move"            } },
+	{ "n", "<leader>q", ":lua _G.window_remove_active_buffer()<cr>",                                               { noremap = true,  silent = true, desc = ""                         } },
+	{ "n", "<C-d>",     ":lua _G.window_remove_active_buffer()<cr>",                                               { noremap = true,  silent = true, desc = ""                         } },
+	{ "t", "<leader>q", "<C-\\><C-n>:lua _G.window_remove_active_buffer()<cr>",                                    { noremap = true,  silent = true, desc = ""                         } },
+	{ "t", "<C-d>",     "<C-\\><C-n>:lua _G.window_remove_active_buffer()<cr>",                                    { noremap = true,  silent = true, desc = ""                         } },
+	{ "n", "Q",         "<cmd>qa<cr>",                                                                             { noremap = true,  silent = true, desc = ""                         } },
+	{ "n", "<left>",    "<cmd>lua _G.move_floating_window_left()<cr>",                                             { noremap = true,  silent = true, desc = ""                         } },
+	{ "n", "<up>",      "<cmd>lua _G.move_floating_window_up()<cr>",                                               { noremap = true,  silent = true, desc = ""                         } },
+	{ "n", "<down>",    "<cmd>lua _G.move_floating_window_down()<cr>",                                             { noremap = true,  silent = true, desc = ""                         } },
+	{ "n", "<right>",   "<cmd>lua _G.move_floating_window_right()<cr>",                                            { noremap = true,  silent = true, desc = ""                         } },
+	{ "n", "<c-left>",  "<C-w><",                                                                                  { noremap = true,  silent = true, desc = ""                         } },
+	{ "n", "<c-right>", "<C-w>>",                                                                                  { noremap = true,  silent = true, desc = ""                         } },
+	{ "n", "<c-up>",    "<C-w>-",                                                                                  { noremap = true,  silent = true, desc = ""                         } },
+	{ "n", "<c-down>",  "<C-w>+",                                                                                  { noremap = true,  silent = true, desc = ""                         } },
+}
 
---
--- remaps
---
--- comments
-vim.keymap.set('n', '<C-_>', 'gcc', { remap = true })
-vim.keymap.set('v', '<C-_>', 'gc:lua vim.fn.setpos(".", vim.fn.getpos("\'>"))<cr>0', { remap = true })
-
--- workdir
--- vim.opt.autochdir = true
-vim.keymap.set('n', '<leader>a', ':lua vim.api.nvim_command("cd " .. vim.api.nvim_buf_get_name(0):match("(.*/)"))<cr>', { noremap = true } )
-
--- move lines
-vim.keymap.set("v", "J", ":m '>+1<cr>gv=gv")
-vim.keymap.set("v", "K", ":m '<-2<cr>gv=gv")
-
--- copy paste delete
-vim.keymap.set({"v", "n"}, "<C-c>", "\"+y", {noremap = true})
-vim.api.nvim_set_keymap('v', 'y', 'ygv<esc>', { noremap = true, silent = true })
-
--- tabs
-vim.keymap.set("n", "<tab>", "<cmd>tabnext<cr>")
-vim.keymap.set("n", "<s-tab>", "<cmd>tabprev<cr>")
-
--- panes
-vim.keymap.set("n", "<leader>v", "<cmd>vsplit<cr><C-\\><C-n><C-w>l<cmd>enew<cr>", {noremap=true})
-vim.keymap.set("n", "<leader>s", "<cmd>split<cr><C-\\><C-n><C-w>j<cmd>enew<cr>",{noremap=true})
-
--- terminals
 function Terminal_open()
 	vim.api.nvim_command("term")
 	vim.api.nvim_set_option_value("scrolloff", 0, { scope = "local" })
 end
-vim.keymap.set("n", "tt", ":lua Terminal_open()<cr>")
-vim.keymap.set("t", "<C-w>", "<C-\\><C-n><C-w>", {noremap = true})
-vim.keymap.set("t", "<C-_>", "<C-\\><C-n>/", {noremap = true})
-vim.keymap.set("t", ":", "<C-\\><C-n>:", {noremap = true})
-vim.keymap.set("t", "<C-f>", "<C-\\><C-n>", {noremap = true})
 
-vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h")
-vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>j")
-vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>k")
-vim.keymap.set("t", "<C-l>", "<C-\\><C-n><C-w>l")
-vim.keymap.set("t", "<C-w>h", "<C-\\><C-n><C-w>h")
-vim.keymap.set("t", "<C-w>j", "<C-\\><C-n><C-w>j")
-vim.keymap.set("t", "<C-w>k", "<C-\\><C-n><C-w>k")
-vim.keymap.set("t", "<C-w>l", "<C-\\><C-n><C-w>l")
+function _G.buffer_remove(bufnr)
+	bufnr = bufnr or vim.api.nvim_get_current_buf()
+	local startwin = vim.api.nvim_get_current_win()
+
+	if not vim.api.nvim_buf_is_valid(bufnr) then
+		print("buffer does not exists")
+		return
+	end
+
+	local window = vim.fn.win_findbuf(bufnr)
+
+	for _, win in ipairs(window) do
+		vim.api.nvim_set_current_win(win)
+		vim.cmd('bnext')
+		if vim.api.nvim_get_current_buf() == bufnr then
+			vim.cmd('enew')
+		end
+	end
+
+	vim.cmd('bdelete ' .. bufnr)
+	vim.api.nvim_set_current_win(startwin)
+end
+
+function _G.window_remove_active_buffer()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local bufwin = vim.api.nvim_get_current_win()
+	local buftype = vim.api.nvim_get_option_value('buftype', { buf = bufnr })
+
+	if buftype == 'terminal' then
+		vim.cmd('enew')
+		vim.cmd('bdelete! ' .. bufnr)
+		return
+	end
+
+	local window = vim.fn.win_findbuf(bufnr)
+	local can_remove = true
+
+	for _, win in ipairs(window) do
+		vim.api.nvim_set_current_win(win)
+		-- buf is present in other window
+		if ( bufwin ~= win ) and ( bufnr == vim.api.nvim_get_current_buf() ) then
+			can_remove = false
+			break
+		end
+	end
+
+	if can_remove then
+		_G.buffer_remove(bufnr)
+	else
+		vim.api.nvim_set_current_win(bufwin)
+		vim.cmd('enew')
+	end
+end
+
+function _G.move_floating_window(win_id, a, b)
+	local config = vim.api.nvim_win_get_config(win_id)
+	config.row = config.row + a
+	config.col = config.col + b
+	vim.api.nvim_win_set_config(win_id, config)
+end
+
+function _G.move_floating_window_left()
+	move_floating_window(vim.api.nvim_get_current_win(), 0, -4)
+end
+function _G.move_floating_window_down()
+	move_floating_window(vim.api.nvim_get_current_win(), 4, 0)
+end
+function _G.move_floating_window_up()
+	move_floating_window(vim.api.nvim_get_current_win(), -4, 0)
+end
+function _G.move_floating_window_right()
+	move_floating_window(vim.api.nvim_get_current_win(), 0, 4)
+end
+
+for _, e in ipairs(opt_settings) do
+	vim.api.nvim_set_option_value(e[1], e[2], {})
+end
+
+for _, e in ipairs(keymaps) do
+	vim.api.nvim_set_keymap(e[1], e[2], e[3], e[4])
+end
 
 vim.cmd([[
 	autocmd TermOpen * setlocal nonumber norelativenumber
@@ -177,111 +253,6 @@ function! CustomFoldText()
 	return line . expansionString . foldSizeStr
 endfunction
 ]])
-
---
--- buffer
---
-function _G.buffer_remove(bufnr)
-	bufnr = bufnr or vim.api.nvim_get_current_buf()
-	local startwin = vim.api.nvim_get_current_win()
-
-	if not vim.api.nvim_buf_is_valid(bufnr) then
-		print("buffer does not exists")
-		return
-	end
-
-	local window = vim.fn.win_findbuf(bufnr)
-
-	for _, win in ipairs(window) do
-		vim.api.nvim_set_current_win(win)
-		vim.cmd('bnext')
-		if vim.api.nvim_get_current_buf() == bufnr then
-			vim.cmd('enew')
-		end
-	end
-
-	vim.cmd('bdelete ' .. bufnr)
-	vim.api.nvim_set_current_win(startwin)
-end
-
-function _G.window_remove_active_buffer()
-	local bufnr = vim.api.nvim_get_current_buf()
-	local bufwin = vim.api.nvim_get_current_win()
-	local buftype = vim.api.nvim_get_option_value('buftype', { buf = bufnr })
-
-	if buftype == 'terminal' then
-		vim.cmd('enew')
-		vim.cmd('bdelete! ' .. bufnr)
-		return
-	end
-
-	local window = vim.fn.win_findbuf(bufnr)
-	local can_remove = true
-
-	for _, win in ipairs(window) do
-		vim.api.nvim_set_current_win(win)
-		-- buf is present in other window
-		if ( bufwin ~= win ) and ( bufnr == vim.api.nvim_get_current_buf() ) then
-			can_remove = false
-			break
-		end
-	end
-
-	if can_remove then
-		_G.buffer_remove(bufnr)
-	else
-		vim.api.nvim_set_current_win(bufwin)
-		vim.cmd('enew')
-	end
-end
-
-vim.keymap.set("n", "<leader>q", ":lua _G.window_remove_active_buffer()<cr>", { noremap = true })
-vim.keymap.set("n", "<C-d>", ":lua _G.window_remove_active_buffer()<cr>", { noremap = true })
-vim.keymap.set("t", "<leader>q", "<C-\\><C-n>:lua _G.window_remove_active_buffer()<cr>", { noremap = true })
-vim.keymap.set("t", "<C-d>", "<C-\\><C-n>:lua _G.window_remove_active_buffer()<cr>", { noremap = true })
-
-vim.keymap.set("n", "Q", "<cmd>qa<cr>", { noremap = true })
-
---
--- Floating Panes
---
-function _G.move_floating_window(win_id, a, b)
-	local config = vim.api.nvim_win_get_config(win_id)
-	config.row = config.row + a
-	config.col = config.col + b
-	vim.api.nvim_win_set_config(win_id, config)
-end
-
-function _G.move_floating_window_left()
-	move_floating_window(vim.api.nvim_get_current_win(), 0, -4)
-end
-function _G.move_floating_window_down()
-	move_floating_window(vim.api.nvim_get_current_win(), 4, 0)
-end
-function _G.move_floating_window_up()
-	move_floating_window(vim.api.nvim_get_current_win(), -4, 0)
-end
-function _G.move_floating_window_right()
-	move_floating_window(vim.api.nvim_get_current_win(), 0, 4)
-end
-
--------------------
--- Floating Windows
--------------------
-vim.keymap.set("n", "<left>",  "<cmd>lua _G.move_floating_window_left()<cr>",  {noremap=true})
-vim.keymap.set("n", "<up>",    "<cmd>lua _G.move_floating_window_up()<cr>",    {noremap=true})
-vim.keymap.set("n", "<down>",  "<cmd>lua _G.move_floating_window_down()<cr>",  {noremap=true})
-vim.keymap.set("n", "<right>", "<cmd>lua _G.move_floating_window_right()<cr>", {noremap=true})
-
---vim.keymap.set("n", "+", "<cmd>vertical resize +5<cr>")
---vim.keymap.set("n", "_", "<cmd>vertical resize -5<cr>")
---vim.keymap.set("n", "=", "<cmd>horizontal resize +5<cr>")
---vim.keymap.set("n", "-", "<cmd>horizontal resize -5<cr>")
-
-vim.keymap.set("n", "<c-left>",  "<C-w><", { noremap = true })
-vim.keymap.set("n", "<c-right>", "<C-w>>", { noremap = true })
-vim.keymap.set("n", "<c-up>",    "<C-w>-", { noremap = true })
-vim.keymap.set("n", "<c-down>",  "<C-w>+", { noremap = true })
 
 require(folderOfThisFile .. 'lazy_vim')
 
