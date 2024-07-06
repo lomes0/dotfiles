@@ -11,7 +11,7 @@ local opt_settings = {
 	{ "tabstop",        4 },
 	{ "softtabstop",    4 },
 	{ "shiftwidth",     4 },
-	{ "scrolloff",      999 },
+	{ "scrolloff",      5 },
 	{ "updatetime",     50 },
 	{ "conceallevel",   2 },
 	{ "report",         999 },
