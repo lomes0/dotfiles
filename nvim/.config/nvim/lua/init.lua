@@ -75,7 +75,11 @@ vim.keymap.set("n", "<leader>v", "<cmd>vsplit<cr><C-\\><C-n><C-w>l<cmd>enew<cr>"
 vim.keymap.set("n", "<leader>s", "<cmd>split<cr><C-\\><C-n><C-w>j<cmd>enew<cr>",{noremap=true})
 
 -- terminals
-vim.keymap.set("n", "tt", ":term<cr>")
+function Terminal_open()
+	vim.api.nvim_command("term")
+	vim.api.nvim_set_option_value("scrolloff", 0, { scope = "local" })
+end
+vim.keymap.set("n", "tt", ":lua Terminal_open()<cr>")
 vim.keymap.set("t", "<C-w>", "<C-\\><C-n><C-w>", {noremap = true})
 vim.keymap.set("t", "<C-_>", "<C-\\><C-n>/", {noremap = true})
 vim.keymap.set("t", ":", "<C-\\><C-n>:", {noremap = true})
