@@ -337,12 +337,15 @@ end
 function _G.move_floating_window_left()
 	move_floating_window(vim.api.nvim_get_current_win(), 0, -4)
 end
+
 function _G.move_floating_window_down()
 	move_floating_window(vim.api.nvim_get_current_win(), 4, 0)
 end
+
 function _G.move_floating_window_up()
 	move_floating_window(vim.api.nvim_get_current_win(), -4, 0)
 end
+
 function _G.move_floating_window_right()
 	move_floating_window(vim.api.nvim_get_current_win(), 0, 4)
 end
