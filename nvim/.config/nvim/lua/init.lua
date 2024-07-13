@@ -45,7 +45,7 @@ local opt_settings = {
 
 local keymaps = {
 	{ "n", "<C-_>",     "gcc",                                                                                     { noremap = false, silent = true, desc = "comment line"             } },
-	{ "v", "<C-_>",     'gc:lua vim.fn.setpos(".", vim.fn.getpos("\'>"))<cr>0',                                    { noremap = false, silent = true, desc = "comment selection"        } },
+	{ "v", "<C-_>",     "gc:lua vim.fn.setpos('.', vim.fn.getpos('\'>'))<cr>0",                                    { noremap = false, silent = true, desc = "comment selection"        } },
 	{ "n", "<leader>a", ":lua vim.api.nvim_command(\"cd \" .. vim.api.nvim_buf_get_name(0):match(\"(.*/)\"))<cr>", { noremap = true,  silent = true, desc = "change workdir"           } },
 	{ "v", "J",         ":m '>+1<cr>gv=gv",                                                                        { noremap = true,  silent = true, desc = "move lines up"            } },
 	{ "v", "K",         ":m '<-2<cr>gv=gv",                                                                        { noremap = true,  silent = true, desc = "move lines down"          } },
@@ -188,12 +188,12 @@ vim.cmd([[
 vim.cmd([[
 function! EnableFolding()
 	set nofoldenable
-	set foldlevel = 99
-	set foldnestmax = 4
-	set fillchars = fold:\
-	set foldtext = CustomFoldText()
-	setlocal foldmethod = expr
-	setlocal foldexpr = GetPotionFold(v:lnum)
+	set foldlevel=99
+	set foldnestmax=4
+	set fillchars=fold:\
+	set foldtext=CustomFoldText()
+	setlocal foldmethod=expr
+	setlocal foldexpr=GetPotionFold(v:lnum)
 endfunction
 
 if !&diff
