@@ -180,18 +180,20 @@ vim.cmd([[
 --
 -- https://essais.co/better-folding-in-neovim/
 
--- vim.opt.foldmethod = "expr"
--- vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+-- vim.opt.foldmethod = 'expr'
+-- vim.opt.foldenable = false
+-- vim.opt.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+-- vim.opt.foldlevel = 99
+
 vim.cmd([[
 function! EnableFolding()
 	set nofoldenable
-	set foldlevel=1
-	set foldlevel=99
-	set foldnestmax=4
-	set fillchars=fold:\
-	set foldtext=CustomFoldText()
-	setlocal foldmethod=expr
-	setlocal foldexpr=GetPotionFold(v:lnum)
+	set foldlevel = 99
+	set foldnestmax = 4
+	set fillchars = fold:\
+	set foldtext = CustomFoldText()
+	setlocal foldmethod = expr
+	setlocal foldexpr = GetPotionFold(v:lnum)
 endfunction
 
 if !&diff
