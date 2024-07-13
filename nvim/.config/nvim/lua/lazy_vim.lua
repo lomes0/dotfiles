@@ -506,16 +506,42 @@ require("lazy").setup({
 				},
 			})
 			local builtin = require("telescope.builtin")
-			vim.keymap.set("n", "<leader>f", function()
-				builtin.find_files({ cwd = "." })
-			end, {})
-			vim.keymap.set("n", "<leader>F", function()
-				builtin.find_files({ cwd = vim.fn.input({ prompt = "Dir > ", completion = "file" }) })
-			end, {})
-			vim.keymap.set("n", "<leader>g", builtin.live_grep, {})
-			vim.keymap.set("n", "<leader>G", function()
-				builtin.live_grep({ cwd = vim.fn.input({ prompt = "Dir > ", completion = "file" }) })
-			end, {})
+			local telescope_maps = {
+				{
+					"n",
+					"<leader>G",
+					function()
+						builtin.live_grep({ cwd = vim.fn.input({ prompt = "Dir > ", completion = "file" }) })
+					end,
+					{},
+				},
+				{
+					"n",
+					"<leader>g",
+					builtin.live_grep,
+					{},
+				},
+				{
+					"n",
+					"<leader>F",
+					function()
+						builtin.find_files({ cwd = vim.fn.input({ prompt = "Dir > ", completion = "file" }) })
+					end,
+					{},
+				},
+				{
+					"n",
+					"<leader>f",
+					function()
+						builtin.find_files({ cwd = "." })
+					end,
+					{},
+				},
+			}
+
+			for _, e in ipairs(telescope_maps) do
+				vim.keymap.set(e[1], e[2], e[3], e[4])
+			end
 		end,
 	},
 	{
@@ -723,8 +749,10 @@ require("lazy").setup({
 			function FormatDiff()
 				local gitpath = GetGitFilePath()
 				if gitpath ~= nil then
-					os.execute("git diff -U0 --no-color --relative HEAD -- " .. gitpath .. " | clang-format-diff -p1 -i")
-					vim.api.nvim_command('e')
+					os.execute(
+						"git diff -U0 --no-color --relative HEAD -- " .. gitpath .. " | clang-format-diff -p1 -i"
+					)
+					vim.api.nvim_command("e")
 				end
 			end
 
