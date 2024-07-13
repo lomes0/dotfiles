@@ -786,26 +786,6 @@ require('lazy').setup({
 			}
 		end
 	},
-	--{
-	--  "L3MON4D3/LuaSnip", lazy = false,
-	--  -- follow latest release.
-	--  version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
-	--  -- install jsregexp (optional!).
-	--  build = "make install_jsregexp",
-	--  config = function()
-	--    vim.keymap.set({"i"}, "<C-K>", function() ls.expand() end, {silent = true})
-	--    vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump( 1) end, {silent = true})
-	--    vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
-	--    
-	--    vim.keymap.set({"i", "s"}, "<C-E>", function()
-	--      if ls.choice_active() then
-	--        ls.change_choice(1)
-	--      end
-	--    end, {silent = true})
-	--  end
-	--}
-	-- load luasnips + cmp related in insert mode only
-
 	----------------
 	-- LSP
 	----------------
@@ -967,21 +947,21 @@ require('lazy').setup({
 			local cmp_select = {behavior = cmp.SelectBehavior.Select}
 			lsp.extend_lspconfig()
 
-			lsp.preset("recommended")
+			lsp.preset('recommended')
 			cmp.setup({
 				window = {
 					completion = cmp.config.window.bordered(),
 					documentation = cmp.config.window.bordered(),
 				},
 				mapping = cmp.mapping.preset.insert({
-					['<C-Space>'] = cmp.mapping.complete(),
-					['<C-f>'] = cmp_action.luasnip_jump_forward(),
-					['<C-b>'] = cmp_action.luasnip_jump_backward(),
-					['<C-u>'] = cmp.mapping.scroll_docs(-4),
-					['<C-d>'] = cmp.mapping.scroll_docs(4),
-					['<C-p>'] = cmp.mapping.select_prev_item(cmp_select),
-					['<C-n>'] = cmp.mapping.select_next_item(cmp_select),
-					['<Enter>'] = cmp.mapping.confirm({ select = true }),
+					[ '<C-Space>' ] = cmp.mapping.complete(),
+					[ '<C-f>' ] = cmp_action.luasnip_jump_forward(),
+					[ '<C-b>' ] = cmp_action.luasnip_jump_backward(),
+					[ '<C-u>' ] = cmp.mapping.scroll_docs(-4),
+					[ '<C-d>' ] = cmp.mapping.scroll_docs(4),
+					[ '<C-p>' ] = cmp.mapping.select_prev_item(cmp_select),
+					[ '<C-n>' ] = cmp.mapping.select_next_item(cmp_select),
+					[ '<Enter>' ] = cmp.mapping.confirm({ select = true }),
 				})
 			})
 
@@ -991,20 +971,20 @@ require('lazy').setup({
 
 			lsp.on_attach(function(_, bufnr)
 
-				local opts = {buffer = bufnr, noremap = true}
+				local opts = { buffer = bufnr, noremap = true }
 
-				vim.keymap.set("n", "gd",  function() vim.lsp.buf.definition()  end, opts)
-				vim.keymap.set("n", "gh",  function() vim.lsp.buf.hover()       end, opts)
-				vim.keymap.set("n", "[d",  function() vim.lsp.buf.goto_next()   end, opts)
-				vim.keymap.set("n", "]d",  function() vim.lsp.buf.goto_prev()   end, opts)
-				vim.keymap.set("n", "gca", function() vim.lsp.buf.code_action() end, opts)
+				vim.keymap.set('n', 'gd',  function() vim.lsp.buf.definition()  end, opts)
+				vim.keymap.set('n', 'gh',  function() vim.lsp.buf.hover()       end, opts)
+				vim.keymap.set('n', '[d',  function() vim.lsp.buf.goto_next()   end, opts)
+				vim.keymap.set('n', ']d',  function() vim.lsp.buf.goto_prev()   end, opts)
+				vim.keymap.set('n', 'gca', function() vim.lsp.buf.code_action() end, opts)
 			end)
 		end
 	},
 	{
 		'neovim/nvim-lspconfig', lazy = false,
 		dependencies = {
-			{'hrsh7th/cmp-nvim-lsp'},
+			'hrsh7th/cmp-nvim-lsp'
 		}
 	},
 	{
@@ -1176,9 +1156,6 @@ require('lazy').setup({
 	----------------
 	-- COLORS
 	----------------
-	{
-	"sainnhe/edge", lazy = false,
-	},
 	{
 		"EdenEast/nightfox.nvim", lazy = false,
 		config = function()
@@ -1366,6 +1343,36 @@ require('lazy').setup({
 			})
 		end
 	}
+})
+----	mode 	key 	        function
+----  i 	    <m-k> 	        signature help
+----  n 	    <c-k> 	        signature help
+----  n 	    gD 	            declaration
+----  n 	    gt 	            type definition
+----  n 	    <Leader>gt 	    treesitter document symbol
+----  n 	    <Leader>gT 	    treesitter symbol for all open buffers
+----  n 	    <Leader> ct 	ctags symbol search
+----  n 	    <Leader> cg 	ctags symbol generate
+	--{
+	--  "L3MON4D3/LuaSnip", lazy = false,
+	--  -- follow latest release.
+	--  version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+	--  -- install jsregexp (optional!).
+	--  build = "make install_jsregexp",
+	--  config = function()
+	--    vim.keymap.set({"i"}, "<C-K>", function() ls.expand() end, {silent = true})
+	--    vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump( 1) end, {silent = true})
+	--    vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
+	--    
+	--    vim.keymap.set({"i", "s"}, "<C-E>", function()
+	--      if ls.choice_active() then
+	--        ls.change_choice(1)
+	--      end
+	--    end, {silent = true})
+	--  end
+	--}
+	-- load luasnips + cmp related in insert mode only
+
 	--{
 	--    "3rd/image.nvim", lazy = false,
 	--		ft = { "markdown" },
@@ -1407,13 +1414,3 @@ require('lazy').setup({
 	--			})
 	--    end
 	--},
-})
-----	mode 	key 	        function
-----  i 	    <m-k> 	        signature help
-----  n 	    <c-k> 	        signature help
-----  n 	    gD 	            declaration
-----  n 	    gt 	            type definition
-----  n 	    <Leader>gt 	    treesitter document symbol
-----  n 	    <Leader>gT 	    treesitter symbol for all open buffers
-----  n 	    <Leader> ct 	ctags symbol search
-----  n 	    <Leader> cg 	ctags symbol generate
