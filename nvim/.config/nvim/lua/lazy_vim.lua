@@ -377,12 +377,6 @@ require("lazy").setup({
 						goto_previous_end = {
 							["[F"] = "@function.outer",
 						},
-						goto_next = {
-							["]c"] = "@conditional.outer",
-						},
-						goto_previous = {
-							["[c"] = "@conditional.outer",
-						},
 					},
 					select = {
 						enable = true,
@@ -402,14 +396,8 @@ require("lazy").setup({
 			})
 			local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
 			-- Repeat movement with ; and ,
-			-- ensure ; goes forward and , goes backward regardless of the last direction
-			vim.keymap.set({ "n", "x", "o" }, ";", ts_repeat_move.repeat_last_move_next)
+			vim.keymap.set({ "n", "x", "o" }, ".", ts_repeat_move.repeat_last_move_next)
 			vim.keymap.set({ "n", "x", "o" }, ",", ts_repeat_move.repeat_last_move_previous)
-			-- Optionally, make builtin f, F, t, T also repeatable with ; and ,
-			vim.keymap.set({ "n", "x", "o" }, "f", ts_repeat_move.builtin_f_expr, { expr = true })
-			vim.keymap.set({ "n", "x", "o" }, "F", ts_repeat_move.builtin_F_expr, { expr = true })
-			vim.keymap.set({ "n", "x", "o" }, "t", ts_repeat_move.builtin_t_expr, { expr = true })
-			vim.keymap.set({ "n", "x", "o" }, "T", ts_repeat_move.builtin_T_expr, { expr = true })
 		end,
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter",
@@ -464,11 +452,6 @@ require("lazy").setup({
 				notify_on_error = true,
 			})
 
-			function Format()
-				local buf = vim.api.nvim_get_current_buf()
-				require("conform").format({ bufnr = buf })
-			end
-
 			function GetGitFilePath()
 				local bufname = vim.fn.bufname("%")
 				local filepath = vim.fn.fnamemodify(bufname, ":p")
@@ -478,6 +461,11 @@ require("lazy").setup({
 				end
 				local relative_path = filepath:sub(#git_root + 2)
 				return relative_path
+			end
+
+			function Format()
+				local buf = vim.api.nvim_get_current_buf()
+				require("conform").format({ bufnr = buf })
 			end
 
 			function FormatDiff()
@@ -505,10 +493,10 @@ require("lazy").setup({
 			},
 		},
 	},
-	{
-		"mg979/vim-visual-multi",
-		lazy = false,
-	},
+	-- {
+	-- 	"mg979/vim-visual-multi",
+	-- 	lazy = false,
+	-- },
 	------------------ View
 	{
 		"hedyhli/outline.nvim",
@@ -1253,27 +1241,27 @@ require("lazy").setup({
 					},
 				},
 			})
-			local builtin = require("telescope.builtin")
+			local tl = require("telescope.builtin")
 			local telescope_maps = {
 				{
 					"n",
 					"<leader>G",
 					function()
-						builtin.live_grep({ cwd = vim.fn.input({ prompt = "Dir > ", completion = "file" }) })
+						tl.live_grep({ cwd = vim.fn.input({ prompt = "Dir > ", completion = "file" }) })
 					end,
 					{ noremap = true, silent = true, desc = "" },
 				},
 				{
 					"n",
 					"<leader>g",
-					builtin.live_grep,
+					tl.live_grep,
 					{ noremap = true, silent = true, desc = "" },
 				},
 				{
 					"n",
 					"<leader>F",
 					function()
-						builtin.find_files({ cwd = vim.fn.input({ prompt = "Dir > ", completion = "file" }) })
+						tl.find_files({ cwd = vim.fn.input({ prompt = "Dir > ", completion = "file" }) })
 					end,
 					{ noremap = true, silent = true, desc = "" },
 				},
@@ -1281,7 +1269,7 @@ require("lazy").setup({
 					"n",
 					"<leader>f",
 					function()
-						builtin.find_files({ cwd = "." })
+						tl.find_files({ cwd = "." })
 					end,
 					{ noremap = true, silent = true, desc = "" },
 				},
@@ -1348,7 +1336,7 @@ require("lazy").setup({
 					local gitsigns_maps = {
 						{
 							"n",
-							"]c",
+							";",
 							function()
 								if vim.wo.diff then
 									vim.cmd.normal({ "]c", bang = true })
@@ -1356,59 +1344,57 @@ require("lazy").setup({
 									gitsigns.nav_hunk("next")
 								end
 							end,
-						},
-						{
-							"n",
-							"[c",
-							function()
-								if vim.wo.diff then
-									vim.cmd.normal({ "[c", bang = true })
-								else
-									gitsigns.nav_hunk("prev")
-								end
-							end,
+							{ noremap = true, silent = true, desc = "Gitsigns next change" },
 						},
 						{
 							"n",
 							"s",
 							gitsigns.stage_hunk,
+							{ noremap = true, silent = true, desc = "Gitsigns stage hunk" },
 						},
 						{
 							"v",
-							"s",
+							"ss",
 							function()
 								gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
 							end,
+							{ noremap = true, silent = true, desc = "Gitsigns stage selection" },
 						},
 						{
 							"n",
-							"S",
+							"sb",
 							gitsigns.stage_buffer,
+							{ noremap = true, silent = true, desc = "Gitsigns stage buffer" },
 						},
 						{
 							"n",
 							"su",
 							gitsigns.undo_stage_hunk,
+							{ noremap = true, silent = true, desc = "Gitsigns stage undo" },
 						},
 						{
 							"n",
-							"<leader>R",
+							"sR",
 							gitsigns.reset_buffer,
+							{ noremap = true, silent = true, desc = "Gitsigns reset buffer" },
 						},
 						{
 							"n",
-							"<leader>P",
+							"<leader>p",
 							gitsigns.preview_hunk,
+							{ noremap = true, silent = true, desc = "Gitsigns preview hunk" },
 						},
 						{
 							"n",
 							"<leader>t",
 							gitsigns.toggle_current_line_blame,
+							{ noremap = true, silent = true, desc = "Gitsigns toggle blame" },
 						},
 						{
 							"n",
 							"<leader>d",
 							gitsigns.diffthis,
+							{ noremap = true, silent = true, desc = "Gitsigns diffthis" },
 						},
 						{
 							"n",
@@ -1416,11 +1402,13 @@ require("lazy").setup({
 							function()
 								gitsigns.diffthis("~")
 							end,
+							{ noremap = true, silent = true, desc = "Gitsigns diffthis ~" },
 						},
 						{
 							{ "o", "x" },
 							"ih",
 							":<C-U>Gitsigns select_hunk<CR>",
+							{ noremap = true, silent = true, desc = "Gitsigns select hunk" },
 						},
 					}
 					Register_maps(gitsigns_maps)
