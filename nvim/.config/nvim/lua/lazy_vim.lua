@@ -872,46 +872,87 @@ require("lazy").setup({
 				on_attach = function(bufnr)
 					local gitsigns = require("gitsigns")
 
-					local function map(mode, l, r, opts)
-						opts = opts or {}
-						opts.buffer = bufnr
-						vim.keymap.set(mode, l, r, opts)
+					local gitsings_maps = {
+						{
+							"n",
+							"]c",
+							function()
+								if vim.wo.diff then
+									vim.cmd.normal({ "]c", bang = true })
+								else
+									gitsigns.nav_hunk("next")
+								end
+							end,
+						},
+						{
+							"n",
+							"[c",
+							function()
+								if vim.wo.diff then
+									vim.cmd.normal({ "[c", bang = true })
+								else
+									gitsigns.nav_hunk("prev")
+								end
+							end,
+						},
+						{
+							"n",
+							"s",
+							gitsigns.stage_hunk,
+						},
+						{
+							"v",
+							"s",
+							function()
+								gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+							end,
+						},
+						{
+							"n",
+							"S",
+							gitsigns.stage_buffer,
+						},
+						{
+							"n",
+							"su",
+							gitsigns.undo_stage_hunk,
+						},
+						{
+							"n",
+							"<leader>R",
+							gitsigns.reset_buffer,
+						},
+						{
+							"n",
+							"<leader>P",
+							gitsigns.preview_hunk,
+						},
+						{
+							"n",
+							"<leader>t",
+							gitsigns.toggle_current_line_blame,
+						},
+						{
+							"n",
+							"<leader>d",
+							gitsigns.diffthis,
+						},
+						{
+							"n",
+							"<leader>D",
+							function()
+								gitsigns.diffthis("~")
+							end,
+						},
+						{
+							{ "o", "x" },
+							"ih",
+							":<C-U>Gitsigns select_hunk<CR>",
+						},
+					}
+					for _, e in ipairs(gitsings_maps) do
+						vim.keymap.set(e[1], e[2], e[3], { buffer = bufnr })
 					end
-
-					-- Navigation
-					map("n", "]c", function()
-						if vim.wo.diff then
-							vim.cmd.normal({ "]c", bang = true })
-						else
-							gitsigns.nav_hunk("next")
-						end
-					end)
-
-					map("n", "[c", function()
-						if vim.wo.diff then
-							vim.cmd.normal({ "[c", bang = true })
-						else
-							gitsigns.nav_hunk("prev")
-						end
-					end)
-
-					-- Actions
-					map("n", "s", gitsigns.stage_hunk)
-					map("v", "s", function()
-						gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-					end)
-					map("n", "S", gitsigns.stage_buffer)
-					map("n", "su", gitsigns.undo_stage_hunk)
-
-					map("n", "<leader>R", gitsigns.reset_buffer)
-					map("n", "<leader>P", gitsigns.preview_hunk)
-					map("n", "<leader>t", gitsigns.toggle_current_line_blame)
-					map("n", "<leader>d", gitsigns.diffthis)
-					map("n", "<leader>D", function()
-						gitsigns.diffthis("~")
-					end)
-					-- Text object
-					map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>")
 				end,
 			})
 		end,
