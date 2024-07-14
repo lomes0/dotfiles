@@ -493,10 +493,10 @@ require("lazy").setup({
 			},
 		},
 	},
-	-- {
-	-- 	"mg979/vim-visual-multi",
-	-- 	lazy = false,
-	-- },
+	{
+		"mg979/vim-visual-multi",
+		lazy = false,
+	},
 	------------------ View
 	{
 		"hedyhli/outline.nvim",
@@ -1292,7 +1292,6 @@ require("lazy").setup({
 	},
 	{
 		"mikavilpas/yazi.nvim",
-		lazy = true,
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 		},
@@ -1304,7 +1303,7 @@ require("lazy").setup({
 		end,
 		keys = {
 			{
-				"\\",
+				"-",
 				function()
 					require("yazi").yazi()
 				end,

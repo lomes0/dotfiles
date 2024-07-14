@@ -9,6 +9,6 @@ run = "remove --force"
 desc = "Delete file/s"
 
 [[manager.prepend_keymap]]
-on = [ "\\" ]
+on = [ "-" ]
 run = "quit"
 desc = "Quit yazi"
