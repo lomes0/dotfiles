@@ -1,11 +1,80 @@
-function Register_maps(maps)
-	for _, e in ipairs(maps) do
-		vim.keymap.set(e[1], e[2], e[3], e[4])
-	end
-end
+local Keymaps = require("keymaps")
 
 require("lazy").setup({
-	------------------ Editor
+	-- Editor
+	{
+		"echasnovski/mini.ai",
+		version = "*",
+		layz = false,
+		config = function()
+			require("mini.ai").setup({
+				-- Table with textobject id as fields, textobject specification as values.
+				-- Also use this to disable builtin textobjects. See |MiniAi.config|.
+				custom_textobjects = nil,
+
+				-- Module mappings. Use `''` (empty string) to disable one.
+				mappings = {
+					-- Main textobject prefixes
+					around = "a",
+					inside = "i",
+
+					-- Next/last variants
+					around_next = "an",
+					inside_next = "in",
+					around_last = "al",
+					inside_last = "il",
+
+					-- Move cursor to corresponding edge of `a` textobject
+					goto_left = "g[",
+					goto_right = "g]",
+				},
+
+				-- Number of lines within which textobject is searched
+				n_lines = 50,
+
+				-- How to search for object (first inside current line, then inside
+				-- neighborhood). One of 'cover', 'cover_or_next', 'cover_or_prev',
+				-- 'cover_or_nearest', 'next', 'previous', 'nearest'.
+				search_method = "cover_or_next",
+
+				-- Whether to disable showing non-error feedback
+				silent = false,
+			})
+		end,
+	},
+	{
+		"echasnovski/mini.bracketed",
+		version = "*",
+		lazy = false,
+		config = function()
+			require("mini.bracketed").setup({
+				-- First-level elements are tables describing behavior of a target:
+				--
+				-- - <suffix> - single character suffix. Used after `[` / `]` in mappings.
+				--   For example, with `b` creates `[B`, `[b`, `]b`, `]B` mappings.
+				--   Supply empty string `''` to not create mappings.
+				--
+				-- - <options> - table overriding target options.
+				--
+				-- See `:h MiniBracketed.config` for more info.
+
+				buffer = { suffix = "b", options = {} },
+				comment = { suffix = "c", options = {} },
+				conflict = { suffix = "x", options = {} },
+				diagnostic = { suffix = "d", options = {} },
+				file = { suffix = "f", options = {} },
+				indent = { suffix = "i", options = {} },
+				treesitter = { suffix = "t", options = {} },
+				undo = { suffix = "u", options = {} },
+				-- jump = { suffix = "j", options = {} },
+				-- location = { suffix = "l", options = {} },
+				-- oldfile = { suffix = "o", options = {} },
+				-- quickfix = { suffix = "q", options = {} },
+				-- window = { suffix = "w", options = {} },
+				-- yank = { suffix = "y", options = {} },
+			})
+		end,
+	},
 	{
 		"akinsho/toggleterm.nvim",
 		lazy = true,
@@ -397,7 +466,7 @@ require("lazy").setup({
 			local ts_repeat_move = require("nvim-treesitter.textobjects.repeatable_move")
 			-- Repeat movement with ; and ,
 			vim.keymap.set({ "n", "x", "o" }, ".", ts_repeat_move.repeat_last_move_next)
-			vim.keymap.set({ "n", "x", "o" }, ",", ts_repeat_move.repeat_last_move_previous)
+			vim.keymap.set({ "n", "x", "o" }, ">", ts_repeat_move.repeat_last_move_previous)
 		end,
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter",
@@ -497,7 +566,7 @@ require("lazy").setup({
 		"mg979/vim-visual-multi",
 		lazy = false,
 	},
-	------------------ View
+	-- View
 	{
 		"hedyhli/outline.nvim",
 		lazy = true,
@@ -645,7 +714,7 @@ require("lazy").setup({
 				position = "E", -- NW,N,NW,W,C,E,SW,S,SE (C==center)
 				border = "rounded", -- rounded,double,single
 			})
-			local floating_help_maps = {
+			Keymaps.Register({
 				{
 					"n",
 					"<F1>",
@@ -668,9 +737,7 @@ require("lazy").setup({
 					end,
 					{ noremap = true, silent = true, desc = "Floating linux man" },
 				},
-			}
-
-			Register_maps(floating_help_maps)
+			})
 
 			local function cmd_abbrev(abbrev, expansion)
 				local cmd = "cabbr "
@@ -789,7 +856,7 @@ require("lazy").setup({
 			})
 		end,
 	},
-	------------------ Lsp
+	-- Lsp
 	{
 		"rmagatti/goto-preview",
 		lazy = true,
@@ -832,7 +899,7 @@ require("lazy").setup({
 				same_file_float_preview = false,
 			})
 
-			local preview_maps = {
+			Keymaps.Register({
 				{
 					"n",
 					"gpr",
@@ -873,9 +940,7 @@ require("lazy").setup({
 					end,
 					{ noremap = true, silent = true, desc = "Preview close_all_win" },
 				},
-			}
-
-			Register_maps(preview_maps)
+			})
 		end,
 	},
 	{
@@ -945,7 +1010,7 @@ require("lazy").setup({
 			lsp.on_attach(function(_, bufnr)
 				local opts = { buffer = bufnr, noremap = true }
 
-				local lsp_maps = {
+				Keymaps.Register({
 					{
 						"n",
 						"gd",
@@ -986,9 +1051,7 @@ require("lazy").setup({
 						end,
 						{ buffer = bufnr, noremap = true, silent = true, desc = "Lsp code action" },
 					},
-				}
-
-				Register_maps(lsp_maps)
+				})
 			end)
 		end,
 	},
@@ -1167,7 +1230,7 @@ require("lazy").setup({
 			require("fidget").setup({})
 		end,
 	},
-	------------------ Coding
+	-- Coding
 	{
 		"mfussenegger/nvim-dap",
 		lazy = true,
@@ -1198,17 +1261,15 @@ require("lazy").setup({
 		dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
 		config = function()
 			require("dapui").setup({})
-		end,
-		Register_maps({
-			{
+			Keymaps.Register({
 				"n",
 				"<leader>u",
 				":lua require('dapui').toggle()<cr>",
 				{ silent = true, noremap = true, desc = "Dapui toggle" },
-			},
-		}),
+			})
+		end,
 	},
-	------------------ Navigation
+	-- Navigation
 	{
 		"nvim-telescope/telescope.nvim",
 		lazy = false,
@@ -1242,7 +1303,7 @@ require("lazy").setup({
 				},
 			})
 			local tl = require("telescope.builtin")
-			local telescope_maps = {
+			Keymaps.Register({
 				{
 					"n",
 					"<leader>G",
@@ -1273,9 +1334,7 @@ require("lazy").setup({
 					end,
 					{ noremap = true, silent = true, desc = "" },
 				},
-			}
-
-			Register_maps(telescope_maps)
+			})
 		end,
 	},
 	{
@@ -1323,7 +1382,7 @@ require("lazy").setup({
 			yazi_floating_window_border = "none",
 		},
 	},
-	------------------ Git
+	-- Git
 	{
 		"lewis6991/gitsigns.nvim",
 		event = "VeryLazy",
@@ -1332,10 +1391,10 @@ require("lazy").setup({
 				on_attach = function(bufnr)
 					local gitsigns = require("gitsigns")
 
-					local gitsigns_maps = {
+					Keymaps.Register({
 						{
 							"n",
-							";",
+							" ",
 							function()
 								if vim.wo.diff then
 									vim.cmd.normal({ "]c", bang = true })
@@ -1409,8 +1468,7 @@ require("lazy").setup({
 							":<C-U>Gitsigns select_hunk<CR>",
 							{ noremap = true, silent = true, desc = "Gitsigns select hunk" },
 						},
-					}
-					Register_maps(gitsigns_maps)
+					})
 				end,
 			})
 		end,
@@ -1431,7 +1489,7 @@ require("lazy").setup({
 		},
 		config = true,
 	},
-	------------------ Colors
+	-- Colors
 	{
 		"EdenEast/nightfox.nvim",
 		lazy = false,

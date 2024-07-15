@@ -1,4 +1,5 @@
 local folderOfThisFile = (...):match("(.-)[^%.]+$")
+local Keymaps = require("keymaps")
 
 --
 -- settings
@@ -43,7 +44,7 @@ local opt_settings = {
 	{ "undodir", os.getenv("HOME") .. "/.vim/undodir" },
 }
 
-local keymaps = {
+local maps = {
 	{
 		"n",
 		"<C-_>",
@@ -102,171 +103,173 @@ local keymaps = {
 		"n",
 		"<leader>v",
 		"<cmd>vsplit<cr><C-\\><C-n><C-w>l<cmd>enew<cr>",
-		{ noremap = true, silent = true, desc = "split vertical" },
+		{ noremap = true, silent = true, desc = "Pane split vertical" },
 	},
 	{
 		"n",
 		"<leader>s",
 		"<cmd>split<cr><C-\\><C-n><C-w>j<cmd>enew<cr>",
-		{ noremap = true, silent = true, desc = "split horizontal" },
-	},
-	{
-		"n",
-		"tt",
-		":lua Terminal_open()<cr>",
-		{ noremap = true, silent = true, desc = "terminal" },
-	},
-	{
-		"t",
-		"<C-w>",
-		"<C-\\><C-n><C-w>",
-		{ noremap = true, silent = true, desc = "terminal window cmd" },
-	},
-	{
-		"t",
-		"<C-_>",
-		"<C-\\><C-n>/",
-		{ noremap = true, silent = true, desc = "terminal search buffer" },
-	},
-	{
-		"t",
-		":",
-		"<C-\\><C-n>:",
-		{ noremap = true, silent = true, desc = "terminal command" },
-	},
-	{
-		"t",
-		"<C-f>",
-		"<C-\\><C-n>",
-		{ noremap = true, silent = true, desc = "terminal escape" },
+		{ noremap = true, silent = true, desc = "Pane split horizontal" },
 	},
 	{
 		"t",
 		"<C-h>",
 		"<C-\\><C-n><C-w>h",
-		{ noremap = true, silent = true, desc = "terminal move" },
+		{ noremap = true, silent = true, desc = "Window move left" },
 	},
 	{
 		"t",
 		"<C-j>",
 		"<C-\\><C-n><C-w>j",
-		{ noremap = true, silent = true, desc = "terminal move" },
+		{ noremap = true, silent = true, desc = "Window move down" },
 	},
 	{
 		"t",
 		"<C-k>",
 		"<C-\\><C-n><C-w>k",
-		{ noremap = true, silent = true, desc = "terminal move" },
+		{ noremap = true, silent = true, desc = "Window move up" },
 	},
 	{
 		"t",
 		"<C-l>",
 		"<C-\\><C-n><C-w>l",
-		{ noremap = true, silent = true, desc = "terminal move" },
+		{ noremap = true, silent = true, desc = "Window move right" },
 	},
 	{
 		"t",
 		"<C-w>h",
 		"<C-\\><C-n><C-w>h",
-		{ noremap = true, silent = true, desc = "terminal move" },
+		{ noremap = true, silent = true, desc = "Window move left" },
 	},
 	{
 		"t",
 		"<C-w>j",
 		"<C-\\><C-n><C-w>j",
-		{ noremap = true, silent = true, desc = "terminal move" },
+		{ noremap = true, silent = true, desc = "Window move down" },
 	},
 	{
 		"t",
 		"<C-w>k",
 		"<C-\\><C-n><C-w>k",
-		{ noremap = true, silent = true, desc = "terminal move" },
+		{ noremap = true, silent = true, desc = "Window move up" },
 	},
 	{
 		"t",
 		"<C-w>l",
 		"<C-\\><C-n><C-w>l",
-		{ noremap = true, silent = true, desc = "terminal move" },
-	},
-	{
-		"n",
-		"<leader>q",
-		":lua _G.window_remove_active_buffer()<cr>",
-		{ noremap = true, silent = true, desc = "" },
-	},
-	{
-		"n",
-		"<C-d>",
-		":lua _G.window_remove_active_buffer()<cr>",
-		{ noremap = true, silent = true, desc = "" },
-	},
-	{
-		"t",
-		"<leader>q",
-		"<C-\\><C-n>:lua _G.window_remove_active_buffer()<cr>",
-		{ noremap = true, silent = true, desc = "" },
-	},
-	{
-		"t",
-		"<C-d>",
-		"<C-\\><C-n>:lua _G.window_remove_active_buffer()<cr>",
-		{ noremap = true, silent = true, desc = "" },
-	},
-	{
-		"n",
-		"Q",
-		"<cmd>qa<cr>",
-		{ noremap = true, silent = true, desc = "" },
-	},
-	{
-		"n",
-		"<left>",
-		"<cmd>lua _G.move_floating_window_left()<cr>",
-		{ noremap = true, silent = true, desc = "" },
-	},
-	{
-		"n",
-		"<up>",
-		"<cmd>lua _G.move_floating_window_up()<cr>",
-		{ noremap = true, silent = true, desc = "" },
-	},
-	{
-		"n",
-		"<down>",
-		"<cmd>lua _G.move_floating_window_down()<cr>",
-		{ noremap = true, silent = true, desc = "" },
-	},
-	{
-		"n",
-		"<right>",
-		"<cmd>lua _G.move_floating_window_right()<cr>",
-		{ noremap = true, silent = true, desc = "" },
+		{ noremap = true, silent = true, desc = "Window move right" },
 	},
 	{
 		"n",
 		"<c-left>",
 		"<C-w><",
-		{ noremap = true, silent = true, desc = "" },
+		{ noremap = true, silent = true, desc = "Window resize left" },
 	},
 	{
 		"n",
 		"<c-right>",
 		"<C-w>>",
-		{ noremap = true, silent = true, desc = "" },
+		{ noremap = true, silent = true, desc = "Window resize right" },
 	},
 	{
 		"n",
 		"<c-up>",
 		"<C-w>-",
-		{ noremap = true, silent = true, desc = "" },
+		{ noremap = true, silent = true, desc = "Window resize up" },
 	},
 	{
 		"n",
 		"<c-down>",
 		"<C-w>+",
-		{ noremap = true, silent = true, desc = "" },
+		{ noremap = true, silent = true, desc = "Window resize down" },
+	},
+	{
+		"n",
+		"tt",
+		":lua Terminal_open()<cr>",
+		{ noremap = true, silent = true, desc = "Terminal" },
+	},
+	{
+		"t",
+		"<C-w>",
+		"<C-\\><C-n><C-w>",
+		{ noremap = true, silent = true, desc = "Terminal window cmd" },
+	},
+	{
+		"t",
+		"<C-_>",
+		"<C-\\><C-n>/",
+		{ noremap = true, silent = true, desc = "Terminal search buffer" },
+	},
+	{
+		"t",
+		":",
+		"<C-\\><C-n>:",
+		{ noremap = true, silent = true, desc = "Terminal command" },
+	},
+	{
+		"t",
+		"<C-f>",
+		"<C-\\><C-n>",
+		{ noremap = true, silent = true, desc = "Terminal escape" },
+	},
+	{
+		"n",
+		"<leader>q",
+		":lua _G.window_remove_active_buffer()<cr>",
+		{ noremap = true, silent = true, desc = "Remove active buffer" },
+	},
+	{
+		"n",
+		"<C-d>",
+		":lua _G.window_remove_active_buffer()<cr>",
+		{ noremap = true, silent = true, desc = "Remove active buffer" },
+	},
+	{
+		"t",
+		"<leader>q",
+		"<C-\\><C-n>:lua _G.window_remove_active_buffer()<cr>",
+		{ noremap = true, silent = true, desc = "Remove active buffer" },
+	},
+	{
+		"t",
+		"<C-d>",
+		"<C-\\><C-n>:lua _G.window_remove_active_buffer()<cr>",
+		{ noremap = true, silent = true, desc = "Remove active buffer" },
+	},
+	{
+		"n",
+		"Q",
+		"<cmd>qa<cr>",
+		{ noremap = true, silent = true, desc = "Close neovim" },
+	},
+	{
+		"n",
+		"<left>",
+		"<cmd>lua _G.move_floating_window_left()<cr>",
+		{ noremap = true, silent = true, desc = "Move floating window left" },
+	},
+	{
+		"n",
+		"<up>",
+		"<cmd>lua _G.move_floating_window_up()<cr>",
+		{ noremap = true, silent = true, desc = "Moving floating window up" },
+	},
+	{
+		"n",
+		"<down>",
+		"<cmd>lua _G.move_floating_window_down()<cr>",
+		{ noremap = true, silent = true, desc = "Moving floating window down" },
+	},
+	{
+		"n",
+		"<right>",
+		"<cmd>lua _G.move_floating_window_right()<cr>",
+		{ noremap = true, silent = true, desc = "Moving floating window right" },
 	},
 }
+
+Keymaps.Register(maps)
 
 function Terminal_open()
 	vim.api.nvim_command("term")
@@ -352,10 +355,6 @@ end
 
 for _, e in ipairs(opt_settings) do
 	vim.api.nvim_set_option_value(e[1], e[2], {})
-end
-
-for _, e in ipairs(keymaps) do
-	vim.api.nvim_set_keymap(e[1], e[2], e[3], e[4])
 end
 
 vim.cmd([[
