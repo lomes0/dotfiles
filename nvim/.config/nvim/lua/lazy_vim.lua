@@ -3,9 +3,18 @@ local Keymaps = require("keymaps")
 require("lazy").setup({
 	-- Editor
 	{
+		"folke/which-key.nvim",
+		event = "VeryLazy",
+		config = function()
+			require("which-key").setup({
+				sort = { "desc", "alphanum", "lower", "icase", "mod" },
+			})
+		end,
+	},
+	{
 		"echasnovski/mini.ai",
 		version = "*",
-		layz = false,
+		lazy = false,
 		config = function()
 			require("mini.ai").setup({
 				-- Table with textobject id as fields, textobject specification as values.
@@ -45,7 +54,7 @@ require("lazy").setup({
 	{
 		"echasnovski/mini.bracketed",
 		version = "*",
-		lazy = false,
+		event = "VeryLazy",
 		config = function()
 			require("mini.bracketed").setup({
 				-- First-level elements are tables describing behavior of a target:
@@ -211,7 +220,7 @@ require("lazy").setup({
 	},
 	{
 		"pocco81/auto-save.nvim",
-		lazy = false,
+		event = "VeryLazy",
 		config = function()
 			require("auto-save").setup({
 				enabled = true, -- start auto-save when the plugin is loaded (i.e. when your package manager loads it)
@@ -238,7 +247,7 @@ require("lazy").setup({
 	},
 	{
 		"nvim-lua/plenary.nvim",
-		lazy = false,
+		event = "VeryLazy",
 	},
 	{
 		"kylechui/nvim-surround",
@@ -250,7 +259,7 @@ require("lazy").setup({
 	},
 	{
 		"nvim-tree/nvim-web-devicons",
-		lazy = false,
+		event = "VeryLazy",
 		config = function()
 			require("nvim-web-devicons").setup({
 				-- your personnal icons can go here (to override)
@@ -298,7 +307,7 @@ require("lazy").setup({
 	},
 	{
 		"L3MON4D3/LuaSnip",
-		lazy = false,
+		event = "VeryLazy",
 		-- follow latest release.
 		version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
 		-- install jsregexp (optional!).
@@ -423,7 +432,7 @@ require("lazy").setup({
 	},
 	{
 		"nvim-treesitter/nvim-treesitter-textobjects",
-		lazy = false,
+		event = "VeryLazy",
 		config = function()
 			require("nvim-treesitter.configs").setup({
 				textobjects = {
@@ -474,7 +483,7 @@ require("lazy").setup({
 	},
 	{
 		"nvim-treesitter/nvim-treesitter-context",
-		lazy = false,
+		event = "VeryLazy",
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter",
 		},
@@ -503,7 +512,8 @@ require("lazy").setup({
 	},
 	{
 		"stevearc/conform.nvim",
-		lazy = false,
+		lazy = true,
+		cmd = { "Format", "FormatDiff" },
 		config = function()
 			require("conform").setup({
 				formatters_by_ft = {
@@ -564,7 +574,8 @@ require("lazy").setup({
 	},
 	{
 		"mg979/vim-visual-multi",
-		lazy = false,
+		lazy = true,
+		keys = { "<C-N>" },
 	},
 	-- View
 	{
@@ -580,7 +591,7 @@ require("lazy").setup({
 	},
 	{
 		"folke/trouble.nvim",
-		lazy = false,
+		lazy = "true",
 		cmd = "Trouble",
 		opts = {
 			position = "right",
@@ -650,7 +661,7 @@ require("lazy").setup({
 	},
 	{
 		"MunifTanjim/nui.nvim",
-		lazy = false,
+		lazy = true,
 	},
 	{
 		"OXY2DEV/markview.nvim",
@@ -704,7 +715,7 @@ require("lazy").setup({
 	},
 	{
 		"Tyler-Barham/floating-help.nvim",
-		lazy = false,
+		event = "VeryLazy",
 		config = function()
 			local fh = require("floating-help")
 			fh.setup({
@@ -714,28 +725,31 @@ require("lazy").setup({
 				position = "E", -- NW,N,NW,W,C,E,SW,S,SE (C==center)
 				border = "rounded", -- rounded,double,single
 			})
-			Keymaps.Register({
+			require("which-key").add({
 				{
-					"n",
 					"<F1>",
 					fh.toggle,
-					{ noremap = true, silent = true, desc = "Floating help" },
+					noremap = true,
+					silent = true,
+					desc = "Floating help",
 				},
 				{
-					"n",
 					"<F2>",
 					function()
 						fh.open("t=cppman", vim.fn.expand("<cword>"))
 					end,
-					{ noremap = true, silent = true, desc = "Floating cppman" },
+					noremap = true,
+					silent = true,
+					desc = "Floating cppman",
 				},
 				{
-					"n",
 					"<F3>",
 					function()
 						fh.open("t=man", vim.fn.expand("<cword>"))
 					end,
-					{ noremap = true, silent = true, desc = "Floating linux man" },
+					noremap = true,
+					silent = true,
+					desc = "Floating linux man",
 				},
 			})
 
@@ -758,7 +772,7 @@ require("lazy").setup({
 	},
 	{
 		"sidebar-nvim/sidebar.nvim",
-		lazy = false,
+		event = "VeryLazy",
 		cond = function()
 			return not vim.api.nvim_get_option_value("diff", { win = 0 })
 		end,
@@ -813,7 +827,7 @@ require("lazy").setup({
 	},
 	{
 		"nvim-lualine/lualine.nvim",
-		lazy = false,
+		event = "VeryLazy",
 		dependencies = {
 			"nvim-tree/nvim-web-devicons",
 		},
@@ -859,8 +873,7 @@ require("lazy").setup({
 	-- Lsp
 	{
 		"rmagatti/goto-preview",
-		lazy = true,
-		keys = { "gpr" },
+		lazy = false,
 		dependencies = {
 			"nvim-telescope/telescope.nvim",
 		},
@@ -898,61 +911,65 @@ require("lazy").setup({
 				preview_window_title = { enable = true, position = "left" }, -- Whether to set the preview window title as the filename
 				same_file_float_preview = false,
 			})
-
-			Keymaps.Register({
+			require("which-key").add({
 				{
-					"n",
 					"gpr",
 					function()
 						require("goto-preview").goto_preview_references()
 					end,
-					{ noremap = true, silent = true, desc = "Preview references" },
+					noremap = true,
+					silent = true,
+					desc = "Lsp preview references",
 				},
 				{
-					"n",
 					"gpt",
 					function()
 						require("goto-preview").goto_preview_type_definition()
 					end,
-					{ noremap = true, silent = true, desc = "Preview definitions" },
+					noremap = true,
+					silent = true,
+					desc = "Lsp preview definitions",
 				},
 				{
-					"n",
 					"gpi",
 					function()
 						require("goto-preview").goto_preview_implementation()
 					end,
-					{ noremap = true, silent = true, desc = "Preview implementations" },
+					noremap = true,
+					silent = true,
+					desc = "Lsp preview implementations",
 				},
 				{
-					"n",
 					"gpD",
 					function()
 						require("goto-preview").goto_preview_declaration()
 					end,
-					{ noremap = true, silent = true, desc = "Preview declaration" },
+					noremap = true,
+					silent = true,
+					desc = "Lsp preview declaration",
 				},
 				{
-					"n",
 					"gP",
 					function()
 						require("goto-preview").close_all_win()
 					end,
-					{ noremap = true, silent = true, desc = "Preview close_all_win" },
+					noremap = true,
+					silent = true,
+					desc = "Lsp preview close_all_win",
 				},
 			})
 		end,
 	},
 	{
 		"williamboman/mason.nvim",
-		lazy = false,
+		event = "VeryLazy",
 		config = function()
 			require("mason").setup({})
 		end,
 	},
 	{
 		"williamboman/mason-lspconfig.nvim",
-		lazy = false,
+		event = "VeryLazy",
 		dependencies = {
 			"VonHeikemen/lsp-zero.nvim",
 		},
@@ -973,7 +990,7 @@ require("lazy").setup({
 	},
 	{
 		"VonHeikemen/lsp-zero.nvim",
-		lazy = false,
+		event = "VeryLazy",
 		dependencies = {
 			"hrsh7th/nvim-cmp",
 		},
@@ -1009,47 +1026,56 @@ require("lazy").setup({
 
 			lsp.on_attach(function(_, bufnr)
 				local opts = { buffer = bufnr, noremap = true }
-
-				Keymaps.Register({
+				require("which-key").add({
 					{
-						"n",
 						"gd",
 						function()
 							vim.lsp.buf.definition()
 						end,
-						{ buffer = bufnr, noremap = true, silent = true, desc = "Lsp goto definition" },
+						buffer = bufnr,
+						noremap = true,
+						silent = true,
+						desc = "Lsp goto definition",
 					},
 					{
-						"n",
 						"gh",
 						function()
 							vim.lsp.buf.hover()
 						end,
-						{ buffer = bufnr, noremap = true, silent = true, desc = "Lsp hover" },
+						buffer = bufnr,
+						noremap = true,
+						silent = true,
+						desc = "Lsp hover",
 					},
 					{
-						"n",
 						"[d",
 						function()
 							vim.lsp.buf.goto_next()
 						end,
-						{ buffer = bufnr, noremap = true, silent = true, desc = "Lsp goto next" },
+						buffer = bufnr,
+						noremap = true,
+						silent = true,
+						desc = "Lsp goto next",
 					},
 					{
-						"n",
 						"]d",
 						function()
 							vim.lsp.buf.goto_prev()
 						end,
-						{ buffer = bufnr, noremap = true, silent = true, desc = "Lsp goto prev" },
+						buffer = bufnr,
+						noremap = true,
+						silent = true,
+						desc = "Lsp goto prev",
 					},
 					{
-						"n",
 						"gca",
 						function()
 							vim.lsp.buf.code_action()
 						end,
-						{ buffer = bufnr, noremap = true, silent = true, desc = "Lsp code action" },
+						buffer = bufnr,
+						noremap = true,
+						silent = true,
+						desc = "Lsp code action",
 					},
 				})
 			end)
@@ -1057,14 +1083,14 @@ require("lazy").setup({
 	},
 	{
 		"neovim/nvim-lspconfig",
-		lazy = false,
+		event = "VeryLazy",
 		dependencies = {
 			"hrsh7th/cmp-nvim-lsp",
 		},
 	},
 	{
 		"ray-x/navigator.lua",
-		lazy = false,
+		event = "VeryLazy",
 		dependencies = {
 			{ "ray-x/guihua.lua", run = "cd lua/fzy && make" },
 			"neovim/nvim-lspconfig",
@@ -1222,7 +1248,7 @@ require("lazy").setup({
 	},
 	{
 		"j-hui/fidget.nvim",
-		lazy = false,
+		event = "VeryLazy",
 		opts = {
 			-- options
 		},
@@ -1261,18 +1287,22 @@ require("lazy").setup({
 		dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
 		config = function()
 			require("dapui").setup({})
-			Keymaps.Register({
-				"n",
-				"<leader>u",
-				":lua require('dapui').toggle()<cr>",
-				{ silent = true, noremap = true, desc = "Dapui toggle" },
+			require("which-key").add({
+				{
+					"<leader>u",
+					":lua require('dapui').toggle()<cr>",
+					mode = "n",
+					silent = true,
+					noremap = true,
+					desc = "Dapui toggle",
+				},
 			})
 		end,
 	},
 	-- Navigation
 	{
 		"nvim-telescope/telescope.nvim",
-		lazy = false,
+		event = "VeryLazy",
 		tag = "0.1.4",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
@@ -1303,36 +1333,40 @@ require("lazy").setup({
 				},
 			})
 			local tl = require("telescope.builtin")
-			Keymaps.Register({
+			require("which-key").add({
+				-- {
+				-- 	"<leader>G",
+				-- 	function()
+				-- 		tl.live_grep({ cwd = vim.fn.input({ prompt = "Dir > ", completion = "file" }) })
+				-- 	end,
+				-- 	noremap = true,
+				-- 	silent = true,
+				-- 	desc = "Telescope grep <dir>",
+				-- },
 				{
-					"n",
-					"<leader>G",
-					function()
-						tl.live_grep({ cwd = vim.fn.input({ prompt = "Dir > ", completion = "file" }) })
-					end,
-					{ noremap = true, silent = true, desc = "" },
-				},
-				{
-					"n",
-					"<leader>g",
+					";g",
 					tl.live_grep,
-					{ noremap = true, silent = true, desc = "" },
+					noremap = true,
+					silent = true,
+					desc = "Telescope grep",
 				},
+				-- {
+				-- 	"<leader>F",
+				-- 	function()
+				-- 		tl.find_files({ cwd = vim.fn.input({ prompt = "Dir > ", completion = "file" }) })
+				-- 	end,
+				-- 	noremap = true,
+				-- 	silent = true,
+				-- 	desc = "Telescope file <dir>",
+				-- },
 				{
-					"n",
-					"<leader>F",
-					function()
-						tl.find_files({ cwd = vim.fn.input({ prompt = "Dir > ", completion = "file" }) })
-					end,
-					{ noremap = true, silent = true, desc = "" },
-				},
-				{
-					"n",
-					"<leader>f",
+					";f",
 					function()
 						tl.find_files({ cwd = "." })
 					end,
-					{ noremap = true, silent = true, desc = "" },
+					noremap = true,
+					silent = true,
+					desc = "Telescope file",
 				},
 			})
 		end,
@@ -1386,14 +1420,15 @@ require("lazy").setup({
 	{
 		"lewis6991/gitsigns.nvim",
 		event = "VeryLazy",
+		dependencies = {
+			"folke/which-key.nvim",
+		},
 		config = function()
 			require("gitsigns").setup({
 				on_attach = function(bufnr)
 					local gitsigns = require("gitsigns")
-
-					Keymaps.Register({
+					require("which-key").add({
 						{
-							"n",
 							" ",
 							function()
 								if vim.wo.diff then
@@ -1402,71 +1437,96 @@ require("lazy").setup({
 									gitsigns.nav_hunk("next")
 								end
 							end,
-							{ noremap = true, silent = true, desc = "Gitsigns next change" },
+							mode = "n",
+							noremap = true,
+							silent = true,
+							buffer = bufnr,
+							desc = "Gitsigns next change",
 						},
 						{
-							"n",
 							"s",
 							gitsigns.stage_hunk,
-							{ noremap = true, silent = true, desc = "Gitsigns stage hunk" },
+							mode = "n",
+							noremap = true,
+							silent = true,
+							buffer = bufnr,
+							desc = "Gitsigns stage hunk",
 						},
 						{
-							"v",
-							"ss",
+							"s",
 							function()
 								gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
 							end,
-							{ noremap = true, silent = true, desc = "Gitsigns stage selection" },
+							mode = "v",
+							noremap = true,
+							silent = true,
+							buffer = bufnr,
+							desc = "Gitsigns stage selection",
 						},
 						{
-							"n",
 							"sb",
 							gitsigns.stage_buffer,
-							{ noremap = true, silent = true, desc = "Gitsigns stage buffer" },
+							mode = "n",
+							noremap = true,
+							silent = true,
+							buffer = bufnr,
+							desc = "Gitsigns stage buffer",
 						},
 						{
-							"n",
 							"su",
 							gitsigns.undo_stage_hunk,
-							{ noremap = true, silent = true, desc = "Gitsigns stage undo" },
+							mode = "n",
+							noremap = true,
+							silent = true,
+							buffer = bufnr,
+							desc = "Gitsigns stage undo",
 						},
 						{
-							"n",
 							"sR",
 							gitsigns.reset_buffer,
-							{ noremap = true, silent = true, desc = "Gitsigns reset buffer" },
+							mode = "n",
+							noremap = true,
+							silent = true,
+							buffer = bufnr,
+							desc = "Gitsigns reset buffer",
 						},
 						{
-							"n",
-							"<leader>p",
+							"sp",
 							gitsigns.preview_hunk,
-							{ noremap = true, silent = true, desc = "Gitsigns preview hunk" },
+							mode = "n",
+							noremap = true,
+							silent = true,
+							buffer = bufnr,
+							desc = "Gitsigns preview hunk",
 						},
 						{
-							"n",
-							"<leader>t",
+							"st",
 							gitsigns.toggle_current_line_blame,
-							{ noremap = true, silent = true, desc = "Gitsigns toggle blame" },
+							mode = "n",
+							noremap = true,
+							silent = true,
+							buffer = bufnr,
+							desc = "Gitsigns toggle blame",
 						},
 						{
-							"n",
-							"<leader>d",
+							"sd",
 							gitsigns.diffthis,
-							{ noremap = true, silent = true, desc = "Gitsigns diffthis" },
+							mode = "n",
+							noremap = true,
+							silent = true,
+							buffer = bufnr,
+							desc = "Gitsigns diffthis",
 						},
 						{
-							"n",
-							"<leader>D",
+							"sD",
 							function()
 								gitsigns.diffthis("~")
 							end,
-							{ noremap = true, silent = true, desc = "Gitsigns diffthis ~" },
-						},
-						{
-							{ "o", "x" },
-							"ih",
-							":<C-U>Gitsigns select_hunk<CR>",
-							{ noremap = true, silent = true, desc = "Gitsigns select hunk" },
+							mode = "n",
+							noremap = true,
+							silent = true,
+							buffer = bufnr,
+							desc = "Gitsigns diffthis ~",
 						},
 					})
 				end,
@@ -1492,7 +1552,7 @@ require("lazy").setup({
 	-- Colors
 	{
 		"EdenEast/nightfox.nvim",
-		lazy = false,
+		event = "VeryLazy",
 		config = function()
 			-- Default options
 			require("nightfox").setup({
@@ -1542,7 +1602,7 @@ require("lazy").setup({
 	},
 	{
 		"rose-pine/neovim",
-		lazy = false,
+		lazy = "true",
 		config = function()
 			require("rose-pine").setup({
 				variant = "main", -- auto, main, moon, or dawn
@@ -1602,7 +1662,7 @@ require("lazy").setup({
 	},
 	{
 		"catppuccin/nvim",
-		lazy = false,
+		event = "VeryLazy",
 		name = "catppuccin",
 		priority = 1000,
 		config = function()
@@ -1655,7 +1715,7 @@ require("lazy").setup({
 	},
 	{
 		"rebelot/kanagawa.nvim",
-		lazy = false,
+		event = "VeryLazy",
 		priority = 1000,
 		config = function()
 			-- Default options:
