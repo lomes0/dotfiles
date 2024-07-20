@@ -57,7 +57,7 @@ function SetColorCatppuccin()
 	set_color_common(opts_cursor)
 
 	vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
-	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#303446", fg = "#303446" })
+	-- vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#303446", fg = "#303446" })
 	vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
 end
 
