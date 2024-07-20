@@ -171,12 +171,11 @@ require("lazy").setup({
 				})
 				lazygit:toggle()
 			end
-			vim.keymap.set(
-				"n",
-				"<lt>l",
-				Lazygit_toggle,
-				{ noremap = true, silent = true, desc = "Lazygit open" }
-			)
+			vim.keymap.set("n", "<lt>l", Lazygit_toggle, {
+				noremap = true,
+				silent = true,
+				desc = "Lazygit open",
+			})
 		end,
 	},
 	{
@@ -618,17 +617,6 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"folke/lazydev.nvim",
-		ft = "lua", -- only load on lua files
-		opts = {
-			library = {
-				-- See the configuration section for more details
-				-- Load luvit types when the `vim.uv` word is found
-				{ path = "luvit-meta/library", words = { "vim%.uv" } },
-			},
-		},
-	},
-	{
 		"mg979/vim-visual-multi",
 		lazy = true,
 		keys = { "<C-N>" },
@@ -965,6 +953,17 @@ require("lazy").setup({
 	},
 	-- Lsp
 	{
+		"folke/lazydev.nvim",
+		ft = "lua", -- only load on lua files
+		opts = {
+			library = {
+				-- See the configuration section for more details
+				-- Load luvit types when the `vim.uv` word is found
+				{ path = "luvit-meta/library", words = { "vim%.uv" } },
+			},
+		},
+	},
+	{
 		"rmagatti/goto-preview",
 		lazy = false,
 		dependencies = {
@@ -1007,48 +1006,31 @@ require("lazy").setup({
 			require("which-key").add({
 				{
 					"gpr",
-					function()
-						require("goto-preview").goto_preview_references()
-					end,
+					require("goto-preview").goto_preview_references,
 					noremap = true,
 					silent = true,
 					desc = "Lsp preview references",
 				},
 				{
 					"gpt",
-					function()
-						require("goto-preview").goto_preview_type_definition()
-					end,
+					require("goto-preview").goto_preview_type_definition,
 					noremap = true,
 					silent = true,
 					desc = "Lsp preview definitions",
 				},
 				{
 					"gpi",
-					function()
-						require("goto-preview").goto_preview_implementation()
-					end,
+					require("goto-preview").goto_preview_implementation,
 					noremap = true,
 					silent = true,
 					desc = "Lsp preview implementations",
 				},
 				{
-					"gpD",
-					function()
-						require("goto-preview").goto_preview_declaration()
-					end,
+					"gpd",
+					require("goto-preview").goto_preview_declaration,
 					noremap = true,
 					silent = true,
 					desc = "Lsp preview declaration",
-				},
-				{
-					"gP",
-					function()
-						require("goto-preview").close_all_win()
-					end,
-					noremap = true,
-					silent = true,
-					desc = "Lsp preview close_all_win",
 				},
 			})
 		end,
@@ -1198,16 +1180,16 @@ require("lazy").setup({
 						func = require("navigator.workspace").workspace_symbol_live,
 						desc = "Lsp workspace symbol fuzyy finder",
 					},
-					{
-						key = "gp",
-						func = require("navigator.definition").definition_preview,
-						desc = "Lsp definition preview",
-					},
-					{
-						key = "gP",
-						func = require("navigator.definition").type_definition_preview,
-						desc = "Lsp definition preview",
-					},
+					-- {
+					-- 	key = "gp",
+					-- 	func = require("navigator.definition").definition_preview,
+					-- 	desc = "Lsp definition preview",
+					-- },
+					-- {
+					-- 	key = "gP",
+					-- 	func = require("navigator.definition").type_definition_preview,
+					-- 	desc = "Lsp definition preview",
+					-- },
 					{
 						key = "gwa",
 						func = require("navigator.workspace").add_workspace_folder,
@@ -1377,7 +1359,7 @@ require("lazy").setup({
 			require("which-key").add({
 				{
 					"<lt>u",
-					require('dapui').toggle,
+					require("dapui").toggle,
 					mode = "n",
 					silent = true,
 					noremap = true,

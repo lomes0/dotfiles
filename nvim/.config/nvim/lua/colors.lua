@@ -89,14 +89,14 @@ function SetColorKan()
 
 	vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
 	vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
-	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none", fg = "#181616" })
+	-- vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none", fg = "#181616" })
 end
 
 function M.init()
-	vim.keymap.set("n", "<Leader>1", SetColorKan, { noremap = true })
-	vim.keymap.set("n", "<Leader>2", SetColorCatppuccin, { noremap = true })
-	vim.keymap.set("n", "<Leader>3", SetColorRose, { noremap = true })
-	vim.keymap.set("n", "<Leader>4", SetColorFox, { noremap = true })
+	vim.keymap.set("n", "<Leader>1", SetColorKan, { silent = true, noremap = true })
+	vim.keymap.set("n", "<Leader>2", SetColorCatppuccin, { silent = true, noremap = true })
+	vim.keymap.set("n", "<Leader>3", SetColorRose, { silent = true, noremap = true })
+	vim.keymap.set("n", "<Leader>4", SetColorFox, { silent = true, noremap = true })
 
 	vim.api.nvim_command("lua SetColorKan()")
 end

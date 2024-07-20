@@ -46,6 +46,7 @@ function Floatterm:toggle()
 			row = 0, --> Top of the window
 			col = math.ceil(vim.o.columns * 0.65), --> Far right; should add up to 1 with win_width
 		})
+		-- vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#303446", fg = "#303446" })
 
 		vim.api.nvim_set_option_value("winblend", 0, { win = self.win }) --> Semi transparent buffer
 		-- Buffer-local Keymaps
