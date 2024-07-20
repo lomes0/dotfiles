@@ -366,10 +366,20 @@ function _G.move_floating_window_right()
 	move_floating_window(vim.api.nvim_get_current_win(), 0, 4)
 end
 
-vim.cmd([[
-	autocmd TermOpen * setlocal nonumber norelativenumber
-	autocmd BufWinEnter,WinEnter,BufEnter,TermOpen,TermEnter term://* startinsert
-]])
+vim.api.nvim_create_autocmd("TermOpen", {
+	pattern = "*",
+	callback = function()
+		vim.opt_local.number = false
+		vim.opt_local.relativenumber = false
+	end,
+})
+
+vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "BufEnter", "TermOpen", "TermEnter" }, {
+	pattern = "term://*",
+	callback = function()
+		vim.cmd("startinsert")
+	end,
+})
 
 RegisterOpts(opts)
 RegisterKeymaps(keymaps)
