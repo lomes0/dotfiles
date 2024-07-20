@@ -16,15 +16,6 @@ local function set_color_cursor_hl(opts)
 	set_highlight("LspReferenceText", opts)
 end
 
--- function UnsetColorCursorHighlight()
--- 	local opts = { bg = "none", fg = "none", bold = false, italic = false }
--- 	set_highlight("LspReference", opts)
--- 	set_highlight("LspReferenceRead", opts)
--- 	set_highlight("LspReferenceWrite", opts)
--- 	set_highlight("LspReferenceText", opts)
--- end
--- vim.keymap.set("n", "<Leader>0", ":lua UnsetColorCursorHighlight()<cr>", { noremap = true })
-
 local function set_color_win_seperator()
 	-- Window separator Line
 	set_highlight("WinSeparator", { fg = "#6e6a86", sp = "none", bg = "none", bold = false, italic = false })
@@ -102,12 +93,12 @@ function SetColorKan()
 end
 
 function M.init()
-	vim.keymap.set("n", "<Leader>1", ":lua SetColorCatppuccin()<cr>", { noremap = true })
-	vim.keymap.set("n", "<Leader>2", ":lua SetColorRose()<cr>", { noremap = true })
-	vim.keymap.set("n", "<Leader>3", ":lua SetColorFox()<cr>", { noremap = true })
-	vim.keymap.set("n", "<Leader>4", ":lua SetColorKan()<cr>", { noremap = true })
+	vim.keymap.set("n", "<Leader>1", SetColorKan, { noremap = true })
+	vim.keymap.set("n", "<Leader>2", SetColorCatppuccin, { noremap = true })
+	vim.keymap.set("n", "<Leader>3", SetColorRose, { noremap = true })
+	vim.keymap.set("n", "<Leader>4", SetColorFox, { noremap = true })
 
-	vim.api.nvim_command("lua SetColorCatppuccin()")
+	vim.api.nvim_command("lua SetColorKan()")
 end
 
 return M

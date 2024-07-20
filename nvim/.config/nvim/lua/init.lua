@@ -55,7 +55,7 @@ local keymaps = {
 	{
 		"n",
 		"<lt>w",
-		':lua vim.api.nvim_command("cd " .. vim.api.nvim_buf_get_name(0):match("(.*/)"))<cr>',
+		function() vim.api.nvim_command("cd " .. vim.api.nvim_buf_get_name(0):match("(.*/)")) end,
 		{ noremap = true, silent = true, desc = "Editor change workdir" },
 	},
 	{
@@ -238,25 +238,33 @@ local keymaps = {
 	{
 		"n",
 		"<left>",
-		function() Move_floating_window(vim.api.nvim_get_current_win(), 0, -1 * move_floating_window_scale) end,
+		function()
+			Move_floating_window(vim.api.nvim_get_current_win(), 0, -1 * move_floating_window_scale)
+		end,
 		{ noremap = true, silent = true, desc = "Move floating window left" },
 	},
 	{
 		"n",
 		"<up>",
-		function() Move_floating_window(vim.api.nvim_get_current_win(), -1 * move_floating_window_scale, 0) end,
+		function()
+			Move_floating_window(vim.api.nvim_get_current_win(), -1 * move_floating_window_scale, 0)
+		end,
 		{ noremap = true, silent = true, desc = "Moving floating window up" },
 	},
 	{
 		"n",
 		"<down>",
-		function() Move_floating_window(vim.api.nvim_get_current_win(), move_floating_window_scale, 0) end,
+		function()
+			Move_floating_window(vim.api.nvim_get_current_win(), move_floating_window_scale, 0)
+		end,
 		{ noremap = true, silent = true, desc = "Moving floating window down" },
 	},
 	{
 		"n",
 		"<right>",
-		function() Move_floating_window(vim.api.nvim_get_current_win(), 0, move_floating_window_scale) end,
+		function()
+			Move_floating_window(vim.api.nvim_get_current_win(), 0, move_floating_window_scale)
+		end,
 		{ noremap = true, silent = true, desc = "Moving floating window right" },
 	},
 }

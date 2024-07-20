@@ -142,7 +142,7 @@ require("lazy").setup({
 				},
 			})
 			local Terminal = require("toggleterm.terminal").Terminal
-			function _Lazygit_toggle()
+			function Lazygit_toggle()
 				local buf_dir = vim.fn.expand("%:p:h")
 				local git_dir_cmd = "git -C " .. buf_dir .. " rev-parse --show-toplevel"
 				local git_dir = vim.fn.system(git_dir_cmd)
@@ -171,11 +171,11 @@ require("lazy").setup({
 				})
 				lazygit:toggle()
 			end
-			vim.api.nvim_set_keymap(
+			vim.keymap.set(
 				"n",
 				"<lt>l",
-				"<cmd>lua _Lazygit_toggle()<CR>",
-				{ noremap = true, silent = true, desc = "Lazygit" }
+				Lazygit_toggle,
+				{ noremap = true, silent = true, desc = "Lazygit open" }
 			)
 		end,
 	},
@@ -601,14 +601,15 @@ require("lazy").setup({
 			require("which-key").add({
 				{
 					"<lt>r",
-					":lua Format()<cr>",
+					Format,
+					mode = "n",
 					noremap = true,
 					silent = true,
 					desc = "Conform format",
 				},
 				{
 					"<lt>d",
-					":lua FormatDiff()<cr>",
+					FormatDiff,
 					noremap = true,
 					silent = true,
 					desc = "Conform format diff",
@@ -800,8 +801,8 @@ require("lazy").setup({
 					mode = "n",
 					noremap = true,
 					silent = true,
-					desc = "Zenmode toggle"
-				}
+					desc = "Zenmode toggle",
+				},
 			})
 		end,
 	},
@@ -1376,7 +1377,7 @@ require("lazy").setup({
 			require("which-key").add({
 				{
 					"<lt>u",
-					":lua require('dapui').toggle()<cr>",
+					require('dapui').toggle,
 					mode = "n",
 					silent = true,
 					noremap = true,
@@ -1460,7 +1461,7 @@ require("lazy").setup({
 					end,
 					noremap = true,
 					silent = true,
-					desc = "Telescope file",
+					desc = "Telescope find file",
 				},
 				{
 					"<lt>t",
