@@ -50,6 +50,33 @@ require("lazy").setup({
 		end,
 	},
 	{
+		"echasnovski/mini.indentscope",
+		version = "*",
+		event = "VeryLazy",
+		config = function()
+			require("mini.indentscope").setup({
+				draw = {
+					delay = 100,
+				},
+				mappings = {
+					-- Textobjects
+					object_scope = "ii",
+					object_scope_with_border = "ai",
+
+					-- Motions (jump to respective border line; if not present - body line)
+					goto_top = "[i",
+					goto_bottom = "]i",
+				},
+				options = {
+					border = "both",
+					indent_at_cursor = true,
+					try_as_border = false,
+				},
+				symbol = "╎",
+			})
+		end,
+	},
+	{
 		"echasnovski/mini.bracketed",
 		version = "*",
 		event = "VeryLazy",
@@ -419,13 +446,28 @@ require("lazy").setup({
 		config = function()
 			local configs = require("nvim-treesitter.configs")
 			configs.setup({
-				ensure_installed = { "c", "lua", "vim", "kdl", "make", "markdown", "toml", "latex" },
+				ensure_installed = {
+					"make",
+					"cmake",
+					"css",
+					"scss",
+					"kdl",
+					"markdown",
+					"toml",
+					"latex",
+					"cpp",
+					"lua",
+				},
 				sync_install = true,
 				highlight = { enable = true },
 				indent = { enable = true },
 			})
+			vim.filetype.add({
+				extension = {
+					mdx = "mdx",
+				},
+			})
 			vim.treesitter.language.register("markdown", "mdx")
-			vim.filetype.add({ extension = { mdx = "mdx" } })
 		end,
 	},
 	{
@@ -570,7 +612,7 @@ require("lazy").setup({
 					noremap = true,
 					silent = true,
 					desc = "Conform format diff",
-				}
+				},
 			})
 		end,
 	},
