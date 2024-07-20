@@ -54,7 +54,7 @@ local keymaps = {
 	},
 	{
 		"n",
-		"<leader>w",
+		"<lt>w",
 		':lua vim.api.nvim_command("cd " .. vim.api.nvim_buf_get_name(0):match("(.*/)"))<cr>',
 		{ noremap = true, silent = true, desc = "Editor change workdir" },
 	},
@@ -102,13 +102,13 @@ local keymaps = {
 	},
 	{
 		"n",
-		"<leader>v",
+		"<lt>v",
 		"<cmd>vsplit<cr><C-\\><C-n><C-w>l<cmd>enew<cr>",
 		{ noremap = true, silent = true, desc = "Pane split vertical" },
 	},
 	{
 		"n",
-		"<leader>s",
+		"<lt>s",
 		"<cmd>split<cr><C-\\><C-n><C-w>j<cmd>enew<cr>",
 		{ noremap = true, silent = true, desc = "Pane split horizontal" },
 	},

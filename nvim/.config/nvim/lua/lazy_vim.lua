@@ -113,7 +113,7 @@ require("lazy").setup({
 		"akinsho/toggleterm.nvim",
 		lazy = true,
 		cmd = { "Toggleterm" },
-		keys = { "<c-\\>", "<leader>l" },
+		keys = { "<c-\\>", "<lt>l" },
 		version = "*",
 		dependencies = {
 			"nvim-telescope/telescope.nvim",
@@ -173,7 +173,7 @@ require("lazy").setup({
 			end
 			vim.api.nvim_set_keymap(
 				"n",
-				"<leader>l",
+				"<lt>l",
 				"<cmd>lua _Lazygit_toggle()<CR>",
 				{ noremap = true, silent = true, desc = "Lazygit" }
 			)
@@ -553,7 +553,7 @@ require("lazy").setup({
 	{
 		"stevearc/conform.nvim",
 		lazy = true,
-		keys = { "<leader>r", "<leader>d" },
+		keys = { "<lt>r", "<lt>d" },
 		config = function()
 			require("conform").setup({
 				formatters_by_ft = {
@@ -600,14 +600,14 @@ require("lazy").setup({
 
 			require("which-key").add({
 				{
-					"<leader>r",
+					"<lt>r",
 					":lua Format()<cr>",
 					noremap = true,
 					silent = true,
 					desc = "Conform format",
 				},
 				{
-					"<leader>d",
+					"<lt>d",
 					":lua FormatDiff()<cr>",
 					noremap = true,
 					silent = true,
@@ -638,7 +638,7 @@ require("lazy").setup({
 		lazy = true,
 		cmd = { "Outline", "OutlineOpen" },
 		keys = { -- Example mapping to toggle outline
-			{ "<leader>o", "<cmd>Outline<CR>", desc = "Toggle outline" },
+			{ "<lt>o", "<cmd>Outline<CR>", desc = "Toggle outline" },
 		},
 		opts = {
 			-- Your setup opts here
@@ -653,17 +653,17 @@ require("lazy").setup({
 		},
 		keys = {
 			{
-				"<leader>x",
+				"<lt>x",
 				"<cmd>Trouble diagnostics toggle filter.buf=0 win.position=right<cr>",
 				desc = "Buffer Diagnostics (Trouble)",
 			},
 			{
-				"<leader>X",
+				"<lt>X",
 				"<cmd>Trouble diagnostics toggle win.position=right<cr>",
 				desc = "Diagnostics (Trouble)",
 			},
 			{
-				"<leader>i",
+				"<lt>i",
 				"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
 				desc = "LSP Definitions / references / ... (Trouble)",
 			},
@@ -758,7 +758,7 @@ require("lazy").setup({
 		},
 		lazy = true,
 		cmd = { "ZenMode" },
-		keys = { "<leader>z" },
+		keys = { "<lt>z" },
 		opts = {
 			window = {
 				backdrop = 0.95, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
@@ -795,7 +795,7 @@ require("lazy").setup({
 			require("zen-mode").setup({})
 			require("which-key").add({
 				{
-					"<leader>z",
+					"<lt>z",
 					require("zen-mode").toggle,
 					mode = "n",
 					noremap = true,
@@ -1223,17 +1223,17 @@ require("lazy").setup({
 						desc = "Lsp print workspace folders",
 					},
 					{
-						key = "<leader>cg",
+						key = "<lt>cg",
 						func = require("navigator.ctags").ctags_gen,
 						desc = "Ctags generate",
 					},
 					{
-						key = "<leader>cf",
+						key = "<lt>cf",
 						func = require("navigator.ctags").ctags_symbols,
 						desc = "Ctags symbols",
 					},
 					{
-						key = "<leader>cs",
+						key = "<lt>cs",
 						func = require("navigator.ctags").ctags,
 						desc = "Ctags search",
 					},
@@ -1281,7 +1281,7 @@ require("lazy").setup({
 					hover = {
 						enable = false,
 						keymap = {
-							["<leader>h"] = {
+							["<lt>h"] = {
 								go = function()
 									local w = vim.fn.expand("<cWORD>")
 									vim.cmd("GoDoc " .. w)
@@ -1375,7 +1375,7 @@ require("lazy").setup({
 			require("dapui").setup({})
 			require("which-key").add({
 				{
-					"<leader>u",
+					"<lt>u",
 					":lua require('dapui').toggle()<cr>",
 					mode = "n",
 					silent = true,
@@ -1439,7 +1439,7 @@ require("lazy").setup({
 
 			require("which-key").add({
 				{
-					"<leader>g",
+					"<lt>g",
 					function()
 						require("telescope.builtin").live_grep({
 							cwd = telescope_search_dir(),
@@ -1450,7 +1450,7 @@ require("lazy").setup({
 					desc = "Telescope grep",
 				},
 				{
-					"<leader>f",
+					"<lt>f",
 					function()
 						require("telescope.builtin").find_files({
 							cwd = telescope_search_dir(),
@@ -1463,7 +1463,7 @@ require("lazy").setup({
 					desc = "Telescope file",
 				},
 				{
-					"<leader>t",
+					"<lt>t",
 					require("telescope.builtin").treesitter,
 					noremap = true,
 					silent = true,
