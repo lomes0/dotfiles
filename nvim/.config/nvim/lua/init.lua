@@ -219,25 +219,25 @@ local keymaps = {
 	{
 		"n",
 		"<leader>q",
-		":lua _G.window_remove_active_buffer()<cr>",
+		":lua Window_remove_active_buffer()<cr>",
 		{ noremap = true, silent = true, desc = "Remove active buffer" },
 	},
 	{
 		"n",
 		"<C-d>",
-		":lua _G.window_remove_active_buffer()<cr>",
+		":lua Window_remove_active_buffer()<cr>",
 		{ noremap = true, silent = true, desc = "Remove active buffer" },
 	},
 	{
 		"t",
 		"<leader>q",
-		"<C-\\><C-n>:lua _G.window_remove_active_buffer()<cr>",
+		"<C-\\><C-n>:lua Window_remove_active_buffer()<cr>",
 		{ noremap = true, silent = true, desc = "Remove active buffer" },
 	},
 	{
 		"t",
 		"<C-d>",
-		"<C-\\><C-n>:lua _G.window_remove_active_buffer()<cr>",
+		"<C-\\><C-n>:lua Window_remove_active_buffer()<cr>",
 		{ noremap = true, silent = true, desc = "Remove active buffer" },
 	},
 	{
@@ -249,25 +249,25 @@ local keymaps = {
 	{
 		"n",
 		"<left>",
-		"<cmd>lua _G.move_floating_window_left()<cr>",
+		"<cmd>lua Move_floating_window_left()<cr>",
 		{ noremap = true, silent = true, desc = "Move floating window left" },
 	},
 	{
 		"n",
 		"<up>",
-		"<cmd>lua _G.move_floating_window_up()<cr>",
+		"<cmd>lua Move_floating_window_up()<cr>",
 		{ noremap = true, silent = true, desc = "Moving floating window up" },
 	},
 	{
 		"n",
 		"<down>",
-		"<cmd>lua _G.move_floating_window_down()<cr>",
+		"<cmd>lua Move_floating_window_down()<cr>",
 		{ noremap = true, silent = true, desc = "Moving floating window down" },
 	},
 	{
 		"n",
 		"<right>",
-		"<cmd>lua _G.move_floating_window_right()<cr>",
+		"<cmd>lua Move_floating_window_right()<cr>",
 		{ noremap = true, silent = true, desc = "Moving floating window right" },
 	},
 }
@@ -289,7 +289,7 @@ function Terminal_open()
 	vim.api.nvim_set_option_value("scrolloff", 0, { scope = "local" })
 end
 
-function _G.buffer_remove(bufnr)
+function Buffer_remove(bufnr)
 	bufnr = bufnr or vim.api.nvim_get_current_buf()
 	local startwin = vim.api.nvim_get_current_win()
 
@@ -312,7 +312,7 @@ function _G.buffer_remove(bufnr)
 	vim.api.nvim_set_current_win(startwin)
 end
 
-function _G.window_remove_active_buffer()
+function Window_remove_active_buffer()
 	local bufnr = vim.api.nvim_get_current_buf()
 	local bufwin = vim.api.nvim_get_current_win()
 	local buftype = vim.api.nvim_get_option_value("buftype", { buf = bufnr })
@@ -336,34 +336,34 @@ function _G.window_remove_active_buffer()
 	end
 
 	if can_remove then
-		_G.buffer_remove(bufnr)
+		Buffer_remove(bufnr)
 	else
 		vim.api.nvim_set_current_win(bufwin)
 		vim.cmd("enew")
 	end
 end
 
-function _G.move_floating_window(win_id, a, b)
+function Move_floating_window(win_id, a, b)
 	local config = vim.api.nvim_win_get_config(win_id)
 	config.row = config.row + a
 	config.col = config.col + b
 	vim.api.nvim_win_set_config(win_id, config)
 end
 
-function _G.move_floating_window_left()
-	move_floating_window(vim.api.nvim_get_current_win(), 0, -4)
+function Move_floating_window_left()
+	Move_floating_window(vim.api.nvim_get_current_win(), 0, -4)
 end
 
-function _G.move_floating_window_down()
-	move_floating_window(vim.api.nvim_get_current_win(), 4, 0)
+function Move_floating_window_down()
+	Move_floating_window(vim.api.nvim_get_current_win(), 4, 0)
 end
 
-function _G.move_floating_window_up()
-	move_floating_window(vim.api.nvim_get_current_win(), -4, 0)
+function Move_floating_window_up()
+	Move_floating_window(vim.api.nvim_get_current_win(), -4, 0)
 end
 
-function _G.move_floating_window_right()
-	move_floating_window(vim.api.nvim_get_current_win(), 0, 4)
+function Move_floating_window_right()
+	Move_floating_window(vim.api.nvim_get_current_win(), 0, 4)
 end
 
 vim.api.nvim_create_autocmd("TermOpen", {
