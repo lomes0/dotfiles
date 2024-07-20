@@ -1038,7 +1038,6 @@ require("lazy").setup({
 			})
 
 			lsp.on_attach(function(_, bufnr)
-				local opts = { buffer = bufnr, noremap = true }
 				require("which-key").add({
 					{
 						"gd",
@@ -1059,26 +1058,6 @@ require("lazy").setup({
 						noremap = true,
 						silent = true,
 						desc = "Lsp hover",
-					},
-					{
-						"[d",
-						function()
-							vim.lsp.buf.goto_next()
-						end,
-						buffer = bufnr,
-						noremap = true,
-						silent = true,
-						desc = "Lsp goto next",
-					},
-					{
-						"]d",
-						function()
-							vim.lsp.buf.goto_prev()
-						end,
-						buffer = bufnr,
-						noremap = true,
-						silent = true,
-						desc = "Lsp goto prev",
 					},
 					{
 						"gca",
