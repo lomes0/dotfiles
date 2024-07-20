@@ -59,6 +59,7 @@ function SetColorRose()
 	vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
 	vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
 	vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
+	vim.api.nvim_set_hl(0, "Folded", { bg = "#51576d", fg = "#bbaaaa" })
 end
 
 function SetColorFox()
