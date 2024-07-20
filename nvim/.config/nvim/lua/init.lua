@@ -1,6 +1,3 @@
---
--- settings
---
 vim.g.mapleader = "<"
 vim.o.autowriteall = true
 vim.o.guifont = "Hack"

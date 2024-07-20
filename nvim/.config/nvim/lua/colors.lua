@@ -1,30 +1,31 @@
 local M = {}
 
 -- Define a function to simplify setting highlight groups
-function set_highlight(group, properties)
+local function set_highlight(group, properties)
 	vim.api.nvim_set_hl(0, group, properties)
 end
 
-function SetColorVisual()
+local function set_color_visual()
 	set_highlight("Visual", { bg = "#51576d", bold = false, italic = false, fg = "none" })
 end
 
-function SetColorCursorHighlight(opts)
+local function set_color_cursor_hl(opts)
 	set_highlight("LspReference", opts)
 	set_highlight("LspReferenceRead", opts)
 	set_highlight("LspReferenceWrite", opts)
 	set_highlight("LspReferenceText", opts)
 end
 
-function UnsetColorCursorHighlight()
-	local opts = { bg = "none", fg = "none", bold = false, italic = false }
-	set_highlight("LspReference", opts)
-	set_highlight("LspReferenceRead", opts)
-	set_highlight("LspReferenceWrite", opts)
-	set_highlight("LspReferenceText", opts)
-end
+-- function UnsetColorCursorHighlight()
+-- 	local opts = { bg = "none", fg = "none", bold = false, italic = false }
+-- 	set_highlight("LspReference", opts)
+-- 	set_highlight("LspReferenceRead", opts)
+-- 	set_highlight("LspReferenceWrite", opts)
+-- 	set_highlight("LspReferenceText", opts)
+-- end
+-- vim.keymap.set("n", "<Leader>0", ":lua UnsetColorCursorHighlight()<cr>", { noremap = true })
 
-function SetColorWinSeparator()
+local function set_color_win_seperator()
 	-- Window separator Line
 	set_highlight("WinSeparator", { fg = "#6e6a86", sp = "none", bg = "none", bold = false, italic = false })
 	vim.api.nvim_create_autocmd({ "WinEnter" }, {
@@ -35,7 +36,7 @@ function SetColorWinSeparator()
 	})
 end
 
-function SetColorTreesitterContext()
+local function set_color_ts_context()
 	-- Treesitter
 	set_highlight("TreesitterContext", { bg = "#51576d", bold = false, italic = true })
 	set_highlight("TreesitterContextLineNumber", { bg = "#51576d", fg = "white", bold = false, italic = true })
@@ -43,17 +44,17 @@ function SetColorTreesitterContext()
 	set_highlight("TreesitterContextBottom", { bold = false, italic = false })
 end
 
-function SetColorsCommon(opts_cursor)
-	SetColorWinSeparator()
-	SetColorTreesitterContext()
-	SetColorCursorHighlight(opts_cursor)
-	SetColorVisual()
+local function set_color_common(opts_cursor)
+	set_color_win_seperator()
+	set_color_ts_context()
+	set_color_cursor_hl(opts_cursor)
+	set_color_visual()
 end
 
 function SetColorCatppuccin()
 	local opts_cursor = { fg = "#d6ccca", bold = false, italic = false, bg = "none" }
 	vim.api.nvim_command("colorscheme catppuccin-frappe")
-	SetColorsCommon(opts_cursor)
+	set_color_common(opts_cursor)
 
 	vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
 	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#303446", fg = "#303446" })
@@ -63,7 +64,7 @@ end
 function SetColorRose()
 	local opts_cursor = { fg = "#d6ccca", bold = false, italic = false, bg = "none" }
 	vim.api.nvim_command("colorscheme rose-pine-moon")
-	SetColorsCommon(opts_cursor)
+	set_color_common(opts_cursor)
 	vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
 	vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
 	vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
@@ -72,7 +73,7 @@ end
 function SetColorFox()
 	local opts_cursor = { fg = "#d6ccca", bold = false, italic = false, bg = "none" }
 	vim.api.nvim_command("colorscheme duskfox")
-	SetColorsCommon(opts_cursor)
+	set_color_common(opts_cursor)
 end
 
 function SetColorKan()
@@ -80,7 +81,7 @@ function SetColorKan()
 	local opts_noice = { fg = "#b1c9b8", bg = "none", bold = false, italic = false }
 	local opts_noice_search = { fg = "#ffd675", bg = "none", bold = false, italic = false }
 	vim.api.nvim_command("colorscheme kanagawa-dragon")
-	SetColorsCommon(opts_cursor)
+	set_color_common(opts_cursor)
 
 	--set_highlight('LinNr', { fg = 'none', bg = 'none', bold = false, italic = false })
 	set_highlight("SignColumn", { fg = "none", bg = "none", bold = false, italic = false })
@@ -105,7 +106,6 @@ function M.init()
 	vim.keymap.set("n", "<Leader>2", ":lua SetColorRose()<cr>", { noremap = true })
 	vim.keymap.set("n", "<Leader>3", ":lua SetColorFox()<cr>", { noremap = true })
 	vim.keymap.set("n", "<Leader>4", ":lua SetColorKan()<cr>", { noremap = true })
-	vim.keymap.set("n", "<Leader>0", ":lua UnsetColorCursorHighlight()<cr>", { noremap = true })
 
 	vim.api.nvim_command("lua SetColorCatppuccin()")
 end
