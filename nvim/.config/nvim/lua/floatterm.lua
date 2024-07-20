@@ -1,24 +1,43 @@
 local M = {}
 
-M.floatterm_loaded = false
-M.floatterm_buf = nil
-M.floatterm_win = nil
+M.Terminals = {}
 
-function Launch_floatterm()
-	if not M.floatterm_loaded or not vim.api.nvim_win_is_valid(M.floatterm_win) then
-		if not M.floatterm_buf or not vim.api.nvim_buf_is_valid(M.floatterm_buf) then
+Floatterm = {}
+Floatterm.__index = Floatterm
+
+function Floatterm:new()
+	local term = {
+		loaded = nil,
+		buf = nil,
+		win = nil,
+		-- pos = {
+		-- 	x = nil,
+		-- 	y = nil,
+		-- 	width = nil,
+		-- 	height = nil,
+		-- }
+	}
+
+	setmetatable(term, Floatterm)
+
+	return term
+end
+
+function Floatterm:toggle()
+	if not self.loaded or not vim.api.nvim_win_is_valid(self.win) then
+		if not self.buf or not vim.api.nvim_buf_is_valid(self.buf) then
 			-- Create a buffer
-			M.floatterm_buf = vim.api.nvim_create_buf(false, true)
-			vim.api.nvim_set_option_value("bufhidden", "hide", { buf = M.floatterm_buf })
-			vim.api.nvim_set_option_value("filetype", "terminal", { buf = M.floatterm_buf })
-			--vim.api.nvim_buf_set_lines(M.floatterm_buf, 0, 1, false, {
-			--  "# Notepad",
-			--  "",
-			--  "> Notepad clears when the current Neovim session closes",
-			--})
+			self.buf = vim.api.nvim_create_buf(false, true)
+			vim.api.nvim_set_option_value("bufhidden", "hide", { buf = self.buf })
+			vim.api.nvim_set_option_value("filetype", "terminal", { buf = self.buf })
+			-- vim.api.nvim_buf_set_lines(self.buf, 0, 1, false, {
+			--   "# Notepad",
+			--   "",
+			--   "> Notepad clears when the current Neovim session closes",
+			-- })
 		end
 		-- Create a window
-		M.floatterm_win = vim.api.nvim_open_win(M.floatterm_buf, true, {
+		self.win = vim.api.nvim_open_win(self.buf, true, {
 			border = "rounded",
 			relative = "editor",
 			style = "minimal",
@@ -28,9 +47,9 @@ function Launch_floatterm()
 			col = math.ceil(vim.o.columns * 0.65), --> Far right; should add up to 1 with win_width
 		})
 
-		vim.api.nvim_set_option_value("winblend", 0, { win = M.floatterm_win }) --> Semi transparent buffer
+		vim.api.nvim_set_option_value("winblend", 0, { win = self.win }) --> Semi transparent buffer
 		-- Buffer-local Keymaps
-		local keymaps_opts = { silent = true, buffer = M.floatterm_buf }
+		local keymaps_opts = { silent = true, buffer = self.buf }
 		vim.keymap.set("n", "<ESC>", function()
 			Launch_floatterm()
 		end, keymaps_opts)
@@ -38,13 +57,22 @@ function Launch_floatterm()
 			Launch_floatterm()
 		end, keymaps_opts)
 	else
-		vim.api.nvim_win_hide(M.floatterm_win)
+		vim.api.nvim_win_hide(self.win)
 	end
-	M.floatterm_loaded = not M.floatterm_loaded
+	self.loaded = not self.loaded
+end
+
+function Launch_floatterm(idx)
+	M.Terminals[idx]:toggle()
 end
 
 function M.init()
-	vim.api.nvim_set_keymap("n", ";1", ":lua Launch_floatterm()<cr>", { desc = "Toggle Notepad" })
+	for i = 1, 4 do
+		table.insert(M.Terminals, Floatterm:new())
+		vim.keymap.set("n", ";" .. i, function()
+			Launch_floatterm(i)
+		end, { desc = "Toggle floatterm " .. i })
+	end
 end
 
 return M
