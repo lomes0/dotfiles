@@ -1,5 +1,3 @@
-local Keymaps = require("keymaps")
-
 require("lazy").setup({
 	-- Editor
 	{
@@ -513,12 +511,13 @@ require("lazy").setup({
 	{
 		"stevearc/conform.nvim",
 		lazy = true,
-		cmd = { "Format", "FormatDiff" },
+		keys = { "<leader>r", "<leader>d" },
 		config = function()
 			require("conform").setup({
 				formatters_by_ft = {
 					lua = { "stylua" },
 					javascript = { { "prettierd", "prettier" } },
+					rust = { "rustfmt" },
 					c = { "clang-format" },
 					cpp = { "clang-format" },
 				},
@@ -557,8 +556,22 @@ require("lazy").setup({
 				end
 			end
 
-			vim.api.nvim_create_user_command("Format", ":lua Format()", {})
-			vim.api.nvim_create_user_command("FormatDiff", ":lua FormatDiff()", {})
+			require("which-key").add({
+				{
+					"<leader>r",
+					":lua Format()<cr>",
+					noremap = true,
+					silent = true,
+					desc = "Conform format",
+				},
+				{
+					"<leader>d",
+					":lua FormatDiff()<cr>",
+					noremap = true,
+					silent = true,
+					desc = "Conform format diff",
+				}
+			})
 		end,
 	},
 	{
@@ -1112,7 +1125,7 @@ require("lazy").setup({
 				default_mapping = false, -- set to false if you will remap every key or if you using old version of nvim-
 				keymaps = {
 					{
-						key = "<Leader>rn",
+						key = "grn",
 						func = require("navigator.rename").rename,
 						desc = "Lsp rename",
 					},
@@ -1137,19 +1150,34 @@ require("lazy").setup({
 						desc = "Lsp definition preview",
 					},
 					{
-						key = "<leader>wa",
+						key = "gwa",
 						func = require("navigator.workspace").add_workspace_folder,
 						desc = "Lsp add workspace folder",
 					},
 					{
-						key = "<leader>wr",
+						key = "gwr",
 						func = require("navigator.workspace").remove_workspace_folder,
 						desc = "Lsp remove workspace folder",
 					},
 					{
-						key = "<leader>wl",
+						key = "gwl",
 						func = require("navigator.workspace").list_workspace_folders,
 						desc = "Lsp print workspace folders",
+					},
+					{
+						key = "<leader>cg",
+						func = require("navigator.ctags").ctags_gen,
+						desc = "Ctags generate",
+					},
+					{
+						key = "<leader>cf",
+						func = require("navigator.ctags").ctags_symbols,
+						desc = "Ctags symbols",
+					},
+					{
+						key = "<leader>cs",
+						func = require("navigator.ctags").ctags,
+						desc = "Ctags search",
 					},
 				},
 				treesitter_analysis = true, -- treesitter variable context
@@ -1344,7 +1372,7 @@ require("lazy").setup({
 				-- 	desc = "Telescope grep <dir>",
 				-- },
 				{
-					";g",
+					"<leader>g",
 					tl.live_grep,
 					noremap = true,
 					silent = true,
@@ -1360,7 +1388,7 @@ require("lazy").setup({
 				-- 	desc = "Telescope file <dir>",
 				-- },
 				{
-					";f",
+					"<leader>f",
 					function()
 						tl.find_files({ cwd = "." })
 					end,
@@ -1516,17 +1544,6 @@ require("lazy").setup({
 							silent = true,
 							buffer = bufnr,
 							desc = "Gitsigns diffthis",
-						},
-						{
-							"sD",
-							function()
-								gitsigns.diffthis("~")
-							end,
-							mode = "n",
-							noremap = true,
-							silent = true,
-							buffer = bufnr,
-							desc = "Gitsigns diffthis ~",
 						},
 					})
 				end,
@@ -1743,51 +1760,3 @@ require("lazy").setup({
 		end,
 	},
 })
-
---	mode 	key 	        function
---  i 	    <m-k> 	        signature help
---  n 	    <c-k> 	        signature help
---  n 	    gD 	            declaration
---  n 	    gt 	            type definition
---  n 	    <Leader>gt 	    treesitter document symbol
---  n 	    <Leader>gT 	    treesitter symbol for all open buffers
---  n 	    <Leader> ct 	ctags symbol search
---  n 	    <Leader> cg 	ctags symbol generate
--- {
--- 	"mbbill/undotree",
--- 	lazy = true,
--- 	cmd = { "UndotreeShow", "UndotreeToggle" },
--- 	config = function() end,
--- },
--- {
--- 	"lervag/vimtex",
--- 	lazy = true,
--- 	ft = { "tex" },
--- 	config = function()
--- 		vim.cmd([[let g:vimtex_view_general_viewer = 'okular']])
--- 	end,
--- },
--- {
--- 	"epwalsh/obsidian.nvim",
--- 	lazy = true,
--- 	version = "*",
--- 	ft = { "markdown", "mdx" },
--- 	dependencies = {
--- 		-- Required.
--- 		"nvim-lua/plenary.nvim",
--- 	},
--- 	config = function()
--- 		require("obsidian").setup({
--- 			workspaces = {
--- 				{
--- 					name = "obsidian",
--- 					path = "~/var/obs",
--- 				},
--- 				{
--- 					name = "home",
--- 					path = "~/",
--- 				},
--- 			},
--- 		})
--- 	end,
--- },

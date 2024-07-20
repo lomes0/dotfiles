@@ -1,6 +1,3 @@
-local folderOfThisFile = (...):match("(.-)[^%.]+$")
-local Keymaps = require("keymaps")
-
 --
 -- settings
 --
@@ -8,7 +5,7 @@ vim.g.mapleader = "<"
 vim.o.autowriteall = true
 vim.o.guifont = "Hack"
 
-local opt_settings = {
+local opts = {
 	{ "tabstop", 4 },
 	{ "softtabstop", 4 },
 	{ "shiftwidth", 4 },
@@ -44,7 +41,7 @@ local opt_settings = {
 	{ "undodir", os.getenv("HOME") .. "/.vim/undodir" },
 }
 
-local maps = {
+local keymaps = {
 	{
 		"n",
 		"<C-_>",
@@ -59,21 +56,27 @@ local maps = {
 	},
 	{
 		"n",
-		"<leader>a",
+		"<leader>w",
 		':lua vim.api.nvim_command("cd " .. vim.api.nvim_buf_get_name(0):match("(.*/)"))<cr>',
-		{ noremap = true, silent = true, desc = "change workdir" },
+		{ noremap = true, silent = true, desc = "Editor change workdir" },
+	},
+	{
+		"n",
+		"<C-a>",
+		"gg<S-v>G",
+		{ noremap = true, silent = true, desc = "Editor select all" },
 	},
 	{
 		"v",
 		"J",
 		":m '>+1<cr>gv=gv",
-		{ noremap = true, silent = true, desc = "move lines up" },
+		{ noremap = true, silent = true, desc = "Editor move lines up" },
 	},
 	{
 		"v",
 		"K",
 		":m '<-2<cr>gv=gv",
-		{ noremap = true, silent = true, desc = "move lines down" },
+		{ noremap = true, silent = true, desc = "Editor move lines down" },
 	},
 	{
 		"v",
@@ -269,7 +272,17 @@ local maps = {
 	},
 }
 
-Keymaps.Register(maps)
+function RegisterOpts(opts_array)
+	for _, e in ipairs(opts_array) do
+		vim.api.nvim_set_option_value(e[1], e[2], {})
+	end
+end
+
+function RegisterKeymaps(maps_array)
+	for _, e in ipairs(maps_array) do
+		vim.keymap.set(e[1], e[2], e[3], e[4])
+	end
+end
 
 function Terminal_open()
 	vim.api.nvim_command("term")
@@ -353,271 +366,15 @@ function _G.move_floating_window_right()
 	move_floating_window(vim.api.nvim_get_current_win(), 0, 4)
 end
 
-for _, e in ipairs(opt_settings) do
-	vim.api.nvim_set_option_value(e[1], e[2], {})
-end
-
 vim.cmd([[
 	autocmd TermOpen * setlocal nonumber norelativenumber
 	autocmd BufWinEnter,WinEnter,BufEnter,TermOpen,TermEnter term://* startinsert
 ]])
 
-require(folderOfThisFile .. "lazy_vim")
+RegisterOpts(opts)
+RegisterKeymaps(keymaps)
 
--------------------
--- Colors
--------------------
--- Define a function to simplify setting highlight groups
-local function set_highlight(group, properties)
-	vim.api.nvim_set_hl(0, group, properties)
-end
-
-local function SetColorVisual()
-	set_highlight("Visual", { bg = "#51576d", bold = false, italic = false, fg = "none" })
-end
-
-local function SetColorCursorHighlight(opts)
-	set_highlight("LspReference", opts)
-	set_highlight("LspReferenceRead", opts)
-	set_highlight("LspReferenceWrite", opts)
-	set_highlight("LspReferenceText", opts)
-end
-
-function UnsetColorCursorHighlight()
-	local opts = { bg = "none", fg = "none", bold = false, italic = false }
-	set_highlight("LspReference", opts)
-	set_highlight("LspReferenceRead", opts)
-	set_highlight("LspReferenceWrite", opts)
-	set_highlight("LspReferenceText", opts)
-end
-
-local function SetColorWinSeparator()
-	-- Window separator Line
-	set_highlight("WinSeparator", { fg = "#6e6a86", sp = "none", bg = "none", bold = false, italic = false })
-	vim.api.nvim_create_autocmd({ "WinEnter" }, {
-		callback = function()
-			vim.opt.laststatus = 3
-		end,
-		pattern = "*",
-	})
-end
-
-local function SetColorTreesitterContext()
-	-- Treesitter
-	set_highlight("TreesitterContext", { bg = "#51576d", bold = false, italic = true })
-	set_highlight("TreesitterContextLineNumber", { bg = "#51576d", fg = "white", bold = false, italic = true })
-	set_highlight("TreesitterContextLineNumberBottom", { bg = "#51576d", bold = false, italic = true })
-	set_highlight("TreesitterContextBottom", { bold = false, italic = false })
-end
-
-function SetColorsCommon(opts_cursor)
-	SetColorWinSeparator()
-	SetColorTreesitterContext()
-	SetColorCursorHighlight(opts_cursor)
-	SetColorVisual()
-end
-
-function SetColorCatppuccin()
-	local opts_cursor = { fg = "#d6ccca", bold = false, italic = false, bg = "none" }
-	vim.api.nvim_command("colorscheme catppuccin-frappe")
-	SetColorsCommon(opts_cursor)
-
-	vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
-	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#303446", fg = "#303446" })
-	vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
-end
-
-function SetColorRose()
-	local opts_cursor = { fg = "#d6ccca", bold = false, italic = false, bg = "none" }
-	vim.api.nvim_command("colorscheme rose-pine-moon")
-	SetColorsCommon(opts_cursor)
-	vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
-	vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
-	vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
-end
-
-function SetColorFox()
-	local opts_cursor = { fg = "#d6ccca", bold = false, italic = false, bg = "none" }
-	vim.api.nvim_command("colorscheme duskfox")
-	SetColorsCommon(opts_cursor)
-end
-
-function SetColorKan()
-	local opts_cursor = { fg = "", bold = false, italic = false, bg = "#51576d" }
-	local opts_noice = { fg = "#b1c9b8", bg = "none", bold = false, italic = false }
-	local opts_noice_search = { fg = "#ffd675", bg = "none", bold = false, italic = false }
-	vim.api.nvim_command("colorscheme kanagawa-dragon")
-	SetColorsCommon(opts_cursor)
-
-	--set_highlight('LinNr', { fg = 'none', bg = 'none', bold = false, italic = false })
-	set_highlight("SignColumn", { fg = "none", bg = "none", bold = false, italic = false })
-	set_highlight("GitSignsAdd", { bg = "none", fg = "#76946a", bold = false, italic = false })
-	set_highlight("GitSignsChange", { bg = "none", fg = "#fca561", bold = false, italic = false })
-	set_highlight("GitSignsDelete", { bg = "none", fg = "#c34043", bold = false, italic = false })
-	set_highlight("LineNr", { fg = "#808080", bg = "none", bold = false, italic = false })
-
-	vim.api.nvim_set_hl(0, "NoiceCmdlinePopupBorderSearch", opts_noice_search)
-	vim.api.nvim_set_hl(0, "NoiceCmdlineIconSearch", opts_noice_search)
-	vim.api.nvim_set_hl(0, "NoiceCmdline", opts_noice)
-	vim.api.nvim_set_hl(0, "NoiceCmdlineIcon", opts_noice)
-	vim.api.nvim_set_hl(0, "NoiceCmdlinePopupBorder", opts_noice)
-
-	vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
-	vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
-	vim.api.nvim_set_hl(0, "FloatBorder", { bg = "none", fg = "#181616" })
-end
-
-vim.keymap.set("n", "<Leader>1", ":lua SetColorCatppuccin()<cr>", { noremap = true })
-vim.keymap.set("n", "<Leader>2", ":lua SetColorRose()<cr>", { noremap = true })
-vim.keymap.set("n", "<Leader>3", ":lua SetColorFox()<cr>", { noremap = true })
-vim.keymap.set("n", "<Leader>4", ":lua SetColorKan()<cr>", { noremap = true })
-vim.keymap.set("n", "<Leader>0", ":lua UnsetColorCursorHighlight()<cr>", { noremap = true })
-
-vim.api.nvim_command("lua SetColorKan()")
-
-_G.floatterm_loaded = false
-_G.floatterm_buf, _G.floatterm_win = nil, nil
-
-function Launch_floatterm()
-	if not _G.floatterm_loaded or not vim.api.nvim_win_is_valid(_G.floatterm_win) then
-		if not _G.floatterm_buf or not vim.api.nvim_buf_is_valid(_G.floatterm_buf) then
-			-- Create a buffer
-			_G.floatterm_buf = vim.api.nvim_create_buf(false, true)
-			vim.api.nvim_set_option_value("bufhidden", "hide", { buf = _G.floatterm_buf })
-			vim.api.nvim_set_option_value("filetype", "terminal", { buf = _G.floatterm_buf })
-			--vim.api.nvim_buf_set_lines(_G.floatterm_buf, 0, 1, false, {
-			--  "# Notepad",
-			--  "",
-			--  "> Notepad clears when the current Neovim session closes",
-			--})
-		end
-		-- Create a window
-		_G.floatterm_win = vim.api.nvim_open_win(_G.floatterm_buf, true, {
-			border = "rounded",
-			relative = "editor",
-			style = "minimal",
-			height = math.ceil(vim.o.lines * 0.35),
-			width = math.ceil(vim.o.columns * 0.35),
-			row = 0, --> Top of the window
-			col = math.ceil(vim.o.columns * 0.65), --> Far right; should add up to 1 with win_width
-		})
-
-		vim.api.nvim_set_option_value("winblend", 0, { win = _G.floatterm_win }) --> Semi transparent buffer
-		-- Buffer-local Keymaps
-		local keymaps_opts = { silent = true, buffer = _G.floatterm_buf }
-		vim.keymap.set("n", "<ESC>", function()
-			Launch_floatterm()
-		end, keymaps_opts)
-		vim.keymap.set("n", "q", function()
-			Launch_floatterm()
-		end, keymaps_opts)
-	else
-		vim.api.nvim_win_hide(_G.floatterm_win)
-	end
-	_G.floatterm_loaded = not _G.floatterm_loaded
-end
-
-vim.api.nvim_set_keymap("n", "<leader>w", ":lua Launch_floatterm()<cr>", { desc = "Toggle Notepad" })
-
---
--- folding
---
--- https://essais.co/better-folding-in-neovim/
-
-vim.opt.foldmethod = "expr"
-vim.opt.foldenable = false
-vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-vim.opt.foldlevel = 99
-
-function _G.custom_foldtext()
-	local fs = vim.v.foldstart
-
-	while vim.fn.getline(fs):match("^%s*$") do
-		fs = vim.fn.nextnonblank(fs + 1)
-	end
-
-	local line
-	if fs > vim.v.foldend then
-		line = vim.fn.getline(vim.v.foldstart)
-	else
-		line = vim.fn.getline(fs):gsub("\t", string.rep(" ", vim.o.tabstop))
-	end
-
-	local foldSize = 1 + vim.v.foldend - vim.v.foldstart
-	local foldSizeStr = " " .. foldSize .. " lines "
-	local expansionString = string.rep(" ", vim.api.nvim_win_get_width(0) - #line - #foldSizeStr - 4)
-	return line .. expansionString .. foldSizeStr
-end
-
-vim.opt.foldtext = "v:lua.custom_foldtext()"
-
--- vim.cmd([[
--- function! EnableFolding()
--- 	set nofoldenable
--- 	set foldlevel=99
--- 	set foldnestmax=4
--- 	set fillchars=fold:\
--- 	set foldtext=CustomFoldText()
--- 	setlocal foldmethod=expr
--- 	setlocal foldexpr=GetPotionFold(v:lnum)
--- endfunction
---
--- if !&diff
--- 	autocmd VimEnter * call EnableFolding()
--- endif
---
--- function! GetPotionFold(lnum)
--- 	if getline(a:lnum) =~? '\v^\s*$'
--- 		return '-1'
--- 	endif
---
--- 	let this_indent = IndentLevel(a:lnum)
--- 	let next_indent = IndentLevel(NextNonBlankLine(a:lnum))
---
--- 	if next_indent == this_indent
--- 		return this_indent
--- 	elseif next_indent < this_indent
--- 		return this_indent
--- 	elseif next_indent > this_indent
--- 		return '>' . next_indent
--- 	endif
--- endfunction
---
--- function! IndentLevel(lnum)
--- 	return indent(a:lnum) / &shiftwidth
--- endfunction
---
--- function! NextNonBlankLine(lnum)
--- 	let numlines = line('$')
--- 	let current = a:lnum + 1
---
--- 	while current <= numlines
--- 		if getline(current) =~? '\v\S'
--- 			return current
--- 		endif
---
--- 		let current += 1
--- 	endwhile
---
--- 	return -2
--- endfunction
---
--- function! CustomFoldText()
--- 	" get first non-blank line
--- 	let fs = v:foldstart
---
--- 	while getline(fs) =~ '^\s*$' | let fs = nextnonblank(fs + 1)
--- 	endwhile
---
--- 	if fs > v:foldend
--- 		let line = getline(v:foldstart)
--- 	else
--- 		let line = substitute(getline(fs), '\t', repeat(' ', &tabstop), 'g')
--- 	endif
---
--- 	let foldSize = 1 + v:foldend - v:foldstart
--- 	let foldSizeStr = " " . foldSize . " lines "
--- 	let expansionString = repeat(" ", winwidth(0)-len(line)-len(foldSizeStr)-4)
--- 	return line . expansionString . foldSizeStr
--- endfunction
--- ]])
+require("lazy_vim")
+require("colors").init()
+require("folding").init()
+require("floatterm").init()
