@@ -4,6 +4,7 @@
 vim.g.mapleader = "<"
 vim.o.autowriteall = true
 vim.o.guifont = "Hack"
+local move_floating_window_scale = 4
 
 local opts = {
 	{ "tabstop", 4 },
@@ -189,8 +190,11 @@ local keymaps = {
 	{
 		"n",
 		"tt",
-		":lua Terminal_open()<cr>",
-		{ noremap = true, silent = true, desc = "Terminal" },
+		function()
+			vim.api.nvim_command("term")
+			vim.api.nvim_set_option_value("scrolloff", 0, { scope = "local" })
+		end,
+		{ noremap = true, silent = true, desc = "Terminal open" },
 	},
 	{
 		"t",
@@ -218,26 +222,14 @@ local keymaps = {
 	},
 	{
 		"n",
-		"<leader>q",
-		":lua Window_remove_active_buffer()<cr>",
-		{ noremap = true, silent = true, desc = "Remove active buffer" },
-	},
-	{
-		"n",
 		"<C-d>",
-		":lua Window_remove_active_buffer()<cr>",
-		{ noremap = true, silent = true, desc = "Remove active buffer" },
-	},
-	{
-		"t",
-		"<leader>q",
-		"<C-\\><C-n>:lua Window_remove_active_buffer()<cr>",
+		function() Window_remove_active_buffer() end,
 		{ noremap = true, silent = true, desc = "Remove active buffer" },
 	},
 	{
 		"t",
 		"<C-d>",
-		"<C-\\><C-n>:lua Window_remove_active_buffer()<cr>",
+		function() Window_remove_active_buffer() end,
 		{ noremap = true, silent = true, desc = "Remove active buffer" },
 	},
 	{
@@ -249,47 +241,42 @@ local keymaps = {
 	{
 		"n",
 		"<left>",
-		"<cmd>lua Move_floating_window_left()<cr>",
+		function() Move_floating_window(vim.api.nvim_get_current_win(), 0, -1 * move_floating_window_scale) end,
 		{ noremap = true, silent = true, desc = "Move floating window left" },
 	},
 	{
 		"n",
 		"<up>",
-		"<cmd>lua Move_floating_window_up()<cr>",
+		function() Move_floating_window(vim.api.nvim_get_current_win(), -1 * move_floating_window_scale, 0) end,
 		{ noremap = true, silent = true, desc = "Moving floating window up" },
 	},
 	{
 		"n",
 		"<down>",
-		"<cmd>lua Move_floating_window_down()<cr>",
+		function() Move_floating_window(vim.api.nvim_get_current_win(), move_floating_window_scale, 0) end,
 		{ noremap = true, silent = true, desc = "Moving floating window down" },
 	},
 	{
 		"n",
 		"<right>",
-		"<cmd>lua Move_floating_window_right()<cr>",
+		function() Move_floating_window(vim.api.nvim_get_current_win(), 0, move_floating_window_scale) end,
 		{ noremap = true, silent = true, desc = "Moving floating window right" },
 	},
 }
 
-function RegisterOpts(opts_array)
+local function register_opts(opts_array)
 	for _, e in ipairs(opts_array) do
 		vim.api.nvim_set_option_value(e[1], e[2], {})
 	end
 end
 
-function RegisterKeymaps(maps_array)
+local function register_keymaps(maps_array)
 	for _, e in ipairs(maps_array) do
 		vim.keymap.set(e[1], e[2], e[3], e[4])
 	end
 end
 
-function Terminal_open()
-	vim.api.nvim_command("term")
-	vim.api.nvim_set_option_value("scrolloff", 0, { scope = "local" })
-end
-
-function Buffer_remove(bufnr)
+function buffer_remove(bufnr)
 	bufnr = bufnr or vim.api.nvim_get_current_buf()
 	local startwin = vim.api.nvim_get_current_win()
 
@@ -336,7 +323,7 @@ function Window_remove_active_buffer()
 	end
 
 	if can_remove then
-		Buffer_remove(bufnr)
+		buffer_remove(bufnr)
 	else
 		vim.api.nvim_set_current_win(bufwin)
 		vim.cmd("enew")
@@ -348,22 +335,6 @@ function Move_floating_window(win_id, a, b)
 	config.row = config.row + a
 	config.col = config.col + b
 	vim.api.nvim_win_set_config(win_id, config)
-end
-
-function Move_floating_window_left()
-	Move_floating_window(vim.api.nvim_get_current_win(), 0, -4)
-end
-
-function Move_floating_window_down()
-	Move_floating_window(vim.api.nvim_get_current_win(), 4, 0)
-end
-
-function Move_floating_window_up()
-	Move_floating_window(vim.api.nvim_get_current_win(), -4, 0)
-end
-
-function Move_floating_window_right()
-	Move_floating_window(vim.api.nvim_get_current_win(), 0, 4)
 end
 
 vim.api.nvim_create_autocmd("TermOpen", {
@@ -381,8 +352,8 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "BufEnter", "TermOpen",
 	end,
 })
 
-RegisterOpts(opts)
-RegisterKeymaps(keymaps)
+register_opts(opts)
+register_keymaps(keymaps)
 
 require("lazy_vim")
 require("colors").init()
