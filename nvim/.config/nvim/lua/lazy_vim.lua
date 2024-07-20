@@ -1381,41 +1381,56 @@ require("lazy").setup({
 					},
 				},
 			})
-			local tl = require("telescope.builtin")
+
+			local function git_root()
+				local handle = io.popen("git rev-parse --show-toplevel 2> /dev/null")
+				if handle ~= nil then
+					local result = handle:read("*a")
+					handle:close()
+					return result:match("^%s*(.-)%s*$")
+				end
+			end
+
+			local function telescope_search_dir()
+				local git_dir = git_root()
+				if git_dir ~= nil then
+					return git_dir
+				end
+
+				return "."
+			end
+
 			require("which-key").add({
-				-- {
-				-- 	"<leader>G",
-				-- 	function()
-				-- 		tl.live_grep({ cwd = vim.fn.input({ prompt = "Dir > ", completion = "file" }) })
-				-- 	end,
-				-- 	noremap = true,
-				-- 	silent = true,
-				-- 	desc = "Telescope grep <dir>",
-				-- },
 				{
 					"<leader>g",
-					tl.live_grep,
+					function()
+						require("telescope.builtin").live_grep({
+							cwd = telescope_search_dir(),
+						})
+					end,
 					noremap = true,
 					silent = true,
 					desc = "Telescope grep",
 				},
-				-- {
-				-- 	"<leader>F",
-				-- 	function()
-				-- 		tl.find_files({ cwd = vim.fn.input({ prompt = "Dir > ", completion = "file" }) })
-				-- 	end,
-				-- 	noremap = true,
-				-- 	silent = true,
-				-- 	desc = "Telescope file <dir>",
-				-- },
 				{
 					"<leader>f",
 					function()
-						tl.find_files({ cwd = "." })
+						require("telescope.builtin").find_files({
+							cwd = telescope_search_dir(),
+							no_ignore = false,
+							hidden = true,
+						})
 					end,
 					noremap = true,
 					silent = true,
 					desc = "Telescope file",
+				},
+				{
+					"<leader>t",
+					require("telescope.builtin").treesitter,
+					noremap = true,
+					silent = true,
+					desc = "Telescope treesitter",
 				},
 			})
 		end,
