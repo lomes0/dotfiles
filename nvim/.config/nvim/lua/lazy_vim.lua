@@ -1469,10 +1469,10 @@ require("lazy").setup({
 	},
 	{
 		"mikavilpas/yazi.nvim",
+		lazy = true,
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 		},
-		event = "VeryLazy",
 		config = function()
 			require("yazi").setup({
 				open_for_directories = false,
@@ -1480,7 +1480,7 @@ require("lazy").setup({
 		end,
 		keys = {
 			{
-				"-",
+				"\\",
 				function()
 					require("yazi").yazi()
 				end,
