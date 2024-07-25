@@ -6,6 +6,7 @@ require("lazy").setup({
 		config = function()
 			require("which-key").setup({
 				sort = { "desc", "alphanum", "lower", "icase", "mod" },
+				delay = 1500,
 			})
 		end,
 	},
