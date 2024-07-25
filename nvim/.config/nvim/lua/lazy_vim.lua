@@ -968,7 +968,7 @@ require("lazy").setup({
 		"dnlhc/glance.nvim",
 		lazy = false,
 		config = function()
-			local glance = require('glance')
+			local glance = require("glance")
 			local actions = glance.actions
 
 			glance.setup({
