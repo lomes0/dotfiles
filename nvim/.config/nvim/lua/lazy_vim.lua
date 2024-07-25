@@ -1074,7 +1074,7 @@ require("lazy").setup({
 				bufhidden = "wipe", -- the bufhidden option to set on the floating window. See :h bufhidden
 				stack_floating_preview_windows = true, -- Whether to nest floating windows
 				preview_window_title = { enable = true, position = "left" }, -- Whether to set the preview window title as the filename
-				same_file_float_preview = false,
+				same_file_float_preview = true,
 			})
 			require("which-key").add({
 				{
