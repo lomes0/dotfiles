@@ -1253,16 +1253,6 @@ require("lazy").setup({
 						func = require("navigator.workspace").workspace_symbol_live,
 						desc = "Lsp workspace symbol fuzyy finder",
 					},
-					-- {
-					-- 	key = "gp",
-					-- 	func = require("navigator.definition").definition_preview,
-					-- 	desc = "Lsp definition preview",
-					-- },
-					-- {
-					-- 	key = "gP",
-					-- 	func = require("navigator.definition").type_definition_preview,
-					-- 	desc = "Lsp definition preview",
-					-- },
 					{
 						key = "gwa",
 						func = require("navigator.workspace").add_workspace_folder,
