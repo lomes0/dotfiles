@@ -1022,7 +1022,7 @@ require("lazy").setup({
 						["o"] = actions.jump,
 						["l"] = actions.open_fold,
 						["h"] = actions.close_fold,
-						["<leader>l"] = actions.enter_win("preview"), -- Focus preview window
+						[";"] = actions.enter_win("preview"), -- Focus preview window
 						["q"] = actions.close,
 						["Q"] = actions.close,
 						["<Esc>"] = actions.close,
@@ -1033,7 +1033,7 @@ require("lazy").setup({
 						["Q"] = actions.close,
 						["<Tab>"] = actions.next_location,
 						["<S-Tab>"] = actions.previous_location,
-						["<leader>l"] = actions.enter_win("list"), -- Focus list window
+						[";"] = actions.enter_win("list"), -- Focus list window
 					},
 				},
 				hooks = {},
@@ -1050,6 +1050,11 @@ require("lazy").setup({
 					enable = true, -- Available strating from nvim-0.8+
 				},
 			})
+
+			vim.keymap.set("n", "gr", "<cmd>Glance references<cr>", { noremap = true, silent = true })
+			vim.keymap.set("n", "gD", "<cmd>Glance definitions<cr>", { noremap = true, silent = true })
+			vim.keymap.set("n", "gT", "<cmd>Glance type_definitions<cr>", { noremap = true, silent = true })
+			vim.keymap.set("n", "gI", "<cmd>Glance implementations<cr>", { noremap = true, silent = true })
 		end,
 	},
 	{
@@ -1060,12 +1065,12 @@ require("lazy").setup({
 		},
 		config = function()
 			local refs_opts = {
-				layout_strategy = "vertical",
+				layout_strategy = "horizontal",
+				sorting_strategy = "descending",
 				layout_config = {
 					height = math.ceil(vim.o.lines * 0.8), -- maximally available lines
-					width = math.ceil(vim.o.columns * 0.35), -- maximally available columns
+					width = math.ceil(vim.o.columns * 0.85), -- maximally available columns
 					prompt_position = "bottom",
-					preview_height = 0.70, -- 60% of available lines
 				},
 				hide_preview = false,
 			}
@@ -1260,11 +1265,6 @@ require("lazy").setup({
 						desc = "Lsp rename",
 					},
 					{
-						key = "gr",
-						func = require("navigator.reference").reference,
-						desc = "Lsp references",
-					},
-					{
 						key = "gW",
 						func = require("navigator.workspace").workspace_symbol_live,
 						desc = "Lsp workspace symbol fuzyy finder",
@@ -1384,7 +1384,7 @@ require("lazy").setup({
 							sumneko_binary = vim.fn.expand("$HOME")
 								.. "/github/sumneko/lua-language-server/bin/macOS/lua-language-server",
 						},
-						servers = { "cmake", "ltex" }, -- by default empty, and it should load all LSP clients avalible based on filetype
+						-- servers = { "cmake", "ltex" }, -- by default empty, and it should load all LSP clients avalible based on filetype
 						-- but if you whant navigator load  e.g. `cmake` and `ltex` for you , you
 						-- can put them in the `servers` list and navigator will auto load them.
 						-- you could still specify the custom config  like this
