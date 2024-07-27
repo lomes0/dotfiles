@@ -324,32 +324,6 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"L3MON4D3/LuaSnip",
-		event = "VeryLazy",
-		-- follow latest release.
-		version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
-		-- install jsregexp (optional!).
-		build = "make install_jsregexp",
-		config = function()
-			local ls = require("luasnip")
-			vim.keymap.set({ "i" }, "<C-K>", function()
-				ls.expand()
-			end, { silent = true })
-			vim.keymap.set({ "i", "s" }, "<C-L>", function()
-				ls.jump(1)
-			end, { silent = true })
-			vim.keymap.set({ "i", "s" }, "<C-J>", function()
-				ls.jump(-1)
-			end, { silent = true })
-
-			vim.keymap.set({ "i", "s" }, "<C-E>", function()
-				if ls.choice_active() then
-					ls.change_choice(1)
-				end
-			end, { silent = true })
-		end,
-	},
-	{
 		"hrsh7th/nvim-cmp",
 		event = "InsertEnter",
 		dependencies = {
@@ -382,55 +356,88 @@ require("lazy").setup({
 					end, { silent = true })
 				end,
 			},
-			-- autopairing of (){}[] etc
-			{
-				"windwp/nvim-autopairs",
-				opts = {
-					fast_wrap = {},
-					disable_filetype = { "TelescopePrompt", "vim" },
-				},
-				config = function(_, opts)
-					require("nvim-autopairs").setup(opts)
-
-					-- setup cmp for autopairs
-					local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-					require("cmp").event:on("confirm_done", cmp_autopairs.on_confirm_done())
-				end,
-			},
-			-- cmp sources plugins
 			{
 				"hrsh7th/cmp-nvim-lua",
 				"hrsh7th/cmp-nvim-lsp",
 				"hrsh7th/cmp-nvim-lsp-signature-help",
-				"hrsh7th/cmp-vsnip",
 				"hrsh7th/cmp-path",
+				"hrsh7th/cmp-cmdline",
 				"hrsh7th/cmp-buffer",
 			},
 		},
-		opts = function()
-			--return require "nvchad.configs.cmp"
+		config = function(_)
+			local cmp = require("cmp")
+			cmp.setup({
+				snippet = {
+					expand = function(args)
+						require("luasnip").lsp_expand(args.body) -- For `luasnip` users.
+						-- require('snippy').expand_snippet(args.body) -- For `snippy` users.
+						-- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+						-- vim.snippet.expand(args.body) -- For native neovim snippets (Neovim v0.10+)
+					end,
+				},
+				mapping = cmp.mapping.preset.insert({
+					["<C-b>"] = cmp.mapping.scroll_docs(-4),
+					["<C-f>"] = cmp.mapping.scroll_docs(4),
+					["<C-Space>"] = cmp.mapping.complete(),
+					["<C-e>"] = cmp.mapping.abort(),
+					["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+				}),
+				sources = cmp.config.sources({
+					{ name = "nvim_lsp" },
+					{ name = "nvim_lua" },
+					{ name = "luasnip" },
+					{ name = "path" },
+				}, {
+					{ name = "buffer" },
+				}),
+			})
+
+			-- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+			cmp.setup.cmdline({ "/", "?" }, {
+				mapping = cmp.mapping.preset.cmdline(),
+				sources = {
+					{ name = "buffer" },
+				},
+			})
+
+			-- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+			cmp.setup.cmdline(":", {
+				mapping = cmp.mapping.preset.cmdline(),
+				sources = cmp.config.sources({
+					{ name = "path" },
+				}, {
+					{ name = "cmdline" },
+				}),
+				matching = { disallow_symbol_nonprefix_matching = false },
+			})
 		end,
-		config = function(_, opts)
-			require("cmp").setup(opts)
+	},
+	{
+		"L3MON4D3/LuaSnip",
+		event = "VeryLazy",
+		-- follow latest release.
+		version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+		-- install jsregexp (optional!).
+		build = "make install_jsregexp",
+		config = function()
+			local ls = require("luasnip")
+			vim.keymap.set({ "i" }, "<C-K>", function()
+				ls.expand()
+			end, { silent = true })
+			vim.keymap.set({ "i", "s" }, "<C-L>", function()
+				ls.jump(1)
+			end, { silent = true })
+			vim.keymap.set({ "i", "s" }, "<C-J>", function()
+				ls.jump(-1)
+			end, { silent = true })
+
+			vim.keymap.set({ "i", "s" }, "<C-E>", function()
+				if ls.choice_active() then
+					ls.change_choice(1)
+				end
+			end, { silent = true })
 		end,
-	},
-	{
-		"hrsh7th/cmp-nvim-lua",
-	},
-	{
-		"hrsh7th/cmp-nvim-lsp",
-	},
-	{
-		"hrsh7th/cmp-nvim-lsp-signature-help",
-	},
-	{
-		"hrsh7th/cmp-vsnip",
-	},
-	{
-		"hrsh7th/cmp-path",
-	},
-	{
-		"hrsh7th/cmp-buffer",
 	},
 	{
 		"nvim-treesitter/nvim-treesitter",
@@ -1457,6 +1464,19 @@ require("lazy").setup({
 			"nvim-tree/nvim-web-devicons",
 		},
 		config = function()
+			local focus_preview = function(prompt_bufnr)
+				local action_state = require("telescope.actions.state")
+				local picker = action_state.get_current_picker(prompt_bufnr)
+				local prompt_win = picker.prompt_win
+				local previewer = picker.previewer
+				local winid = previewer.state.winid
+				local bufnr = previewer.state.bufnr
+				vim.keymap.set("n", "<Tab>", function()
+					vim.cmd(string.format("noautocmd lua vim.api.nvim_set_current_win(%s)", prompt_win))
+				end, { buffer = bufnr })
+				vim.cmd(string.format("noautocmd lua vim.api.nvim_set_current_win(%s)", winid))
+				-- api.nvim_set_current_win(winid)
+			end
 			require("telescope").setup({
 				defaults = {
 					layout_config = {
@@ -1472,6 +1492,22 @@ require("lazy").setup({
 					file_ignore_patterns = {
 						"node_modules",
 						--  ".git",
+					},
+					file_previewer = require("telescope.previewers").vim_buffer_cat.new,
+					grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
+					qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
+					mappings = {
+						n = {
+							["<C-p>"] = require("telescope.actions.layout").toggle_preview,
+							["<Tab>"] = focus_preview,
+						},
+						i = {
+							["<esc>"] = require("telescope.actions").close,
+							["<C-u>"] = false,
+							["<S-Tab>"] = false,
+							["<Tab>"] = focus_preview,
+							["<C-p>"] = require("telescope.actions.layout").toggle_preview,
+						},
 					},
 				},
 				pickers = {
