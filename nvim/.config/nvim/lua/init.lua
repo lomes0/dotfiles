@@ -42,6 +42,42 @@ local opts = {
 local keymaps = {
 	{
 		"n",
+		"<C-d>",
+		"<C-d>zz",
+		{ noremap = false, silent = true, desc = "" },
+	},
+	{
+		"n",
+		"<C-u>",
+		"<C-u>zz",
+		{ noremap = false, silent = true, desc = "" },
+	},
+	{
+		"n",
+		"n",
+		"nzzzv",
+		{ noremap = false, silent = true, desc = "" },
+	},
+	{
+		"n",
+		"N",
+		"Nzzzv",
+		{ noremap = false, silent = true, desc = "" },
+	},
+	{
+		"x",
+		"<lt>p",
+		'"_dP',
+		{ noremap = false, silent = true, desc = "" },
+	},
+	{
+		{ "n", "v" },
+		"<lt>d",
+		'"_d',
+		{ noremap = false, silent = true, desc = "" },
+	},
+	{
+		"n",
 		"<C-_>",
 		"gcc",
 		{ noremap = false, silent = true, desc = "comment line" },
@@ -55,7 +91,9 @@ local keymaps = {
 	{
 		"n",
 		"<lt>w",
-		function() vim.api.nvim_command("cd " .. vim.api.nvim_buf_get_name(0):match("(.*/)")) end,
+		function()
+			vim.api.nvim_command("cd " .. vim.api.nvim_buf_get_name(0):match("(.*/)"))
+		end,
 		{ noremap = true, silent = true, desc = "Editor change workdir" },
 	},
 	{
@@ -78,7 +116,7 @@ local keymaps = {
 	},
 	{
 		"v",
-		"<C-c>",
+		"<lt>y",
 		'"+y',
 		{ noremap = true, silent = true, desc = "copy to system clipboard" },
 	},
@@ -219,14 +257,18 @@ local keymaps = {
 	},
 	{
 		"n",
-		"<C-d>",
-		function() Window_remove_active_buffer() end,
+		"<lt>q",
+		function()
+			Window_remove_active_buffer()
+		end,
 		{ noremap = true, silent = true, desc = "Remove active buffer" },
 	},
 	{
 		"t",
-		"<C-d>",
-		function() Window_remove_active_buffer() end,
+		"<lt>q",
+		function()
+			Window_remove_active_buffer()
+		end,
 		{ noremap = true, silent = true, desc = "Remove active buffer" },
 	},
 	{

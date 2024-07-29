@@ -99,7 +99,7 @@ function M.init()
 	vim.keymap.set("n", "<Leader>3", SetColorRose, { silent = true, noremap = true })
 	vim.keymap.set("n", "<Leader>4", SetColorFox, { silent = true, noremap = true })
 
-	vim.api.nvim_command("lua SetColorKan()")
+	vim.api.nvim_command("lua SetColorRose()")
 end
 
 return M

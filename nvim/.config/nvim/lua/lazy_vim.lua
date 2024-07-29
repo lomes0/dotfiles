@@ -276,6 +276,11 @@ require("lazy").setup({
 		end,
 	},
 	{
+		"windwp/nvim-autopairs",
+		event = "InsertEnter",
+		config = true,
+	},
+	{
 		"nvim-tree/nvim-web-devicons",
 		event = "VeryLazy",
 		config = function()
@@ -575,7 +580,7 @@ require("lazy").setup({
 	{
 		"stevearc/conform.nvim",
 		lazy = true,
-		keys = { "<lt>r", "<lt>d" },
+		keys = { "<lt>r" },
 		config = function()
 			require("conform").setup({
 				formatters_by_ft = {
@@ -629,13 +634,13 @@ require("lazy").setup({
 					silent = true,
 					desc = "Conform format",
 				},
-				{
-					"<lt>d",
-					FormatDiff,
-					noremap = true,
-					silent = true,
-					desc = "Conform format diff",
-				},
+				-- {
+				-- 	"<lt>d",
+				-- 	FormatDiff,
+				-- 	noremap = true,
+				-- 	silent = true,
+				-- 	desc = "Conform format diff",
+				-- },
 			})
 		end,
 	},
