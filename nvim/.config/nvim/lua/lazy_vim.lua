@@ -1641,7 +1641,7 @@ require("lazy").setup({
 							desc = "Gitsigns next change",
 						},
 						{
-							"s",
+							"sa",
 							gitsigns.stage_hunk,
 							mode = "n",
 							noremap = true,
