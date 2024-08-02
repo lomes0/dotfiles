@@ -3,8 +3,8 @@ opacity = 0.6
 decorations = 'Full'
 
 [window.dimensions]
-lines = 40
-columns = 220
+lines = 44
+columns = 240
 
 [[keyboard.bindings]]
 action = "ToggleFullscreen"
