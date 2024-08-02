@@ -827,14 +827,13 @@ $env.config = {
 
 use ~/.cache/starship/init.nu
 
-use ./nu_scripts/themes/nu-themes/nord.nu
+use ./nu_scripts/themes/nu-themes/catppuccin-mocha.nu
 
-$env.config = ($env.config | merge {color_config: (nord)})
+$env.config = ($env.config | merge {color_config: (catppuccin-mocha)})
 
 alias ll = eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions
-#alias ls = eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions
 alias zl = zellij
-alias lz = lazygit --ucd ~/.env/lazygit
+alias lz = lazygit --ucd ~/.config/lazygit
 alias cat = bat
 
 ## Zoxide
