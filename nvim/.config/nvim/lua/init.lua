@@ -65,28 +65,10 @@ local keymaps = {
 		{ noremap = false, silent = true, desc = "Search and recenter cursor" },
 	},
 	{
-		"x",
-		"<lt>p",
-		'"_dP',
-		{ noremap = false, silent = true, desc = "Paste and no copy" },
-	},
-	{
 		{ "n", "v" },
 		"<lt>d",
 		'"_x',
 		{ noremap = false, silent = true, desc = "Delete into void register" },
-	},
-	{
-		"n",
-		"<C-_>",
-		"gcc",
-		{ noremap = false, silent = true, desc = "comment line" },
-	},
-	{
-		"v",
-		"<C-_>",
-		"gc:lua vim.fn.setpos('.', vim.fn.getpos(''>'))<cr>0",
-		{ noremap = false, silent = true, desc = "comment selection" },
 	},
 	{
 		"n",
@@ -398,6 +380,10 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "BufEnter", "TermOpen",
 		vim.cmd("startinsert")
 	end,
 })
+
+vim.api.nvim_create_user_command("C", function(_)
+	vim.api.nvim_command([[edit ~/.config/nvim/lua/init.lua]])
+end, {})
 
 register_opts(opts)
 register_keymaps(keymaps)
