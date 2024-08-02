@@ -732,10 +732,6 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"MunifTanjim/nui.nvim",
-		lazy = true,
-	},
-	{
 		"OXY2DEV/markview.nvim",
 		ft = "markdown",
 		dependencies = {
