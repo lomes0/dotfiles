@@ -39,36 +39,48 @@ local opts = {
 	{ "undodir", os.getenv("HOME") .. "/.vim/undodir" },
 }
 
+local keymaps_noremap = {
+	{
+		{ "n", "v" },
+		";d",
+		'"_x',
+		desc = "Delete into void register",
+	},
+}
+
 local keymaps = {
+	{
+		"n",
+		"cc",
+		function(_)
+			vim.api.nvim_command("cd ~/.config/nvim/lua/")
+			vim.api.nvim_command([[edit ~/.config/nvim/lua/init.lua]])
+		end,
+		desc = "Nvim init.lua",
+	},
 	{
 		"n",
 		"<C-d>",
 		"<C-d>zz",
-		{ noremap = false, silent = true, desc = "Move cursor down" },
+		desc = "Move cursor down",
 	},
 	{
 		"n",
 		"<C-u>",
 		"<C-u>zz",
-		{ noremap = false, silent = true, desc = "Move cursor up" },
+		desc = "Move cursor up",
 	},
 	{
 		"n",
 		"n",
 		"nzzzv",
-		{ noremap = false, silent = true, desc = "Search and recenter cursor" },
+		desc = "Search and recenter cursor",
 	},
 	{
 		"n",
 		"N",
 		"Nzzzv",
-		{ noremap = false, silent = true, desc = "Search and recenter cursor" },
-	},
-	{
-		{ "n", "v" },
-		"<lt>d",
-		'"_x',
-		{ noremap = false, silent = true, desc = "Delete into void register" },
+		desc = "Search and recenter cursor",
 	},
 	{
 		"n",
@@ -76,139 +88,139 @@ local keymaps = {
 		function()
 			vim.api.nvim_command("cd " .. vim.api.nvim_buf_get_name(0):match("(.*/)"))
 		end,
-		{ noremap = true, silent = true, desc = "Editor change workdir" },
+		desc = "Editor change workdir",
 	},
 	{
 		"n",
 		"<C-a>",
 		"gg<S-v>G",
-		{ noremap = true, silent = true, desc = "Editor select all" },
+		desc = "Editor select all",
 	},
 	{
 		"v",
 		"J",
 		":m '>+1<cr>gv=gv",
-		{ noremap = true, silent = true, desc = "Editor move lines up" },
+		desc = "Editor move lines up",
 	},
 	{
 		"v",
 		"K",
 		":m '<-2<cr>gv=gv",
-		{ noremap = true, silent = true, desc = "Editor move lines down" },
+		desc = "Editor move lines down",
 	},
 	{
 		"v",
 		"<C-c>",
 		'"+y',
-		{ noremap = true, silent = true, desc = "copy to system clipboard" },
+		desc = "copy to system clipboard",
 	},
 	{
 		"v",
 		"<lt>y",
 		'"+y',
-		{ noremap = true, silent = true, desc = "copy to system clipboard" },
+		desc = "copy to system clipboard",
 	},
 	{
 		"v",
 		"y",
 		"ygv<esc>",
-		{ noremap = true, silent = true, desc = "yank and keep cursor" },
+		desc = "yank and keep cursor",
 	},
 	{
 		"n",
 		"<tab>",
 		"<cmd>tabnext<cr>",
-		{ noremap = true, silent = true, desc = "next tab" },
+		desc = "next tab",
 	},
 	{
 		"n",
 		"<s-tab>",
 		"<cmd>tabprev<cr>",
-		{ noremap = true, silent = true, desc = "prev tab" },
+		desc = "prev tab",
 	},
 	{
 		"n",
 		"<lt>v",
 		"<cmd>vsplit<cr><C-\\><C-n><C-w>l<cmd>enew<cr>",
-		{ noremap = true, silent = true, desc = "Pane split vertical" },
+		desc = "Pane split vertical",
 	},
 	{
 		"n",
 		"<lt>s",
 		"<cmd>split<cr><C-\\><C-n><C-w>j<cmd>enew<cr>",
-		{ noremap = true, silent = true, desc = "Pane split horizontal" },
+		desc = "Pane split horizontal",
 	},
 	{
 		"t",
 		"<C-h>",
 		"<C-\\><C-n><C-w>h",
-		{ noremap = true, silent = true, desc = "Window move left" },
+		desc = "Window move left",
 	},
 	{
 		"t",
 		"<C-j>",
 		"<C-\\><C-n><C-w>j",
-		{ noremap = true, silent = true, desc = "Window move down" },
+		desc = "Window move down",
 	},
 	{
 		"t",
 		"<C-k>",
 		"<C-\\><C-n><C-w>k",
-		{ noremap = true, silent = true, desc = "Window move up" },
+		desc = "Window move up",
 	},
 	{
 		"t",
 		"<C-l>",
 		"<C-\\><C-n><C-w>l",
-		{ noremap = true, silent = true, desc = "Window move right" },
+		desc = "Window move right",
 	},
 	{
 		"t",
 		"<C-w>h",
 		"<C-\\><C-n><C-w>h",
-		{ noremap = true, silent = true, desc = "Window move left" },
+		desc = "Window move left",
 	},
 	{
 		"t",
 		"<C-w>j",
 		"<C-\\><C-n><C-w>j",
-		{ noremap = true, silent = true, desc = "Window move down" },
+		desc = "Window move down",
 	},
 	{
 		"t",
 		"<C-w>k",
 		"<C-\\><C-n><C-w>k",
-		{ noremap = true, silent = true, desc = "Window move up" },
+		desc = "Window move up",
 	},
 	{
 		"t",
 		"<C-w>l",
 		"<C-\\><C-n><C-w>l",
-		{ noremap = true, silent = true, desc = "Window move right" },
+		desc = "Window move right",
 	},
 	{
 		"n",
 		"<c-left>",
 		"<C-w><",
-		{ noremap = true, silent = true, desc = "Window resize left" },
+		desc = "Window resize left",
 	},
 	{
 		"n",
 		"<c-right>",
 		"<C-w>>",
-		{ noremap = true, silent = true, desc = "Window resize right" },
+		desc = "Window resize right",
 	},
 	{
 		"n",
 		"<c-up>",
 		"<C-w>-",
-		{ noremap = true, silent = true, desc = "Window resize up" },
+		desc = "Window resize up",
 	},
 	{
 		"n",
 		"<c-down>",
 		"<C-w>+",
-		{ noremap = true, silent = true, desc = "Window resize down" },
+		desc = "Window resize down",
 	},
 	{
 		"n",
@@ -217,31 +229,31 @@ local keymaps = {
 			vim.api.nvim_command("term")
 			vim.api.nvim_set_option_value("scrolloff", 0, { scope = "local" })
 		end,
-		{ noremap = true, silent = true, desc = "Terminal open" },
+		desc = "Terminal open",
 	},
 	{
 		"t",
 		"<C-w>",
 		"<C-\\><C-n><C-w>",
-		{ noremap = true, silent = true, desc = "Terminal window cmd" },
+		desc = "Terminal window cmd",
 	},
 	{
 		"t",
 		"<C-_>",
 		"<C-\\><C-n>/",
-		{ noremap = true, silent = true, desc = "Terminal search buffer" },
+		desc = "Terminal search buffer",
 	},
 	{
 		"t",
 		":",
 		"<C-\\><C-n>:",
-		{ noremap = true, silent = true, desc = "Terminal command" },
+		desc = "Terminal command",
 	},
 	{
 		"t",
 		"<C-f>",
 		"<C-\\><C-n>",
-		{ noremap = true, silent = true, desc = "Terminal escape" },
+		desc = "Terminal escape",
 	},
 	{
 		"n",
@@ -249,7 +261,7 @@ local keymaps = {
 		function()
 			Window_remove_active_buffer()
 		end,
-		{ noremap = true, silent = true, desc = "Remove active buffer" },
+		desc = "Remove active buffer",
 	},
 	{
 		"t",
@@ -257,13 +269,13 @@ local keymaps = {
 		function()
 			Window_remove_active_buffer()
 		end,
-		{ noremap = true, silent = true, desc = "Remove active buffer" },
+		desc = "Remove active buffer",
 	},
 	{
 		"n",
 		"Q",
 		"<cmd>qa<cr>",
-		{ noremap = true, silent = true, desc = "Close neovim" },
+		desc = "Close neovim",
 	},
 	{
 		"n",
@@ -271,7 +283,7 @@ local keymaps = {
 		function()
 			Move_floating_window(vim.api.nvim_get_current_win(), 0, -1 * move_floating_window_scale)
 		end,
-		{ noremap = true, silent = true, desc = "Move floating window left" },
+		desc = "Move floating window left",
 	},
 	{
 		"n",
@@ -279,7 +291,7 @@ local keymaps = {
 		function()
 			Move_floating_window(vim.api.nvim_get_current_win(), -1 * move_floating_window_scale, 0)
 		end,
-		{ noremap = true, silent = true, desc = "Moving floating window up" },
+		desc = "Moving floating window up",
 	},
 	{
 		"n",
@@ -287,7 +299,7 @@ local keymaps = {
 		function()
 			Move_floating_window(vim.api.nvim_get_current_win(), move_floating_window_scale, 0)
 		end,
-		{ noremap = true, silent = true, desc = "Moving floating window down" },
+		desc = "Moving floating window down",
 	},
 	{
 		"n",
@@ -295,7 +307,7 @@ local keymaps = {
 		function()
 			Move_floating_window(vim.api.nvim_get_current_win(), 0, move_floating_window_scale)
 		end,
-		{ noremap = true, silent = true, desc = "Moving floating window right" },
+		desc = "Moving floating window right",
 	},
 }
 
@@ -305,9 +317,13 @@ local function register_opts(opts_array)
 	end
 end
 
-local function register_keymaps(maps_array)
-	for _, e in ipairs(maps_array) do
-		vim.keymap.set(e[1], e[2], e[3], e[4])
+local function register_keymaps(maps_array, noremap)
+	for _, entry in ipairs(maps_array) do
+		vim.keymap.set(entry[1], entry[2], entry[3], {
+			noremap = noremap,
+			silent = true,
+			desc = entry["desc"],
+		})
 	end
 end
 
@@ -387,12 +403,9 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "BufEnter", "TermOpen",
 	end,
 })
 
-vim.api.nvim_create_user_command("C", function(_)
-	vim.api.nvim_command([[edit ~/.config/nvim/lua/init.lua]])
-end, {})
-
 register_opts(opts)
-register_keymaps(keymaps)
+register_keymaps(keymaps, true)
+register_keymaps(keymaps_noremap, false)
 
 require("lazy_vim")
 require("colors").init()
