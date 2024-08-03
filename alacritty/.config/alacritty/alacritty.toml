@@ -13,7 +13,7 @@ mods = "Control"
 
 [colors.primary]
 background = "#15141b"
-foreground = "#d4d1cd" 
+foreground = "#d5e6e6" 
 
 [cursor.style]
 shape = "block"
