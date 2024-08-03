@@ -1,3 +1,5 @@
 nushell/.config/nushell/history.txt
 nushell/.config/nushell/nu_scripts
 lazygit/.config/lazygit/state.yml
+nvim/.config/nvim/lazy-lock.json
+kitty/.config/kitty/kitty-themes/
