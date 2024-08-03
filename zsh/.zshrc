@@ -1,10 +1,3 @@
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 #
@@ -23,34 +16,15 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time oh-my-zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="./powerlevel10k/powerlevel10k"
 CASE_SENSITIVE="true"
 ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 plugins=(git zsh-autosuggestions)
-export LS_COLORS='rs=0:no=00:mi=00:mh=00:ln=01;36:or=01;31:di=01;34:ow=04;01;34:st=34:tw=04;34:pi=01;33:so=01;33:do=01;33:bd=01;33:cd=01;33:su=01;35:sg=01;35:ca=01;35:ex=01;32:'
 
 source $ZSH/oh-my-zsh.sh
-#source ~/.zsh/catppuccin_frappe-zsh-syntax-highlighting.zsh
 
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#a3a3a3,underline"
-# ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
-# ZSH_HIGHLIGHT_STYLES[alias]='fg=green'
-# ZSH_HIGHLIGHT_STYLES[builtin]='fg=blue'
-# ZSH_HIGHLIGHT_STYLES[function]='fg=magenta'
-# ZSH_HIGHLIGHT_STYLES[command]='fg=cyan'
-# ZSH_HIGHLIGHT_STYLES[hashed-command]='fg=cyan'
-# ZSH_HIGHLIGHT_STYLES[path]='fg=yellow'
-# ZSH_HIGHLIGHT_STYLES[globbing]='fg=red'
-# ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=orange'
-# ZSH_HIGHLIGHT_STYLES[command-substitution]='fg=blue,bold'
-# ZSH_HIGHLIGHT_STYLES[back-quoted-argument]='fg=blue,bold'
-# ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=green'
-# ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=green'
-# ZSH_HIGHLIGHT_STYLES[dollar-quoted-argument]='fg=yellow'
-# ZSH_HIGHLIGHT_STYLES[assign]='fg=red'
-#
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#7a7977,underline"
 # User configuration
 
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -120,9 +94,6 @@ if [[ $(ps --no-header -p $PPID -o comm) =~ '^alacritty$' ]]; then
             xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id $wid; done
 fi
 
-export LS_COLORS="$(vivid generate molokai)"
+export LS_COLORS="$(vivid generate nord)"
 
 eval "$(starship init zsh)"
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
