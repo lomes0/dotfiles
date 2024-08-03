@@ -82,13 +82,6 @@ function SetColorRose()
 	set_highlight("Folded", { bg = "#51576d", fg = "#bbaaaa" })
 end
 
-function SetColorFox()
-	set_color_common("duskfox", {
-		bg = "none",
-		fg = "#d6ccca",
-	})
-end
-
 function SetColorKan()
 	local opts_noice = { fg = "#b1c9b8", bg = "none" }
 	local opts_noice_search = { fg = "#ffd675", bg = "none" }
@@ -120,7 +113,6 @@ function M.init()
 	vim.keymap.set("n", "<Leader>1", SetColorKan, { silent = true, noremap = true })
 	vim.keymap.set("n", "<Leader>2", SetColorCatppuccin, { silent = true, noremap = true })
 	vim.keymap.set("n", "<Leader>3", SetColorRose, { silent = true, noremap = true })
-	vim.keymap.set("n", "<Leader>4", SetColorFox, { silent = true, noremap = true })
 	vim.api.nvim_command("lua SetColorKan()")
 end
 
