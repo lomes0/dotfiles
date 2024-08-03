@@ -43,7 +43,8 @@ local function set_color_common(opts_cursor)
 end
 
 function SetColorCatppuccin()
-	local opts_cursor = { fg = "#d6ccca", bold = false, italic = false, bg = "none" }
+	-- local opts_cursor = { bg = "none", fg = "#d6ccca", bold = false, italic = false }
+	local opts_cursor = { bg = "#51576d", fg = "", bold = false, italic = false }
 	vim.api.nvim_command("colorscheme catppuccin-frappe")
 	set_color_common(opts_cursor)
 
