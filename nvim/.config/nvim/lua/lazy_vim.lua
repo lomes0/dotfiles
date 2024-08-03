@@ -647,7 +647,7 @@ require("lazy").setup({
 	{
 		"mg979/vim-visual-multi",
 		lazy = true,
-		keys = { "<C-N>" },
+		keys = { "<c-n>" },
 	},
 	-- View
 	{
