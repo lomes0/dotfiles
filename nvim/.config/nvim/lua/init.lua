@@ -98,6 +98,12 @@ local keymaps = {
 	},
 	{
 		"v",
+		"<C-c>",
+		'"+y',
+		{ noremap = true, silent = true, desc = "copy to system clipboard" },
+	},
+	{
+		"v",
 		"<lt>y",
 		'"+y',
 		{ noremap = true, silent = true, desc = "copy to system clipboard" },
