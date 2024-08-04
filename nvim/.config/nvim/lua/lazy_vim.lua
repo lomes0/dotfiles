@@ -1088,13 +1088,13 @@ require("lazy").setup({
 				mappings = {
 					n = {
 						["<S-t>"] = require("telescope.actions").select_tab,
-						["<S-l>"] = require("telescope.actions").select_vertical,
+						["<S-h>"] = require("telescope.actions").select_vertical,
 						["<S-k>"] = require("telescope.actions").select_horizontal,
 					},
 					i = {
 						["<esc>"] = require("telescope.actions").close,
 						["<S-t>"] = require("telescope.actions").select_tab,
-						["<S-l>"] = require("telescope.actions").select_vertical,
+						["<S-h>"] = require("telescope.actions").select_vertical,
 						["<S-k>"] = require("telescope.actions").select_horizontal,
 					},
 				},
@@ -1519,13 +1519,13 @@ require("lazy").setup({
 							["<C-p>"] = require("telescope.actions.layout").toggle_preview,
 							["<Tab>"] = focus_preview,
 							["<S-t>"] = require("telescope.actions").select_tab,
-							["<S-l>"] = require("telescope.actions").select_vertical,
+							["<S-h>"] = require("telescope.actions").select_vertical,
 							["<S-k>"] = require("telescope.actions").select_horizontal,
 						},
 						i = {
 							["<esc>"] = require("telescope.actions").close,
 							["<S-t>"] = require("telescope.actions").select_tab,
-							["<S-l>"] = require("telescope.actions").select_vertical,
+							["<S-h>"] = require("telescope.actions").select_vertical,
 							["<S-k>"] = require("telescope.actions").select_horizontal,
 							["<C-u>"] = false,
 							["<S-Tab>"] = false,
