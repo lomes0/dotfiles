@@ -388,6 +388,26 @@ function Move_floating_window(win_id, a, b)
 	vim.api.nvim_win_set_config(win_id, config)
 end
 
+local function git_dir()
+	local Path = require("plenary.path")
+	local path = Path:new("./")
+	while path:absolute() ~= "/" do
+		if path:joinpath(".git"):is_dir() then
+			return path:absolute()
+		end
+		path = path:parent()
+	end
+	return nil
+end
+
+local function cwd_dir()
+	return vim.api.nvim_buf_get_name(0):match("(.*/)")
+end
+
+local function set_cwd()
+	vim.api.nvim_command("cd " .. cwd_dir() or git_dir() or "./")
+end
+
 vim.api.nvim_create_autocmd("TermOpen", {
 	pattern = "*",
 	callback = function()
@@ -411,3 +431,5 @@ require("lazy_vim")
 require("colors").init()
 require("folding").init()
 require("floatterm").init()
+
+set_cwd()
