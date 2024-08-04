@@ -389,15 +389,9 @@ function Move_floating_window(win_id, a, b)
 end
 
 local function git_dir()
-	local Path = require("plenary.path")
-	local path = Path:new("./")
-	while path:absolute() ~= "/" do
-		if path:joinpath(".git"):is_dir() then
-			return path:absolute()
-		end
-		path = path:parent()
-	end
-	return nil
+	local buf_dir = vim.fn.expand("%:p:h")
+	local git_dir_cmd = "git -C " .. buf_dir .. " rev-parse --show-toplevel"
+	return vim.fn.system(git_dir_cmd)
 end
 
 local function cwd_dir()
