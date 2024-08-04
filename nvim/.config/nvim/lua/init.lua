@@ -423,6 +423,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "BufEnter", "TermOpen",
 	end,
 })
 
+vim.loader.enable()
 register_opts(opts)
 register_keymaps(keymaps, true)
 register_keymaps(keymaps_noremap, false)
