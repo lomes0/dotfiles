@@ -428,8 +428,8 @@ register_keymaps(keymaps, true)
 register_keymaps(keymaps_noremap, false)
 
 require("lazy_vim")
-require("colors").init()
 require("folding").init()
 require("floatterm").init()
+require("colors").init()
 
 set_cwd()

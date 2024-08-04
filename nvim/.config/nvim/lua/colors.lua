@@ -45,10 +45,11 @@ local function set_color_ts_context(opts_ts)
 		bg = "#51576d",
 		italic = true,
 	}
-	set_highlight("TreesitterContext", opts_ts)
-	set_highlight("TreesitterContextLineNumber", m(opts_ts, { fg = "white", italic = true }))
-	set_highlight("TreesitterContextLineNumberBottom", m(opts_ts, { italic = true }))
-	set_highlight("TreesitterContextBottom", {})
+	set_highlight("TreesitterContext", m(opts_ts, {}))
+	set_highlight("TreesitterContextBottom", m(opts_ts, { fg = "none" }))
+	set_highlight("TreesitterContextSeparator", m(opts_ts, { fg = "none" }))
+	set_highlight("TreesitterContextLineNumber", m(opts_ts, { fg = "white" }))
+	set_highlight("TreesitterContextLineNumberBottom", m(opts_ts, {}))
 end
 
 local function set_color_common(scheme, opts_cursor, opts_ts)
