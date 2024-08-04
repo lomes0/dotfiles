@@ -405,7 +405,7 @@ local function cwd_dir()
 end
 
 local function set_cwd()
-	vim.api.nvim_command("cd " .. cwd_dir() or git_dir() or "./")
+	vim.api.nvim_command("cd " .. (cwd_dir() or git_dir() or "./"))
 end
 
 vim.api.nvim_create_autocmd("TermOpen", {
