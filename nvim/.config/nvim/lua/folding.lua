@@ -20,7 +20,6 @@ function T(node)
 end
 
 local function fold_function_definition(root)
-
 	local query = vim.treesitter.query.parse("c", query_string)
 
 	local line = ""
