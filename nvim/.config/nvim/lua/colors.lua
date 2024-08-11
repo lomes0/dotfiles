@@ -61,7 +61,7 @@ local function set_color_common(scheme, opts_cursor, opts_ts)
 	set_color_visual()
 end
 
-function SetColorCatppuccin()
+function M.SetCatppuccin()
 	set_color_common("catppuccin-frappe", {
 		bg = "#51576d",
 		fg = "",
@@ -71,7 +71,7 @@ function SetColorCatppuccin()
 	set_highlight("Float", { link = "Normal" })
 end
 
-function SetColorRose()
+function M.SetRose()
 	set_color_common("rose-pine-moon", {
 		bg = "none",
 		fg = "#d6ccca",
@@ -83,7 +83,7 @@ function SetColorRose()
 	set_highlight("Folded", { bg = "#51576d", fg = "#bbaaaa" })
 end
 
-function SetColorKan()
+function M.SetKan()
 	local opts_noice = { fg = "#b1c9b8", bg = "none" }
 	local opts_noice_search = { fg = "#ffd675", bg = "none" }
 	set_color_common("kanagawa-paper", {
@@ -111,10 +111,9 @@ function SetColorKan()
 end
 
 function M.init()
-	vim.keymap.set("n", "<Leader>1", SetColorKan, { silent = true, noremap = true })
-	vim.keymap.set("n", "<Leader>2", SetColorCatppuccin, { silent = true, noremap = true })
-	vim.keymap.set("n", "<Leader>3", SetColorRose, { silent = true, noremap = true })
-	vim.api.nvim_command("lua SetColorKan()")
+	vim.keymap.set("n", "<Leader>1", M.SetKan, { silent = true, noremap = true })
+	vim.keymap.set("n", "<Leader>2", M.SetCatppuccin, { silent = true, noremap = true })
+	vim.keymap.set("n", "<Leader>3", M.SetRose, { silent = true, noremap = true })
 end
 
 return M

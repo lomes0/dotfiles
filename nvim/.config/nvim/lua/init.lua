@@ -426,5 +426,5 @@ require("lazy_vim")
 require("folding").init()
 require("floatterm").init()
 require("colors").init()
-
+require("colors").SetCatppuccin()
 set_cwd()
