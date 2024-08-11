@@ -1,14 +1,12 @@
-local H = {}
+local M = {}
 
-H.get_treesitter_node = function(row, col)
-	return vim.treesitter.get_node_at_pos(0, row, col, {})
+M.get_treesitter_node = function(row, col)
+	return vim.treesitter.get_node({
+		pos = { row, col },
+	})
 end
 
-H.advance = function(iterator, opts)
-	-- Use two states: "result" will be used as result, "current" will be used
-	-- for iteration. Separation is needed at least for two reasons:
-	-- - Allow partial reach of `n_times`.
-	-- - Don't allow `start_edge` and `end_edge` be the output.
+M.advance = function(iterator, opts)
 	local res_state = iterator.state
 
 	-- Compute loop data
