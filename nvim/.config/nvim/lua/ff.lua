@@ -9,14 +9,13 @@ end
 M.advance = function(iterator, opts)
 	local res_state = iterator.state
 
-	-- Compute loop data
 	local iter_method = "prev"
 	local cur_state = res_state
 
-	-- Loop
 	local iter = iterator[iter_method]
 	for _ = 1, opts.n_times do
 		-- Advance
+		print(cur_state.node:type())
 		cur_state = iter(cur_state)
 
 		if cur_state == nil then
@@ -49,15 +48,11 @@ M.advance = function(iterator, opts)
 	return res_state
 end
 
-H.treesitter = function(opts)
-	opts = vim.tbl_deep_extend(
-		"force",
-		{ add_to_jumplist = false, n_times = vim.v.count1 },
-		H.get_config().treesitter.options,
-		opts or {}
-	)
-
-	opts.wrap = false
+M.treesitter = function(_)
+	local opts = {
+		n_times = 2,
+		wrap = false,
+	}
 
 	local is_bad_node = function(node)
 		return node == nil or node:parent() == nil
@@ -66,40 +61,11 @@ H.treesitter = function(opts)
 		return row_ref < row_new or (row_ref == row_new and col_ref < col_new)
 	end
 	local is_before = function(row_new, col_new, row_ref, col_ref)
-		return is_after(row_ref, col_ref, row_new, col_new)
+		return is_after(row_ref, col_ref, row_new, col_new) or (row_new + 1) < vim.v.foldstart
 	end
 
 	local iterator = {}
 
-	-- Traverse node and parents until node's end is after current position
-	-- iterator.next = function(node_pos)
-	-- 	local node = node_pos.node
-	-- 	if is_bad_node(node) then
-	-- 		return nil
-	-- 	end
-	--
-	-- 	local init_row, init_col = node_pos.pos[1], node_pos.pos[2]
-	-- 	local cur_row, cur_col, cur_node = init_row, init_col, node
-	--
-	-- 	repeat
-	-- 		if is_bad_node(cur_node) then
-	-- 			break
-	-- 		end
-	--
-	-- 		cur_row, cur_col = cur_node:end_()
-	-- 		-- Correct for end-exclusiveness
-	-- 		cur_col = cur_col - 1
-	-- 		cur_node = cur_node:parent()
-	-- 	until is_after(cur_row, cur_col, init_row, init_col)
-	--
-	-- 	if not is_after(cur_row, cur_col, init_row, init_col) then
-	-- 		return
-	-- 	end
-	--
-	-- 	return { node = cur_node, pos = { cur_row, cur_col } }
-	-- end
-
-	-- Traverse node and parents until node's start is before current position
 	iterator.prev = function(node_pos)
 		local node = node_pos.node
 		if is_bad_node(node) then
@@ -125,26 +91,28 @@ H.treesitter = function(opts)
 		return { node = cur_node, pos = { cur_row, cur_col } }
 	end
 
-	local cur_pos = { vim.v.foldstart, vim.fn.indent(vim.v.foldstart) }
+	local cur_pos = { vim.v.foldstart - 1, vim.fn.indent(vim.v.foldstart) }
+	local ok, node = pcall(M.get_treesitter_node, cur_pos[1], cur_pos[2])
 
-	local ok, node = pcall(H.get_treesitter_node, cur_pos[1] - 1, cur_pos[2])
 	if not ok then
 		error(
 			"In `treesitter()` target can not find tree-sitter node under cursor."
 				.. " Do you have tree-sitter enabled in current buffer?"
 		)
 	end
-	iterator.state = { pos = { cur_pos[1] - 1, cur_pos[2] }, node = node }
 
-	return H.advance(iterator, opts)
+	if node == nil then
+		return nil
+	end
 
-	-- if res_node_pos == nil then
-	-- 	return
-	-- end
+	if vim.fn.indent(vim.v.foldstart) > 0 then
+		return node
+	else
+		return node:parent()
+	end
 
-	-- Apply
-	-- local row, col = res_node_pos.pos[1], res_node_pos.pos[2]
-	-- vim.api.nvim_win_set_cursor(0, { row + 1, col })
+	-- iterator.state = { pos = { cur_pos[1], cur_pos[2] }, node = node }
+	-- return M.advance(iterator, opts)
 end
 
-return H
+return M
