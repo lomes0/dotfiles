@@ -14,9 +14,3 @@ function Header:render(area)
 		-- ui.Paragraph(area, { right }):align(ui.Paragraph.RIGHT),
 	}
 end
-
--- To get no status line
-local old_manager_render = Manager.render
-function Manager:render(area)
-	return old_manager_render(self, ui.Rect { x = area.x, y = area.y, w = area.w, h = area.h + 1 })
-end
