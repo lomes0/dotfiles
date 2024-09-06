@@ -115,9 +115,25 @@ local keymaps = {
 		desc = "copy to system clipboard",
 	},
 	{
-		"v",
-		"<lt>y",
-		'"+y',
+		"n",
+		"-",
+		function()
+			local function is_unnamedplus_active()
+				local clipboard = vim.opt.clipboard:get()
+				for _, value in ipairs(clipboard) do
+					if value == "unnamedplus" then
+						return true
+					end
+				end
+				return false
+			end
+
+			if is_unnamedplus_active() then
+				vim.opt.clipboard = ""
+			else
+				vim.opt.clipboard = "unnamedplus"
+			end
+		end,
 		desc = "copy to system clipboard",
 	},
 	{
