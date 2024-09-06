@@ -31,7 +31,7 @@ local function fold_function_definition(root)
 		end
 
 		if key == "params" then
-			line = line .. "( ... )"
+			line = line .. "()"
 			break
 		end
 	end
