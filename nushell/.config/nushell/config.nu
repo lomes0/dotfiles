@@ -316,6 +316,21 @@ $env.config = {
     ]
 
     keybindings: [
+	    {
+			name: change_dir_with_fzf
+			modifier: control
+			keycode: char_l
+            mode: [emacs, vi_normal, vi_insert]
+			event:[
+      		    { edit: Clear }
+      		    { edit: InsertString,
+      		      value: "cd (ls | where type == dir | each { |it| $it.name} | str join (char nl) | fzf | decode utf-8 | str trim)"
+
+      		    }
+                { send: menunext }
+      		    { send: Enter }
+      		  ]
+		}
         {
             name: completion_menu
             modifier: none
@@ -403,13 +418,13 @@ $env.config = {
             mode: [emacs, vi_normal, vi_insert]
             event: { send: ctrld }
         }
-        {
-            name: clear_screen
-            modifier: control
-            keycode: char_l
-            mode: [emacs, vi_normal, vi_insert]
-            event: { send: clearscreen }
-        }
+        #{
+        #    name: clear_screen
+        #    modifier: control
+        #    keycode: char_l
+        #    mode: [emacs, vi_normal, vi_insert]
+        #    event: { send: clearscreen }
+        #}
         {
             name: search_history
             modifier: control
