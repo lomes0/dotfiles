@@ -73,3 +73,10 @@ if [[ $(ps --no-header -p $PPID -o comm) =~ '^alacritty$' ]]; then
 	done
 fi
 
+# # pnpm
+# export PNPM_HOME="/home/eransa/.local/share/pnpm"
+# case ":$PATH:" in
+#   *":$PNPM_HOME:"*) ;;
+#   *) export PATH="$PNPM_HOME:$PATH" ;;
+# esac
+# # pnpm end
