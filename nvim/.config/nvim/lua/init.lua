@@ -2,6 +2,7 @@ vim.g.mapleader = "<"
 vim.o.autowriteall = true
 vim.o.guifont = "Hack"
 local move_floating_window_scale = 4
+_G.clipboard_icon = "📔"
 
 local opts = {
 	{ "tabstop", 4 },
@@ -118,20 +119,12 @@ local keymaps = {
 		"n",
 		"-",
 		function()
-			local function is_unnamedplus_active()
-				local clipboard = vim.opt.clipboard:get()
-				for _, value in ipairs(clipboard) do
-					if value == "unnamedplus" then
-						return true
-					end
-				end
-				return false
-			end
-
-			if is_unnamedplus_active() then
+			if vim.opt.clipboard:get()[1] == "unnamedplus" then
 				vim.opt.clipboard = ""
+				_G.clipboard_icon = "📔"
 			else
 				vim.opt.clipboard = "unnamedplus"
+				_G.clipboard_icon = "💻"
 			end
 		end,
 		desc = "copy to system clipboard",
