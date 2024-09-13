@@ -86,7 +86,7 @@ end
 function M.SetKan()
 	local opts_noice = { fg = "#b1c9b8", bg = "none" }
 	local opts_noice_search = { fg = "#ffd675", bg = "none" }
-	set_color_common("kanagawa", {
+	set_color_common("kanagawa-paper", {
 		bg = "#3d3e42",
 		fg = "",
 	}, {
