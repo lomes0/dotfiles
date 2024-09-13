@@ -404,18 +404,12 @@ function Move_floating_window(win_id, a, b)
 	vim.api.nvim_win_set_config(win_id, config)
 end
 
-local function git_dir()
-	local buf_dir = vim.fn.expand("%:p:h")
-	local git_dir_cmd = "git -C " .. buf_dir .. " rev-parse --show-toplevel"
-	return vim.fn.system(git_dir_cmd)
-end
-
 local function cwd_dir()
 	return vim.api.nvim_buf_get_name(0):match("(.*/)")
 end
 
 local function set_cwd()
-	vim.api.nvim_command("cd " .. (cwd_dir() or git_dir() or "./"))
+	vim.api.nvim_command("cd " .. (cwd_dir() or "./"))
 end
 
 vim.api.nvim_create_autocmd("TermOpen", {
