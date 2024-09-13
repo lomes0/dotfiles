@@ -905,15 +905,17 @@ require("lazy").setup({
 				initial_width = 35,
 				hide_statusline = true,
 				update_interval = 0,
-				sections = { "files", "buffers" },
+				sections = {
+					"files",
+					"buffers",
+				},
 				section_separator = { "", "", "" },
-				section_title_separator = { "" },
+				section_title_separator = { "---------" },
 				containers = {
 					attach_shell = "/bin/sh",
 					show_all = true,
 					interval = 5000,
 				},
-				datetime = { format = "%a %b %d, %H:%M", clocks = { { name = "local" } } },
 				todos = { ignored_paths = { "~" } },
 				files = {
 					icon = "",
