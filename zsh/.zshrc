@@ -25,6 +25,9 @@ source $ZSH/oh-my-zsh.sh
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+#
+# User configuration
+#
 source "$HOME/.cargo/env"
 
 # golang
@@ -32,9 +35,6 @@ export PATH=$PATH:/usr/local/go/bin
 
 # diff-so-fancy
 export PATH=$PATH:$HOME/var/diff-so-fancy
-
-# cpt
-export ENV=$ENV/.env
 
 # for tmux utf-8 support
 export LC_ALL=en_IN.UTF-8
@@ -49,6 +49,7 @@ function yz() {
 	rm -f -- "$tmp"
 }
 
+# alias
 alias zl="zellij --layout ~/.config/zellij/layout.kdl"
 alias lz="lazygit"
 alias tmux='TERM=screen-256color tmux'
@@ -56,16 +57,19 @@ alias fzf="fzf --preview 'bat --style=numbers --color=always {}'"
 alias fd="fdfind"
 export FZF_DEFAULT_COMMAND='fdfind --type f --strip-cwd-prefix --hidden --follow --exclude .git --exclude node_modules'
 
-alias ls="eza --color=always --long --git --icons=always --no-permissions"
-alias ll="eza --color=always --long --git --icons=always --no-permissions"
+alias ls="eza --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt"
+alias ll="eza --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt"
 alias cat="bat"
 alias z="~/.local/bin/zoxide"
 
-if [[ $(ps --no-header -p $PPID -o comm) =~ '^alacritty$' ]]; then
-        for wid in $(xdotool search --pid $PPID); do
-            xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id $wid; done
-fi
-
+export ZSH_HIGHLIGHT_STYLES[comment]='fg=gray,dimmed'
 export LS_COLORS="$(vivid generate nord)"
 
 eval "$(starship init zsh)"
+
+if [[ $(ps --no-header -p $PPID -o comm) =~ '^alacritty$' ]]; then
+	for wid in $(xdotool search --pid $PPID); do
+		xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id $wid;
+	done
+fi
+
