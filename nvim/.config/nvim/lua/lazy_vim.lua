@@ -18,7 +18,7 @@ require("lazy").setup({
 		},
 	},
 	{
-		"kevinhwang91/nvim-bqf",
+		"lomes0/nvim-bqf",
 		ft = "qf",
 	},
 	{
@@ -909,7 +909,7 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"sidebar-nvim/sidebar.nvim",
+		"lomes0/sidebar.nvim",
 		event = "VeryLazy",
 		cond = function()
 			return not vim.api.nvim_get_option_value("diff", { win = 0 })
@@ -1220,10 +1220,10 @@ require("lazy").setup({
 		},
 	},
 	{
-		"ray-x/navigator.lua",
+		"lomes0/navigator.lua",
 		event = "VeryLazy",
 		dependencies = {
-			{ "ray-x/guihua.lua", run = "cd lua/fzy && make" },
+			{ "lomes0/guihua.lua", run = "cd lua/fzy && make" },
 			"neovim/nvim-lspconfig",
 			"nvim-treesitter/nvim-treesitter",
 			"nvim-telescope/telescope.nvim",
