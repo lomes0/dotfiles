@@ -30,6 +30,9 @@ source $ZSH/oh-my-zsh.sh
 #
 source "$HOME/.cargo/env"
 
+# local bin
+export PATH=$PATH:$HOME/.local/bin
+
 # golang
 export PATH=$PATH:/usr/local/go/bin
 
