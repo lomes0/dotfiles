@@ -620,6 +620,7 @@ require("lazy").setup({
 					rust = { "rustfmt" },
 					c = { "clang-format" },
 					cpp = { "clang-format" },
+					python = { "isort", "black" },
 					json = { "jq" },
 				},
 				formatters = {
