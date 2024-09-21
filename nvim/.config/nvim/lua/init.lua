@@ -60,8 +60,8 @@ local keymaps = {
 		"v",
 		"/",
 		function()
-			vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('gc', true, false, true), 'x', false)
-			vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('gv', true, false, true), 'x', false)
+			vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("gc", true, false, true), "x", false)
+			vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("gv", true, false, true), "x", false)
 		end,
 		noremap = true,
 		desc = "Nvim init.lua",
