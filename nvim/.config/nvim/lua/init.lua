@@ -52,6 +52,12 @@ local keymaps_noremap = {
 local keymaps = {
 	{
 		"v",
+		"<C-c>",
+		"<Esc>",
+		desc = "Visual mode escape",
+	},
+	{
+		"v",
 		"/",
 		function()
 			vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('gc', true, false, true), 'x', false)
