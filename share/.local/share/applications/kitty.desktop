@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=kitty
+Path=/home/eransa/.local/kitty.app/bin
+Exec=/home/eransa/.local/kitty.app/bin/kitty --directory $HOME
+Icon=/home/eransa/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png
