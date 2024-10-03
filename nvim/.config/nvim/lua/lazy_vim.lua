@@ -939,7 +939,7 @@ require("lazy").setup({
 					desc = "Floating help",
 				},
 				{
-					"<F2>",
+					"<F3>",
 					function()
 						fh.open("t=cppman", vim.fn.expand("<cword>"))
 					end,
@@ -948,7 +948,7 @@ require("lazy").setup({
 					desc = "Floating cppman",
 				},
 				{
-					"<F3>",
+					"<F4>",
 					function()
 						fh.open("t=man", vim.fn.expand("<cword>"))
 					end,
