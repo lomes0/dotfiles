@@ -41,10 +41,11 @@ function Floatterm:toggle()
 			border = "rounded",
 			relative = "editor",
 			style = "minimal",
-			height = math.ceil(vim.o.lines * 0.35),
-			width = math.ceil(vim.o.columns * 0.35),
+			height = math.ceil(vim.o.lines * 1.0),
+			width = math.ceil(vim.o.columns * 0.45),
 			row = 0, --> Top of the window
-			col = math.ceil(vim.o.columns * 0.65), --> Far right; should add up to 1 with win_width
+			col = math.ceil(vim.o.columns * 1.0), --> Far right; should add up to 1 with win_width
+			focusable = true,
 		})
 		-- vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#303446", fg = "#303446" })
 
@@ -68,12 +69,10 @@ function Launch_floatterm(idx)
 end
 
 function M.init()
-	for i = 1, 4 do
-		table.insert(M.Terminals, Floatterm:new())
-		vim.keymap.set("n", ";" .. i, function()
-			Launch_floatterm(i)
-		end, { desc = "Toggle floatterm " .. i })
-	end
+	table.insert(M.Terminals, Floatterm:new())
+	vim.keymap.set({ "n", "t" }, "<F2>", function()
+		Launch_floatterm(1)
+	end, { desc = "Toggle floatterm" })
 end
 
 function Embad_floatterm()
