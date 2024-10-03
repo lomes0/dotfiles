@@ -4,45 +4,6 @@ vim.o.guifont = "Hack"
 local move_floating_window_scale = 4
 _G.clipboard_icon = "📔"
 
--- Neovide
-if vim.g.neovide then
-	vim.g.neovide_position_animation_length = 0
-	vim.g.neovide_cursor_animation_length = 0.00
-	vim.g.neovide_cursor_trail_size = 0
-	vim.g.neovide_cursor_animate_in_insert_mode = false
-	vim.g.neovide_cursor_animate_command_line = false
-	vim.g.neovide_scroll_animation_far_lines = 0
-	vim.g.neovide_scroll_animation_length = 0.00
-
-	vim.g.neovide_transparency = 0.9 -- Adjust transparency level
-	vim.g.neovide_background_color = "#1e1e1e" -- Set a background color to prevent transparency issues
-	-- vim.g.neovide_cursor_vfx_mode = "railgun" -- Try different effects to check if they affect color
-
-	vim.keymap.set("n", "<D-s>", ":w<CR>") -- Save
-	vim.keymap.set("v", "<D-c>", '"+y') -- Copy
-	vim.keymap.set("n", "<D-v>", '"+P') -- Paste normal mode
-	vim.keymap.set("v", "<D-v>", '"+P') -- Paste visual mode
-	vim.keymap.set("c", "<D-v>", "<C-R>+") -- Paste command mode
-	vim.keymap.set("i", "<D-v>", '<ESC>l"+Pli') -- Paste insert mode
-
-	vim.g.terminal_color_0 = "#000000" -- black
-	vim.g.terminal_color_1 = "#ff5555" -- red
-	vim.g.terminal_color_2 = "#50fa7b" -- green
-	vim.g.terminal_color_3 = "#f1fa8c" -- yellow
-	vim.g.terminal_color_4 = "#bd93f9" -- blue
-	vim.g.terminal_color_5 = "#ff79c6" -- magenta
-	vim.g.terminal_color_6 = "#8be9fd" -- cyan
-	vim.g.terminal_color_7 = "#bbbbbb" -- white
-	vim.g.terminal_color_8 = "#44475a" -- bright black (grey)
-	vim.g.terminal_color_9 = "#ff6e6e" -- bright red
-	vim.g.terminal_color_10 = "#69ff94" -- bright green
-	vim.g.terminal_color_11 = "#ffffa5" -- bright yellow
-	vim.g.terminal_color_12 = "#d6acff" -- bright blue
-	vim.g.terminal_color_13 = "#ff92df" -- bright magenta
-	vim.g.terminal_color_14 = "#a4ffff" -- bright cyan
-	vim.g.terminal_color_15 = "#ffffff" -- bright white
-end
-
 local opts = {
 	{ "tabstop", 4 },
 	{ "softtabstop", 4 },
@@ -307,18 +268,18 @@ local keymaps = {
 		"<C-\\><C-n>/",
 		desc = "Terminal search buffer",
 	},
-	{
-		"t",
-		":",
-		"<C-\\><C-n>:",
-		desc = "Terminal command",
-	},
-	{
-		"t",
-		"<C-f>",
-		"<C-\\><C-n>",
-		desc = "Terminal escape",
-	},
+	-- {
+	-- 	"t",
+	-- 	":",
+	-- 	"<C-\\><C-n>:",
+	-- 	desc = "Terminal command",
+	-- },
+	-- {
+	-- 	"t",
+	-- 	"<C-f>",
+	-- 	"<C-\\><C-n>",
+	-- 	desc = "Terminal escape",
+	-- },
 	{
 		"n",
 		"<lt>q",
@@ -481,6 +442,7 @@ register_keymaps(keymaps, true)
 register_keymaps(keymaps_noremap, false)
 
 require("lazy_vim")
+require("neovide").init()
 require("folding").init()
 require("floatterm").init()
 require("colors").init()
