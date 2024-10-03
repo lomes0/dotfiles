@@ -69,6 +69,7 @@ function M.SetCatppuccin()
 
 	set_highlight("NormalFloat", { link = "Normal" })
 	set_highlight("Float", { link = "Normal" })
+	set_highlight("Folded", { bg = "#51576d", fg = "#8caaee" })
 end
 
 function M.SetRose()
@@ -108,6 +109,7 @@ function M.SetKan()
 
 	set_highlight("NormalFloat", { link = "Normal" })
 	set_highlight("Float", { link = "Normal" })
+	set_highlight("Folded", { bg = "#51576d", fg = "#808080" })
 end
 
 function M.init()
