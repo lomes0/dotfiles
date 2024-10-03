@@ -1763,6 +1763,8 @@ require("lazy").setup({
 							desc = "Gitsigns diffthis",
 						},
 					})
+
+					vim.wo.signcolumn = "yes"
 				end,
 			})
 		end,
