@@ -780,6 +780,14 @@ require("lazy").setup({
 					inc_rename = true, -- enables an input dialog for inc-rename.nvim
 					lsp_doc_border = false, -- add a border to hover docs and signature help
 				},
+				messages = {
+					enabled = true, -- enables the Noice messages UI
+					view = "vsplit", -- default view for messages
+					view_error = "vsplit", -- view for errors
+					view_warn = "vsplit", -- view for warnings
+					view_history = "messages", -- view for :messages
+					view_search = "virtualtext", -- view for search count messages. Set to `false` to disable
+				},
 				routes = {
 					{
 						filter = {
@@ -795,6 +803,18 @@ require("lazy").setup({
 						},
 						opts = { skip = true },
 					},
+					{
+						filter = {
+							event = "msg_show",
+							find = "Hunk",
+						},
+						opts = { skip = true },
+					},
+				},
+				popupmenu = {
+					enabled = true, -- enables the Noice popupmenu UI
+					backend = "nui", -- backend to use to show regular cmdline completions
+					kind_icons = {}, -- set to `false` to disable icons
 				},
 			})
 		end,
