@@ -76,15 +76,15 @@ function M.init()
 end
 
 function Embad_floatterm()
-    local win = vim.api.nvim_get_current_win()
-    local buf = vim.api.nvim_win_get_buf(win)
+	local win = vim.api.nvim_get_current_win()
+	local buf = vim.api.nvim_win_get_buf(win)
 	local cursor = vim.api.nvim_win_get_cursor(win)
 
-    vim.api.nvim_win_close(win, true)
-    vim.api.nvim_set_current_buf(buf)
-    vim.api.nvim_win_set_cursor(vim.api.nvim_get_current_win(), cursor)
+	vim.api.nvim_win_close(win, true)
+	vim.api.nvim_set_current_buf(buf)
+	vim.api.nvim_win_set_cursor(vim.api.nvim_get_current_win(), cursor)
 end
 
-vim.keymap.set('n', '<lt>ef', Embad_floatterm, { noremap = true, silent = true })
+vim.keymap.set("n", "<lt>ef", Embad_floatterm, { noremap = true, silent = true })
 
 return M
