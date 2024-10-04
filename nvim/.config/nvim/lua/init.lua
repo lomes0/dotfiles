@@ -8,7 +8,7 @@ local opts = {
 	{ "tabstop", 4 },
 	{ "softtabstop", 4 },
 	{ "shiftwidth", 4 },
-	{ "scrolloff", 20 },
+	{ "scrolloff", 10 },
 	{ "updatetime", 50 },
 	{ "conceallevel", 2 },
 	{ "report", 999 },
