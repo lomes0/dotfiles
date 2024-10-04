@@ -5,7 +5,6 @@ require("lazy").setup({
 	-- },
 	{
 		"akinsho/bufferline.nvim",
-		tag = "*",
 		requires = "nvim-tree/nvim-web-devicons",
 		lazy = "VeryLazy",
 		config = function()
@@ -804,7 +803,7 @@ require("lazy").setup({
 					enabled = true, -- enables the Noice messages UI
 					view = "vsplit", -- default view for messages
 					view_error = "vsplit", -- view for errors
-					view_warn = "vsplit", -- view for warnings
+					view_warn = "noice", -- view for warnings
 					view_history = "messages", -- view for :messages
 					view_search = "virtualtext", -- view for search count messages. Set to `false` to disable
 				},
