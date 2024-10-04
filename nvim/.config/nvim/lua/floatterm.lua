@@ -30,12 +30,8 @@ function Floatterm:toggle()
 			self.buf = vim.api.nvim_create_buf(false, true)
 			vim.api.nvim_set_option_value("bufhidden", "hide", { buf = self.buf })
 			vim.api.nvim_set_option_value("filetype", "terminal", { buf = self.buf })
-			-- vim.api.nvim_buf_set_lines(self.buf, 0, 1, false, {
-			--   "# Notepad",
-			--   "",
-			--   "> Notepad clears when the current Neovim session closes",
-			-- })
 		end
+
 		-- Create a window
 		self.win = vim.api.nvim_open_win(self.buf, true, {
 			border = "rounded",
@@ -47,7 +43,6 @@ function Floatterm:toggle()
 			col = math.ceil(vim.o.columns * 1.0), --> Far right; should add up to 1 with win_width
 			focusable = true,
 		})
-		-- vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#303446", fg = "#303446" })
 
 		vim.api.nvim_set_option_value("winblend", 0, { win = self.win }) --> Semi transparent buffer
 		-- Buffer-local Keymaps
