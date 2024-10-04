@@ -1,9 +1,6 @@
 --
 -- folding
 --
--- local ts_utils = require("nvim-treesitter.ts_utils")
--- local node = ts_utils.get_node_at_cursor()
-
 local ts = vim.treesitter
 
 local M = {}
@@ -39,52 +36,32 @@ local function fold_function_definition(root)
 	return line
 end
 
--- local fold_struct_specifier = function(root)
--- 	return "struct_specifier"
--- end
---
--- local fold_if_statement = function(root)
--- 	return "if_statement"
--- end
---
--- local fold_switch_statement = function(root)
--- 	return "switch_statement"
--- end
---
 local folds = {
 	["function_definition"] = fold_function_definition,
-	-- ["struct_specifier"] = fold_struct_specifier,
-	-- ["if_statement"] = fold_if_statement,
-	-- ["switch_statement"] = fold_switch_statement,
 }
 
-function PrevNamedSibling(node)
+local function prev_named_sibling(node)
 	while node:prev_named_sibling() ~= nil do
 		node = node:prev_named_sibling()
 	end
 	return node
 end
 
--- local function getline(lnum)
--- 	return vim.api.nvim_buf_get_lines(0, lnum - 1, lnum, false)[1] or ""
--- end
---
 ---@param root TSNode
 ---@param lnum integer
 ---@param col integer
 local function get_last_node_at_line(root, lnum, col)
-	-- col = col or (#getline(lnum) - 1)
 	return root:descendant_for_range(lnum - 1, col, lnum - 1, col + 1)
 end
 
-function FoldRoot()
+local function fold_root_node()
 	local parsers = require("nvim-treesitter.parsers")
 	local parser = parsers.get_parser()
 	local tree = parser:parse()[1]
 	local root = tree:root()
 	local node = get_last_node_at_line(root, vim.v.foldstart, 0)
+	node = prev_named_sibling(node)
 
-	node = PrevNamedSibling(node)
 	while node:parent() ~= nil and node:parent():type() ~= root:type() do
 		local psr, _ = node:parent():start()
 
@@ -112,19 +89,18 @@ local function default_fold(_)
 	end
 end
 
-local function treesitter_fold()
-	local root = FoldRoot()
-	local fold_func = default_fold
+function CppFold()
+	local function cpp_fold_str()
+		local root = fold_root_node()
+		local fold_func = default_fold
 
-	if root ~= nil then
-		fold_func = folds[root:type()] or default_fold
+		if root ~= nil then
+			fold_func = folds[root:type()] or default_fold
+		end
+
+		return fold_func(root)
 	end
-
-	return fold_func(root)
-end
-
-function CustomFold()
-	local line = treesitter_fold()
+	local line = cpp_fold_str()
 	local foldSize = 1 + vim.v.foldend - vim.v.foldstart
 	local foldSizeStr = " " .. foldSize .. " lines "
 	local expansionString = string.rep(" ", vim.api.nvim_win_get_width(0) - #line - #foldSizeStr - 4)
@@ -132,11 +108,26 @@ function CustomFold()
 end
 
 function M.init()
-	vim.opt.foldmethod = "expr"
-	vim.opt.foldenable = false
-	vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 	vim.opt.foldlevel = 99
-	vim.opt.foldtext = "v:lua.CustomFold()"
+	vim.opt.foldenable = false
+	vim.opt.foldmethod = "expr"
+	vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = { "c", "cpp" },
+		callback = function()
+			vim.opt.foldtext = "v:lua.CppFold()"
+		end,
+	})
+
+	-- vim.api.nvim_create_autocmd("FileType", {
+	-- 	pattern = { "markdown", "text" },
+	-- 	callback = function()
+	-- 		-- Set foldmethod to 'manual' for markdown and text files
+	-- 		vim.opt_local.foldmethod = "manual"
+	-- 		vim.opt_local.foldlevel = 99 -- Open all folds by default
+	-- 	end,
+	-- })
 end
 
 return M
