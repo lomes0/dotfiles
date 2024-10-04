@@ -8,7 +8,7 @@ local opts = {
 	{ "tabstop", 4 },
 	{ "softtabstop", 4 },
 	{ "shiftwidth", 4 },
-	{ "scrolloff", 10 },
+	{ "scrolloff", 20 },
 	{ "updatetime", 50 },
 	{ "conceallevel", 2 },
 	{ "report", 999 },
@@ -153,14 +153,26 @@ local keymaps = {
 	},
 	{
 		"n",
-		"<tab>",
+		"<c-tab>",
 		"<cmd>tabnext<cr>",
 		desc = "next tab",
 	},
 	{
 		"n",
-		"<s-tab>",
+		"<c-s-tab>",
 		"<cmd>tabprev<cr>",
+		desc = "prev tab",
+	},
+	{
+		"t",
+		"<c-tab>",
+		"<c-\\><c-n><cmd>tabnext<cr>",
+		desc = "next tab",
+	},
+	{
+		"t",
+		"<c-s-tab>",
+		"<c-\\><c-n><cmd>tabprev<cr>",
 		desc = "prev tab",
 	},
 	{
