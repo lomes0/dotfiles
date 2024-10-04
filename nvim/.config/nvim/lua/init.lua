@@ -165,6 +165,12 @@ local keymaps = {
 	},
 	{
 		"t",
+		"<c-;>",
+		"<c-\\><c-n>:",
+		desc = "cmd mode",
+	},
+	{
+		"t",
 		"<c-tab>",
 		"<c-\\><c-n><cmd>tabnext<cr>",
 		desc = "next tab",
