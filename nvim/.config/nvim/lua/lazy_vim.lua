@@ -798,10 +798,22 @@ require("lazy").setup({
 					lsp_doc_border = false, -- add a border to hover docs and signature help
 				},
 				messages = {
+					-- notify
+					-- split
+					-- vsplit
+					-- popup
+					-- mini
+					-- cmdline
+					-- cmdline_popup
+					-- cmdline_output
+					-- messages
+					-- confirm
+					-- hover
+					-- popupmenu
 					enabled = true, -- enables the Noice messages UI
-					view = "vsplit", -- default view for messages
-					view_error = "vsplit", -- view for errors
-					view_warn = "noice", -- view for warnings
+					view = "notify", -- default view for messages
+					view_error = "popup", -- view for errors
+					view_warn = "mini", -- view for warnings
 					view_history = "messages", -- view for :messages
 					view_search = "virtualtext", -- view for search count messages. Set to `false` to disable
 				},
