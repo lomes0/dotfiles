@@ -4,6 +4,26 @@ require("lazy").setup({
 	-- 	lazy = false,
 	-- },
 	{
+		"akinsho/bufferline.nvim",
+		tag = "*",
+		requires = "nvim-tree/nvim-web-devicons",
+		lazy = "VeryLazy",
+		config = function()
+			require("bufferline").setup({
+				options = {
+					mode = "tabs",
+					show_buffer_icons = false,
+					show_buffer_close_icons = false,
+					show_close_icon = false,
+					tab_size = 20, -- Set the fixed width of tabs
+					diagnostics = false,
+					always_show_bufferline = true,
+				},
+			})
+			vim.o.showtabline = 1
+		end,
+	},
+	{
 		"olimorris/codecompanion.nvim",
 		lazy = false,
 		dependencies = {
@@ -1619,18 +1639,18 @@ require("lazy").setup({
 			})
 		end,
 	},
-	{
-		"swaits/zellij-nav.nvim",
-		lazy = true,
-		event = "VeryLazy",
-		keys = {
-			{ "<C-h>", "<cmd>ZellijNavigateLeft<cr>", { silent = true, desc = "navigate left" } },
-			{ "<C-j>", "<cmd>ZellijNavigateDown<cr>", { silent = true, desc = "navigate down" } },
-			{ "<C-k>", "<cmd>ZellijNavigateUp<cr>", { silent = true, desc = "navigate up" } },
-			{ "<C-l>", "<cmd>ZellijNavigateRight<cr>", { silent = true, desc = "navigate right" } },
-		},
-		opts = {},
-	},
+	-- {
+	-- 	"swaits/zellij-nav.nvim",
+	-- 	lazy = true,
+	-- 	event = "VeryLazy",
+	-- 	keys = {
+	-- 		{ "<C-h>", "<cmd>ZellijNavigateLeft<cr>", { silent = true, desc = "navigate left" } },
+	-- 		{ "<C-j>", "<cmd>ZellijNavigateDown<cr>", { silent = true, desc = "navigate down" } },
+	-- 		{ "<C-k>", "<cmd>ZellijNavigateUp<cr>", { silent = true, desc = "navigate up" } },
+	-- 		{ "<C-l>", "<cmd>ZellijNavigateRight<cr>", { silent = true, desc = "navigate right" } },
+	-- 	},
+	-- 	opts = {},
+	-- },
 	{
 		"mikavilpas/yazi.nvim",
 		lazy = true,
