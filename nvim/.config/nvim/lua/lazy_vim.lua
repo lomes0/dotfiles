@@ -2,7 +2,6 @@ require("lazy").setup({
 	--------------
 	-- Ai
 	--------------
-	-- Lazy
 	{
 		"zbirenbaum/copilot.lua",
 		cmd = "Copilot",
