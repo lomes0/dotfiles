@@ -620,6 +620,15 @@ require("lazy").setup({
 				end,
 			},
 			{
+				"zbirenbaum/copilot-cmp",
+				config = function()
+					require("copilot_cmp").setup({
+						suggestion = { enabled = true },
+						panel = { enabled = true },
+					})
+				end,
+			},
+			{
 				"hrsh7th/cmp-nvim-lua",
 				"hrsh7th/cmp-nvim-lsp",
 				"hrsh7th/cmp-nvim-lsp-signature-help",
@@ -652,10 +661,11 @@ require("lazy").setup({
 					["<S-Tab>"] = cmp.mapping.select_prev_item(),
 				}),
 				sources = cmp.config.sources({
-					{ name = "nvim_lsp" },
-					{ name = "nvim_lua" },
-					{ name = "luasnip" },
-					{ name = "path" },
+					{ name = "nvim_lsp", group_index = 1 },
+					{ name = "nvim_lua", group_index = 1 },
+					{ name = "path", group_index = 1 },
+					{ name = "copilot", group_index = 2 },
+					-- { name = "luasnip", group_index = 1 },
 				}, {
 					{ name = "buffer" },
 				}),
