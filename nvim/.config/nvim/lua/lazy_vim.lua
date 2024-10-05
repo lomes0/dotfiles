@@ -206,69 +206,27 @@ require("lazy").setup({
 			},
 		},
 	},
-	-- {
-	-- 	"olimorris/codecompanion.nvim",
-	-- 	lazy = false,
-	-- 	dependencies = {
-	-- 		"nvim-lua/plenary.nvim",
-	-- 		"nvim-treesitter/nvim-treesitter",
-	-- 		"hrsh7th/nvim-cmp", -- Optional: For using slash commands and variables in the chat buffer
-	-- 		"nvim-telescope/telescope.nvim", -- Optional: For using slash commands
-	-- 		{ "stevearc/dressing.nvim", opts = {} }, -- Optional: Improves the default Neovim UI
-	-- 	},
-	-- 	config = function()
-	-- 		require("codecompanion").setup({
-	-- 			strategies = {
-	-- 				chat = {
-	-- 					adapter = "llama3",
-	-- 				},
-	-- 				inline = {
-	-- 					adapter = "llama3",
-	-- 				},
-	-- 				agent = {
-	-- 					adapter = "llama3",
-	-- 				},
-	-- 			},
-	-- 			adapters = {
-	-- 				llama3 = function()
-	-- 					return require("codecompanion.adapters").extend("ollama", {
-	-- 						name = "llama3", -- Give this adapter a different name to differentiate it from the default ollama adapter
-	-- 						schema = {
-	-- 							model = {
-	-- 								default = "llama3:latest",
-	-- 							},
-	-- 							num_ctx = {
-	-- 								default = 2048,
-	-- 								-- default = 16384,
-	-- 							},
-	-- 							num_predict = {
-	-- 								default = -1,
-	-- 							},
-	-- 						},
-	-- 					})
-	-- 				end,
-	-- 			},
-	-- 		})
-	-- 	end,
-	-- },
+	--------------
+	-- Editor
+	--------------
 	{
-		"lomes0/vim-tmux-navigator",
-		cmd = {
-			"TmuxNavigateLeft",
-			"TmuxNavigateDown",
-			"TmuxNavigateUp",
-			"TmuxNavigateRight",
-		},
-		keys = {
-			{ "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
-			{ "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
-			{ "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
-			{ "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
-		},
-	},
-	{
-		"lomes0/nvim-bqf",
-		ft = "qf",
+		"akinsho/bufferline.nvim",
+		requires = "nvim-tree/nvim-web-devicons",
+		lazy = "VeryLazy",
+		config = function()
+			require("bufferline").setup({
+				options = {
+					mode = "tabs",
+					show_buffer_icons = false,
+					show_buffer_close_icons = false,
+					show_close_icon = false,
+					tab_size = 20, -- Set the fixed width of tabs
+					diagnostics = false,
+					always_show_bufferline = true,
+				},
+			})
+			vim.o.showtabline = 1
+		end,
 	},
 	{
 		"nvim-lua/plenary.nvim",
