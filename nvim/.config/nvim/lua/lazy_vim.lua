@@ -285,7 +285,7 @@ require("lazy").setup({
 	{
 		"echasnovski/mini.indentscope",
 		version = "*",
-		event = "VeryLazy",
+		event = { "BufReadPre", "BufNewFile" },
 		config = function()
 			require("mini.indentscope").setup({
 				draw = {
@@ -306,6 +306,32 @@ require("lazy").setup({
 					try_as_border = false,
 				},
 				symbol = "╎",
+			})
+
+			-- Disable for certain filetypes
+			vim.api.nvim_create_autocmd({ "FileType" }, {
+				desc = "Disable indentscope for certain filetypes",
+				callback = function()
+					local ignore_filetypes = {
+						"aerial",
+						"dashboard",
+						"help",
+						"lazy",
+						"leetcode.nvim",
+						"mason",
+						"neo-tree",
+						"NvimTree",
+						"neogitstatus",
+						"notify",
+						"startify",
+						"toggleterm",
+						"Trouble",
+						"markdown",
+					}
+					if vim.tbl_contains(ignore_filetypes, vim.bo.filetype) then
+						vim.b.miniindentscope_disable = true
+					end
+				end,
 			})
 		end,
 	},
