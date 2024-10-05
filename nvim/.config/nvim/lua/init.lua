@@ -466,26 +466,3 @@ require("floatterm").init()
 require("colors").init()
 require("colors").SetKan()
 set_cwd()
-
-function _G.quickfix_j_key()
-	-- local cursor_pos = vim.api.nvim_win_get_cursor(0)
-	-- vim.api.nvim_win_set_cursor(0, { cursor_pos[1] + 1, cursor_pos[2] })
-	-- local qhandler = require('bqf.qfwin.handler')
-	-- qhandler.open(false, false, 1011, 2)
-end
-
-function _G.quickfix_k_key()
-	-- local cursor_pos = vim.api.nvim_win_get_cursor(0)
-	-- vim.api.nvim_win_set_cursor(0, { cursor_pos[1] - 1, cursor_pos[2] })
-	-- local qhandler = require('bqf.qfwin.handler')
-	-- qhandler.open(false, false, 1011, 2)
-end
-
--- Create autocmd for quickfix window
--- vim.api.nvim_create_autocmd("FileType", {
--- 	pattern = "qf",
--- 	callback = function()
--- 		vim.api.nvim_buf_set_keymap(0, "n", "j", ":lua _G.quickfix_j_key()<cr>", { noremap = true, silent = true })
--- 		vim.api.nvim_buf_set_keymap(0, "n", "k", ":lua _G.quickfix_k_key()<cr>", { noremap = true, silent = true })
--- 	end,
--- })

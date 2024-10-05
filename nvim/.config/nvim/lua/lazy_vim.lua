@@ -899,7 +899,58 @@ require("lazy").setup({
 		lazy = true,
 		keys = { "<c-n>" },
 	},
+	--------------
 	-- View
+	--------------
+	{
+		"lomes0/nvim-bqf",
+		ft = "qf",
+		init = function()
+			local function qbf_move_entry(direction)
+				local cursor_pos = vim.api.nvim_win_get_cursor(0)
+				local last_line = vim.api.nvim_buf_line_count(0)
+				local next_cursor_pos = { cursor_pos[1] + direction, cursor_pos[2] }
+
+				if (cursor_pos[1] == last_line and direction == 1) or (cursor_pos[1] == 1 and direction == -1) then
+					return
+				end
+
+				local qhandler = require("bqf.qfwin.handler")
+				local qwinid = vim.api.nvim_get_current_win()
+				vim.api.nvim_win_set_cursor(0, next_cursor_pos)
+				qhandler.open(false, false, qwinid, next_cursor_pos[1])
+			end
+
+			function _G.quickfix_j_key()
+				qbf_move_entry(1)
+			end
+
+			function _G.quickfix_k_key()
+				qbf_move_entry(-1)
+			end
+
+			-- Create autocmd for quickfix window
+			vim.api.nvim_create_autocmd("FileType", {
+				pattern = "qf",
+				callback = function()
+					vim.api.nvim_buf_set_keymap(
+						0,
+						"n",
+						"j",
+						":lua _G.quickfix_j_key()<cr>",
+						{ noremap = true, silent = true }
+					)
+					vim.api.nvim_buf_set_keymap(
+						0,
+						"n",
+						"k",
+						":lua _G.quickfix_k_key()<cr>",
+						{ noremap = true, silent = true }
+					)
+				end,
+			})
+		end,
+	},
 	{
 		"stevearc/aerial.nvim",
 		config = function()
