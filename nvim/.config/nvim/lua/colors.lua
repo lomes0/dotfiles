@@ -112,10 +112,15 @@ function M.SetKan()
 	set_highlight("Folded", { bg = "#51576d", fg = "#808080" })
 end
 
+function M.SetTokyo() 
+	vim.api.nvim_command("colorscheme tokyonight")
+end
+
 function M.init()
-	vim.keymap.set("n", "<Leader>1", M.SetKan, { silent = true, noremap = true })
-	vim.keymap.set("n", "<Leader>2", M.SetCatppuccin, { silent = true, noremap = true })
-	vim.keymap.set("n", "<Leader>3", M.SetRose, { silent = true, noremap = true })
+	vim.keymap.set("n", "c1", M.SetTokyo, { silent = true, noremap = true })
+	vim.keymap.set("n", "c2", M.SetCatppuccin, { silent = true, noremap = true })
+	vim.keymap.set("n", "c3", M.SetKan, { silent = true, noremap = true })
+	vim.keymap.set("n", "c4", M.SetRose, { silent = true, noremap = true })
 end
 
 return M
