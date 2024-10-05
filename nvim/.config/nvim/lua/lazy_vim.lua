@@ -1,21 +1,65 @@
 require("lazy").setup({
+	--------------
+	-- Ai
+	--------------
+	-- Lazy
 	{
-		"akinsho/bufferline.nvim",
-		requires = "nvim-tree/nvim-web-devicons",
-		lazy = "VeryLazy",
+		"vague2k/vague.nvim",
 		config = function()
-			require("bufferline").setup({
-				options = {
-					mode = "tabs",
-					show_buffer_icons = false,
-					show_buffer_close_icons = false,
-					show_close_icon = false,
-					tab_size = 20, -- Set the fixed width of tabs
-					diagnostics = false,
-					always_show_bufferline = true,
-				},
+			require("vague").setup({
+				-- optional configuration here
 			})
-			vim.o.showtabline = 1
+		end,
+	},
+	{
+		"zbirenbaum/copilot.lua",
+		cmd = "Copilot",
+		event = "InsertEnter",
+		config = function()
+			require("copilot").setup({
+				panel = {
+					enabled = true,
+					auto_refresh = false,
+					keymap = {
+						jump_prev = "[[",
+						jump_next = "]]",
+						accept = "<CR>",
+						refresh = "gr",
+						open = "<M-CR>",
+					},
+					layout = {
+						position = "bottom", -- | top | left | right
+						ratio = 0.4,
+					},
+				},
+				suggestion = {
+					enabled = true,
+					auto_trigger = false,
+					hide_during_completion = true,
+					debounce = 75,
+					keymap = {
+						accept = "<M-l>",
+						accept_word = false,
+						accept_line = false,
+						next = "<M-]>",
+						prev = "<M-[>",
+						dismiss = "<C-]>",
+					},
+				},
+				filetypes = {
+					yaml = false,
+					markdown = false,
+					help = false,
+					gitcommit = false,
+					gitrebase = false,
+					hgcommit = false,
+					svn = false,
+					cvs = false,
+					["."] = false,
+				},
+				copilot_node_command = "node", -- Node.js version must be > 18.x
+				server_opts_overrides = {},
+			})
 		end,
 	},
 	{
@@ -25,10 +69,9 @@ require("lazy").setup({
 		version = false, -- set this if you want to always pull the latest change
 		opts = {
 			---@alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | string
-			provider = "ollama", -- Recommend using Claude
-			auto_suggestions_provider = "ollama", -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
+			provider = "copilot", -- Recommend using Claude
+			auto_suggestions_provider = "copilot", -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
 			vendors = {
-				---@type AvanteProvider
 				ollama = {
 					["local"] = true,
 					endpoint = "127.0.0.1:11434/v1",
@@ -101,14 +144,13 @@ require("lazy").setup({
 				---@type "right" | "left" | "top" | "bottom"
 				position = "right", -- the position of the sidebar
 				wrap = true, -- similar to vim.o.wrap
-				width = 30, -- default % based on available width
+				width = 45, -- default % based on available width
 				sidebar_header = {
 					align = "center", -- left, center, right for title
 					rounded = true,
 				},
 			},
 			highlights = {
-				---@type AvanteConflictHighlights
 				diff = {
 					current = "DiffText",
 					incoming = "DiffAdd",
@@ -152,8 +194,13 @@ require("lazy").setup({
 			{
 				-- Make sure to set this up properly if you have lazy=true
 				"MeanderingProgrammer/render-markdown.nvim",
+				dependencies = {
+					"nvim-treesitter/nvim-treesitter",
+					"echasnovski/mini.nvim",
+				},
 				opts = {
 					file_types = { "markdown", "Avante" },
+					anti_conceal = { enabled = false },
 				},
 				ft = { "markdown", "Avante" },
 			},
