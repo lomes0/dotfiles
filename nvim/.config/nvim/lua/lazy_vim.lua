@@ -1680,37 +1680,48 @@ require("lazy").setup({
 			require("fidget").setup({})
 		end,
 	},
-	-- Coding
+	--------------
+	-- Debugger
+	--------------
 	{
 		"mfussenegger/nvim-dap",
 		lazy = true,
+		dependencies = {
+			"theHamsta/nvim-dap-virtual-text",
+			"williamboman/mason.nvim",
+		},
 		config = function()
 			local dap = require("dap")
+			require("dapui").setup()
+			require("nvim-dap-virtual-text").setup()
+
 			dap.adapters.gdb = {
 				type = "executable",
 				command = "/usr/local/bin/gdb",
 				args = { "-i", "dap" },
 			}
-			dap.configurations.c = {
-				{
-					name = "Launch",
-					type = "gdb",
-					request = "launch",
-					program = function()
-						return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-					end,
-					cwd = "${workspaceFolder}",
-					stopAtBeginningOfMainSubprogram = true,
+			dap.adapters.lldb = {
+				type = "server",
+				port = "${port}",
+				executable = {
+					command = "/home/eransa/.local/share/nvim/mason/bin/codelldb",
+					args = { "--port", "${port}" },
 				},
 			}
-		end,
-	},
-	{
-		"rcarriga/nvim-dap-ui",
-		lazy = true,
-		dependencies = { "mfussenegger/nvim-dap", "nvim-neotest/nvim-nio" },
-		config = function()
-			require("dapui").setup({})
+
+			-- dap.configurations.c = {
+			-- 	{
+			-- 		name = "Launch",
+			-- 		type = "gdb",
+			-- 		request = "launch",
+			-- 		program = function()
+			-- 			return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+			-- 		end,
+			-- 		cwd = "${workspaceFolder}",
+			-- 		stopAtBeginningOfMainSubprogram = true,
+			-- 	},
+			-- }
+
 			require("which-key").add({
 				{
 					"<lt>u",
@@ -1720,6 +1731,29 @@ require("lazy").setup({
 					noremap = true,
 					desc = "Dapui toggle",
 				},
+			})
+		end,
+	},
+	{
+		"rcarriga/nvim-dap-ui",
+		lazy = true,
+		dependencies = {
+			"mfussenegger/nvim-dap",
+			"nvim-neotest/nvim-nio",
+		},
+		config = function()
+			require("dapui").setup()
+		end,
+	},
+	{
+		"julianolf/nvim-dap-lldb",
+		lazy = true,
+		dependencies = {
+			"mfussenegger/nvim-dap",
+		},
+		config = function()
+			require("nvim-dap-lldb").setup({
+				codelldb_path = "~/.local/share/nvim/mason/bin/codelldb",
 			})
 		end,
 	},
