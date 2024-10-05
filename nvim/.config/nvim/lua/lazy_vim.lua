@@ -2237,3 +2237,94 @@ require("lazy").setup({
 		},
 	},
 })
+
+-- {
+-- 	"olimorris/codecompanion.nvim",
+-- 	lazy = false,
+-- 	dependencies = {
+-- 		"nvim-lua/plenary.nvim",
+-- 		"nvim-treesitter/nvim-treesitter",
+-- 		"hrsh7th/nvim-cmp", -- Optional: For using slash commands and variables in the chat buffer
+-- 		"nvim-telescope/telescope.nvim", -- Optional: For using slash commands
+-- 		{ "stevearc/dressing.nvim", opts = {} }, -- Optional: Improves the default Neovim UI
+-- 	},
+-- 	config = function()
+-- 		require("codecompanion").setup({
+-- 			strategies = {
+-- 				chat = {
+-- 					adapter = "llama3",
+-- 				},
+-- 				inline = {
+-- 					adapter = "llama3",
+-- 				},
+-- 				agent = {
+-- 					adapter = "llama3",
+-- 				},
+-- 			},
+-- 			adapters = {
+-- 				llama3 = function()
+-- 					return require("codecompanion.adapters").extend("ollama", {
+-- 						name = "llama3", -- Give this adapter a different name to differentiate it from the default ollama adapter
+-- 						schema = {
+-- 							model = {
+-- 								default = "llama3:latest",
+-- 							},
+-- 							num_ctx = {
+-- 								default = 2048,
+-- 								-- default = 16384,
+-- 							},
+-- 							num_predict = {
+-- 								default = -1,
+-- 							},
+-- 						},
+-- 					})
+-- 				end,
+-- 			},
+-- 		})
+-- 	end,
+-- },
+
+-- {
+-- 	"L3MON4D3/LuaSnip",
+-- 	event = "VeryLazy",
+-- 	-- follow latest release.
+-- 	version = "v2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+-- 	-- install jsregexp (optional!).
+-- 	build = "make install_jsregexp",
+-- 	config = function()
+-- 		local ls = require("luasnip")
+-- 		vim.keymap.set({ "i" }, "<C-K>", function()
+-- 			ls.expand()
+-- 		end, { silent = true })
+-- 		vim.keymap.set({ "i", "s" }, "<C-L>", function()
+-- 			ls.jump(1)
+-- 		end, { silent = true })
+-- 		vim.keymap.set({ "i", "s" }, "<C-J>", function()
+-- 			ls.jump(-1)
+-- 		end, { silent = true })
+--
+-- 		vim.keymap.set({ "i", "s" }, "<C-E>", function()
+-- 			if ls.choice_active() then
+-- 				ls.change_choice(1)
+-- 			end
+-- 		end, { silent = true })
+-- 	end,
+-- },
+
+-- {
+-- 	"swaits/zellij-nav.nvim",
+-- 	lazy = true,
+-- 	event = "VeryLazy",
+-- 	keys = {
+-- 		{ "<C-h>", "<cmd>ZellijNavigateLeft<cr>", { silent = true, desc = "navigate left" } },
+-- 		{ "<C-j>", "<cmd>ZellijNavigateDown<cr>", { silent = true, desc = "navigate down" } },
+-- 		{ "<C-k>", "<cmd>ZellijNavigateUp<cr>", { silent = true, desc = "navigate up" } },
+-- 		{ "<C-l>", "<cmd>ZellijNavigateRight<cr>", { silent = true, desc = "navigate right" } },
+-- 	},
+-- 	opts = {},
+-- },
+--
+-- {
+-- 	"github/copilot.vim",
+-- 	lazy = false,
+-- },
