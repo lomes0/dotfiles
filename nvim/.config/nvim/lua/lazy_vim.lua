@@ -1064,13 +1064,6 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"MeanderingProgrammer/render-markdown.nvim",
-		opts = {},
-		dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.nvim" }, -- if you use the mini.nvim suite
-		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.icons' }, -- if you use standalone mini plugins
-		-- dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' }, -- if you prefer nvim-web-devicons
-	},
-	{
 		"folke/twilight.nvim",
 		cmd = { "Twilight" },
 		lazy = true,
@@ -1160,6 +1153,9 @@ require("lazy").setup({
 				height = 0.9, -- Decimals are a percentage of the editor
 				position = "E", -- NW,N,NW,W,C,E,SW,S,SE (C==center)
 				border = "rounded", -- rounded,double,single
+				onload = function()
+					vim.api.nvim_set_option_value("scrolloff", 5, {})
+				end,
 			})
 			require("which-key").add({
 				{
@@ -1313,7 +1309,9 @@ require("lazy").setup({
 			})
 		end,
 	},
+	--------------
 	-- Lsp
+	--------------
 	{
 		"folke/lazydev.nvim",
 		ft = "lua", -- only load on lua files
@@ -1423,9 +1421,6 @@ require("lazy").setup({
 		dependencies = {
 			"VonHeikemen/lsp-zero.nvim",
 		},
-		cond = function()
-			return not vim.bo.filetype == "mdx"
-		end,
 		config = function()
 			local lsp = require("lsp-zero")
 			require("mason-lspconfig").setup({
