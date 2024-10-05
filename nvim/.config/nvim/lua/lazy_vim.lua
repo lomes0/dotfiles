@@ -1757,7 +1757,24 @@ require("lazy").setup({
 			})
 		end,
 	},
+	--------------
 	-- Navigation
+	--------------
+	{
+		"lomes0/vim-tmux-navigator",
+		cmd = {
+			"TmuxNavigateLeft",
+			"TmuxNavigateDown",
+			"TmuxNavigateUp",
+			"TmuxNavigateRight",
+		},
+		keys = {
+			{ "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
+			{ "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
+			{ "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
+			{ "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
+		},
+	},
 	{
 		"nvim-telescope/telescope.nvim",
 		event = "VeryLazy",
@@ -1765,6 +1782,9 @@ require("lazy").setup({
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-tree/nvim-web-devicons",
+			{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+			"debugloop/telescope-undo.nvim",
+			"nvim-telescope/telescope-dap.nvim",
 		},
 		config = function()
 			local focus_preview = function(prompt_bufnr)
