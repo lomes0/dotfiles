@@ -113,7 +113,10 @@ function M.SetKan()
 end
 
 function M.SetTokyo() 
-	vim.api.nvim_command("colorscheme tokyonight")
+	set_color_common("tokyonight", {
+		bg = "#51576d",
+		fg = "",
+	})
 end
 
 function M.init()
