@@ -513,10 +513,6 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"nvim-lua/plenary.nvim",
-		event = "VeryLazy",
-	},
-	{
 		"kylechui/nvim-surround",
 		version = "*",
 		event = "VeryLazy",
