@@ -1,10 +1,8 @@
 vim.g.mapleader = "<"
-vim.o.autowriteall = true
-vim.o.guifont = "Hack"
-local move_floating_window_scale = 4
-_G.clipboard_icon = ""
 
 local opts = {
+	{ "guifont", "Hack" },
+	{ "autowriteall", true },
 	{ "tabstop", 4 },
 	{ "softtabstop", 4 },
 	{ "shiftwidth", 4 },
@@ -34,9 +32,7 @@ local opts = {
 	{ "winfixwidth", false },
 	{ "winfixheight", false },
 	{ "signcolumn", "number" },
-	{ "guicursor", "n-v-c-i:block" },
 	{ "encoding", "UTF-8" },
-	{ "guicursor", "" },
 	{ "undodir", os.getenv("HOME") .. "/.vim/undodir" },
 }
 
@@ -48,6 +44,8 @@ local keymaps_noremap = {
 		desc = "Delete into void register",
 	},
 }
+
+local move_floating_window_scale = 4
 
 local keymaps = {
 	{

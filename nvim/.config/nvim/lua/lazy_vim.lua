@@ -1261,6 +1261,7 @@ require("lazy").setup({
 			"nvim-tree/nvim-web-devicons",
 		},
 		config = function()
+			_G.clipboard_icon = ""
 			require("lualine").setup({
 				options = {
 					icons_enabled = true,
