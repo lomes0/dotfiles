@@ -192,6 +192,12 @@ require("lazy").setup({
 				opts = {
 					file_types = { "markdown", "Avante" },
 					anti_conceal = { enabled = false },
+					win_options = {
+						concealcursor = {
+							default = vim.api.nvim_get_option_value("concealcursor", {}),
+							rendered = "nc",
+						},
+					},
 				},
 				ft = { "markdown", "Avante" },
 			},
@@ -304,6 +310,7 @@ require("lazy").setup({
 				desc = "Disable indentscope for certain filetypes",
 				callback = function()
 					local ignore_filetypes = {
+						"Avante",
 						"aerial",
 						"dashboard",
 						"help",
