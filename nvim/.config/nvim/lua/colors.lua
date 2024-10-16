@@ -24,6 +24,8 @@ local function set_color_cursor_hl(opts)
 	set_highlight("LspReferenceRead", opts)
 	set_highlight("LspReferenceWrite", opts)
 	set_highlight("LspReferenceText", opts)
+	set_highlight("TSDefinition", opts)
+	set_highlight("TSDefinitionUsage", opts)
 end
 
 local function set_color_win_seperator()
@@ -112,7 +114,7 @@ function M.SetKan()
 	set_highlight("Folded", { bg = "#51576d", fg = "#808080" })
 end
 
-function M.SetTokyo() 
+function M.SetTokyo()
 	set_color_common("tokyonight", {
 		bg = "#51576d",
 		fg = "",
@@ -124,6 +126,8 @@ function M.init()
 	vim.keymap.set("n", "c2", M.SetCatppuccin, { silent = true, noremap = true })
 	vim.keymap.set("n", "c3", M.SetKan, { silent = true, noremap = true })
 	vim.keymap.set("n", "c4", M.SetRose, { silent = true, noremap = true })
+
+	M.SetCatppuccin()
 end
 
 return M
