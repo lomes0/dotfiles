@@ -10,12 +10,6 @@ function Floatterm:new()
 		loaded = nil,
 		buf = nil,
 		win = nil,
-		-- pos = {
-		-- 	x = nil,
-		-- 	y = nil,
-		-- 	width = nil,
-		-- 	height = nil,
-		-- }
 	}
 
 	setmetatable(term, Floatterm)
@@ -48,10 +42,10 @@ function Floatterm:toggle()
 		-- Buffer-local Keymaps
 		local keymaps_opts = { silent = true, buffer = self.buf }
 		vim.keymap.set("n", "<ESC>", function()
-			Launch_floatterm()
+			Launch_floatterm(1)
 		end, keymaps_opts)
 		vim.keymap.set("n", "q", function()
-			Launch_floatterm()
+			Launch_floatterm(1)
 		end, keymaps_opts)
 	else
 		vim.api.nvim_win_hide(self.win)
