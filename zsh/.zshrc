@@ -20,7 +20,7 @@ CASE_SENSITIVE="true"
 ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git zsh-syntax-highlighting zsh-vi-mode)
 source $ZSH/oh-my-zsh.sh
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
@@ -59,6 +59,7 @@ alias tmux='TERM=screen-256color tmux'
 alias fzf="fzf --preview 'bat --style=numbers --color=always {}'"
 alias fd="fdfind"
 export FZF_DEFAULT_COMMAND='fdfind --type f --strip-cwd-prefix --hidden --follow --exclude .git --exclude node_modules'
+alias nv=nvim
 
 alias ls="eza --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt"
 alias ll="eza --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt"
