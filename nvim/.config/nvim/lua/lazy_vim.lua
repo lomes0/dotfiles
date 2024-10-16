@@ -2134,7 +2134,7 @@ require("lazy").setup({
 					light = "latte",
 					dark = "mocha",
 				},
-				transparent_background = false, -- disables setting the background color.
+				transparent_background = true, -- disables setting the background color.
 				show_end_of_buffer = true, -- shows the '~' characters after the end of buffers
 				term_colors = true, -- sets terminal colors (e.g. `g:terminal_color_0`)
 				dim_inactive = {
@@ -2205,7 +2205,7 @@ require("lazy").setup({
 		opts = {
 			style = "night", -- The theme comes in three styles, `storm`, a darker variant `night` and `day`
 			light_style = "day", -- The theme is used when the background is set to light
-			transparent = false, -- Enable this to disable setting the background color
+			transparent = true, -- Enable this to disable setting the background color
 			terminal_colors = true, -- Configure the colors used when opening a `:terminal` in Neovim
 			styles = {
 				-- Style to be applied to different syntax groups
