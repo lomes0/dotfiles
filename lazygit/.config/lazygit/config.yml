@@ -23,6 +23,7 @@ keybinding:
   universal:
     quit: "q"
 promptToReturnFromSubprocess: false
+disableStartupPopups: true
 git:
   paging:
     colorArg: never
