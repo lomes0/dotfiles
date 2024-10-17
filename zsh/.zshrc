@@ -20,10 +20,9 @@ CASE_SENSITIVE="true"
 ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
-plugins=(git zsh-syntax-highlighting zsh-vi-mode)
+plugins=(git zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source <(fzf --zsh)
 
 #
 # User configuration
@@ -57,8 +56,7 @@ alias zl="zellij --layout ~/.config/zellij/layout.kdl"
 alias lz="lazygit"
 alias tmux='TERM=screen-256color tmux'
 alias fzf="fzf --preview 'bat --style=numbers --color=always {}'"
-alias fd="fdfind"
-export FZF_DEFAULT_COMMAND='fdfind --type f --strip-cwd-prefix --hidden --follow --exclude .git --exclude node_modules'
+export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git --exclude node_modules'
 alias nv=nvim
 
 alias ls="eza --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt"
@@ -67,7 +65,12 @@ alias cat="bat"
 alias z="~/.local/bin/zoxide"
 
 export ZSH_HIGHLIGHT_STYLES[comment]='fg=gray,dimmed'
-export LS_COLORS="$(vivid generate nord)"
+export ZSH_HIGHLIGHT_STYLES[command]='fg=blue,dimmed'
+export ZSH_HIGHLIGHT_STYLES[path]='fg=white,dimmed'
+# default,unknown-token,reserved-word,alias,builtin,function,command,hashed-command,precommand,commandseparator,autodirectory,path,globbing,history-expansion,single-hyphen-option,double-hyphen-option,back-quoted-argument,single-quoted-argument,double-quoted-argument,dollar-double-quoted-argument,back-double-quoted-argument,assign,redirection,comment,named-fd,arg0
+# bold, faint, standout, underline, blink, no-bold, no-faint, no-standout, no-underline, no-blink, reset
+# black, red, green, yellow, blue, magenta, cyan, white
+export LS_COLORS="$(vivid generate catppuccin-frappe)"
 
 eval "$(starship init zsh)"
 
