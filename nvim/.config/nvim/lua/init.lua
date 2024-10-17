@@ -1,4 +1,5 @@
 vim.g.mapleader = "<"
+vim.opt.fillchars = { eob = " " }
 
 local opts = {
 	{ "guifont", "Hack" },
