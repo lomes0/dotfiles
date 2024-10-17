@@ -1692,12 +1692,7 @@ require("lazy").setup({
 			require("dapui").setup()
 			require("nvim-dap-virtual-text").setup()
 
-			dap.adapters.gdb = {
-				type = "executable",
-				command = "/usr/local/bin/gdb",
-				args = { "-i", "dap" },
-			}
-			dap.adapters.lldb = {
+			dap.adapters.codelldb = {
 				type = "server",
 				port = "${port}",
 				executable = {
@@ -1706,18 +1701,38 @@ require("lazy").setup({
 				},
 			}
 
-			-- dap.configurations.c = {
+			-------
+			-- Now use .vscode/launch.json:
+			-------
+			-- [[
 			-- 	{
-			-- 		name = "Launch",
-			-- 		type = "gdb",
+			-- 	  "version": "0.2.0",
+			-- 	  "configurations": [
+			-- 	    {
+			-- 	      "name": "Launch debugger",
+			-- 	      "type": "codelldb",
+			-- 	      "request": "launch",
+			-- 	      "cwd": "${workspaceFolder}",
+			-- 	      "program": "path/to/executable"
+			-- 	    }
+			-- 	  ]
+			-- 	}
+			-- ]]
+
+			-- dap.configurations.cpp = {
+			-- 	{
+			-- 		name = "Launch file",
+			-- 		type = "codelldb",
 			-- 		request = "launch",
 			-- 		program = function()
 			-- 			return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
 			-- 		end,
-			-- 		cwd = "${workspaceFolder}",
+			-- 		-- cwd = "${workspaceFolder}",
 			-- 		stopAtBeginningOfMainSubprogram = true,
 			-- 	},
 			-- }
+			--
+			-- dap.configurations.c = dap.configurations.cpp
 
 			require("which-key").add({
 				{
