@@ -2,15 +2,6 @@ gui:
   showIcons: false
   sidePanelWidth: 0.2
   theme:
-    # activeBorderColor:
-    #   - '#b9e1eb'
-    #   - bold
-    # optionsTextColor:
-    #   - black
-    # inactiveBorderColor:
-    #   - '#0af7f3'
-    # selectedLineBgColor:
-    #   - '#609c7e'
     unstagedChangesColor:
       - '#d5e2f7'
     defaultFgColor:
@@ -24,7 +15,7 @@ keybinding:
     quit: "q"
 promptToReturnFromSubprocess: false
 disableStartupPopups: true
-git:
-  paging:
-    colorArg: never
-    pager: ydiff -s -p cat --wrap --width={{columnWidth}}
+# git:
+#   paging:
+#     colorArg: never
+#     pager: ydiff -s -p cat --wrap --width={{columnWidth}}
