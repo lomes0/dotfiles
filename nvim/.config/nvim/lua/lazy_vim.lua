@@ -1245,60 +1245,18 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"lomes0/sidebar.nvim",
-		event = "VeryLazy",
-		cond = function()
-			return not vim.api.nvim_get_option_value("diff", { win = 0 })
-		end,
+		"nvim-tree/nvim-tree.lua",
+		version = "*",
+		lazy = false,
+		dependencies = {
+			"nvim-tree/nvim-web-devicons",
+		},
 		config = function()
-			require("sidebar-nvim").setup({
-				open = false,
-				disable_default_keybindings = 1,
-				bindings = nil,
-				side = "left",
-				initial_width = 35,
-				hide_statusline = true,
-				update_interval = 0,
-				sections = {
-					"files",
-					"buffers",
-				},
-				section_separator = { "", "", "" },
-				section_title_separator = { "---------" },
-				containers = {
-					attach_shell = "/bin/sh",
-					show_all = true,
-					interval = 5000,
-				},
-				todos = { ignored_paths = { "~" } },
-				files = {
-					icon = "",
-					show_hidden = false,
-					ignored_paths = { "%.git$" },
-				},
-				buffers = {
-					icon = "",
-					ignored_buffers = {}, -- ignore buffers by regex
-					sorting = "name", -- alternatively set it to "name" to sort by buffer name instead of buf id
-					show_numbers = false, -- whether to also show the buffer numbers
-					ignore_not_loaded = true, -- whether to ignore not loaded buffers
-					ignore_terminal = true, -- whether to show terminal buffers in the list
-				},
-			})
-			vim.api.nvim_create_autocmd(
-				{ "BufAdd", "BufDelete", "BufEnter", "TabEnter", "ModeChanged", "DiagnosticChanged" },
-				{
-					callback = function()
-						require("sidebar-nvim").update()
-					end,
-				}
-			)
-			vim.keymap.set(
-				"n",
-				"`",
-				require("sidebar-nvim").toggle,
-				{ noremap = true, silent = true, desc = "Sidebar toggle" }
-			)
+			require("nvim-tree").setup({})
+
+			vim.keymap.set("n", "`", function()
+				vim.api.nvim_command("NvimTreeToggle")
+			end, { noremap = true, silent = true, desc = "Sidebar toggle" })
 		end,
 	},
 	{
