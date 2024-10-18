@@ -1692,7 +1692,7 @@ require("lazy").setup({
 			require("dapui").setup()
 			require("nvim-dap-virtual-text").setup()
 
-			dap.adapters.codelldb = {
+			dap.adapters.lldb = {
 				type = "server",
 				port = "${port}",
 				executable = {
@@ -1710,7 +1710,7 @@ require("lazy").setup({
 			-- 	  "configurations": [
 			-- 	    {
 			-- 	      "name": "Launch debugger",
-			-- 	      "type": "codelldb",
+			-- 	      "type": "lldb",
 			-- 	      "request": "launch",
 			-- 	      "cwd": "${workspaceFolder}",
 			-- 	      "program": "path/to/executable"
@@ -1718,21 +1718,6 @@ require("lazy").setup({
 			-- 	  ]
 			-- 	}
 			-- ]]
-
-			-- dap.configurations.cpp = {
-			-- 	{
-			-- 		name = "Launch file",
-			-- 		type = "codelldb",
-			-- 		request = "launch",
-			-- 		program = function()
-			-- 			return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
-			-- 		end,
-			-- 		-- cwd = "${workspaceFolder}",
-			-- 		stopAtBeginningOfMainSubprogram = true,
-			-- 	},
-			-- }
-			--
-			-- dap.configurations.c = dap.configurations.cpp
 
 			require("which-key").add({
 				{
