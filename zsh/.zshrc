@@ -72,13 +72,20 @@ export ZSH_HIGHLIGHT_STYLES[path]='fg=white,dimmed'
 # black, red, green, yellow, blue, magenta, cyan, white
 export LS_COLORS="$(vivid generate catppuccin-frappe)"
 
-eval "$(starship init zsh)"
-
 if [[ $(ps --no-header -p $PPID -o comm) =~ '^alacritty$' ]]; then
 	for wid in $(xdotool search --pid $PPID); do
 		xprop -f _KDE_NET_WM_BLUR_BEHIND_REGION 32c -set _KDE_NET_WM_BLUR_BEHIND_REGION 0 -id $wid;
 	done
 fi
+
+# autoload -U promptinit; promptinit
+# prompt pure
+
+export LC_ALL=en_IN.UTF-8
+export LANG=en_IN.UTF-8
+export LANGUAGE=en_IN.UTF-8
+
+eval "$(starship init zsh)"
 
 # # pnpm
 # export PNPM_HOME="/home/eransa/.local/share/pnpm"
