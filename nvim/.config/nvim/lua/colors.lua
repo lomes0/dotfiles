@@ -61,6 +61,29 @@ local function set_color_common(scheme, opts_cursor, opts_ts)
 	set_color_cursor_hl(opts_cursor)
 	set_color_win_seperator()
 	set_color_visual()
+
+	-- Define highlight groups for white line background
+	-- vim.cmd('highlight DapBreakpointLine guifg=#000000')
+	vim.api.nvim_set_hl(0, "DapStoppedLine", {
+	  bg = "#365d78",  -- Background color
+	  fg = "#c5cdd6",  -- Foreground color
+	  blend = 60       -- Blend level
+	})
+
+	-- Define the signs with the updated line highlighting
+	vim.fn.sign_define('DapBreakpoint', {
+	    text = '○', -- nerdfonts icon here
+	    texthl = 'DapBreakpointSymbol',
+	    linehl = 'DapBreakpointLine', -- Use the new highlight group
+	    numhl = 'DapBreakpoint',
+	})
+
+	vim.fn.sign_define('DapStopped', {
+	    text = '◉',
+	    texthl = 'DapStoppedSymbol',
+	    linehl = 'DapStoppedLine',
+	    numhl = 'DapBreakpoint',
+	})
 end
 
 function M.SetCatppuccin()
