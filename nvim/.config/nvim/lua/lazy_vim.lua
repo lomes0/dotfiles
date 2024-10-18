@@ -1945,7 +1945,9 @@ require("lazy").setup({
 			yazi_floating_window_border = "none",
 		},
 	},
+	--------------
 	-- Git
+	--------------
 	{
 		"lewis6991/gitsigns.nvim",
 		event = "VeryLazy",
@@ -2055,7 +2057,9 @@ require("lazy").setup({
 		lazy = true,
 		cmd = { "DiffviewOpen" },
 	},
+	--------------
 	-- Colors
+	--------------
 	{
 		"rose-pine/neovim",
 		lazy = "true",
