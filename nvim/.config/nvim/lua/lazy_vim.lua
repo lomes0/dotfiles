@@ -2,57 +2,6 @@ require("lazy").setup({
 	--------------
 	-- Ai
 	--------------
-	-- {
-	-- 	"zbirenbaum/copilot.lua",
-	-- 	cmd = "Copilot",
-	-- 	event = "InsertEnter",
-	-- 	config = function()
-	-- 		require("copilot").setup({
-	-- 			panel = {
-	-- 				enabled = true,
-	-- 				auto_refresh = false,
-	-- 				keymap = {
-	-- 					jump_prev = "[[",
-	-- 					jump_next = "]]",
-	-- 					accept = "<CR>",
-	-- 					refresh = "gr",
-	-- 					open = "<M-CR>",
-	-- 				},
-	-- 				layout = {
-	-- 					position = "bottom", -- | top | left | right
-	-- 					ratio = 0.4,
-	-- 				},
-	-- 			},
-	-- 			suggestion = {
-	-- 				enabled = true,
-	-- 				auto_trigger = false,
-	-- 				hide_during_completion = true,
-	-- 				debounce = 75,
-	-- 				keymap = {
-	-- 					accept = "<M-l>",
-	-- 					accept_word = false,
-	-- 					accept_line = false,
-	-- 					next = "<M-]>",
-	-- 					prev = "<M-[>",
-	-- 					dismiss = "<C-]>",
-	-- 				},
-	-- 			},
-	-- 			filetypes = {
-	-- 				yaml = false,
-	-- 				markdown = false,
-	-- 				help = false,
-	-- 				gitcommit = false,
-	-- 				gitrebase = false,
-	-- 				hgcommit = false,
-	-- 				svn = false,
-	-- 				cvs = false,
-	-- 				["."] = false,
-	-- 			},
-	-- 			copilot_node_command = "node", -- Node.js version must be > 18.x
-	-- 			server_opts_overrides = {},
-	-- 		})
-	-- 	end,
-	-- },
 	{
 		"yetone/avante.nvim",
 		event = "VeryLazy",
@@ -1699,6 +1648,68 @@ require("lazy").setup({
 	--------------
 	-- Navigation
 	--------------
+	{
+		"ThePrimeagen/harpoon",
+		lazy = false,
+		branch = "harpoon2",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		config = function()
+			local harpoon = require("harpoon")
+
+			-- REQUIRED
+			harpoon:setup()
+			-- REQUIRED
+
+			vim.keymap.set("n", "<leader>a", function()
+				harpoon:list():add()
+			end)
+
+			vim.keymap.set("n", "<C-h>", function()
+				harpoon:list():select(1)
+			end)
+			vim.keymap.set("n", "<C-t>", function()
+				harpoon:list():select(2)
+			end)
+			vim.keymap.set("n", "<C-n>", function()
+				harpoon:list():select(3)
+			end)
+			vim.keymap.set("n", "<C-s>", function()
+				harpoon:list():select(4)
+			end)
+
+			-- Toggle previous & next buffers stored within Harpoon list
+			-- vim.keymap.set("n", "", function()
+			-- 	harpoon:list():prev()
+			-- end)
+			-- vim.keymap.set("n", "", function()
+			-- 	harpoon:list():next()
+			-- end)
+
+			-- basic telescope configuration
+			local conf = require("telescope.config").values
+			local function toggle_telescope(harpoon_files)
+				local file_paths = {}
+				for _, item in ipairs(harpoon_files.items) do
+					table.insert(file_paths, item.value)
+				end
+
+				require("telescope.pickers")
+					.new({}, {
+						prompt_title = "Harpoon",
+						finder = require("telescope.finders").new_table({
+							results = file_paths,
+						}),
+						previewer = conf.file_previewer({}),
+						sorter = conf.generic_sorter({}),
+					})
+					:find()
+			end
+
+			vim.keymap.set("n", "<lt>h", function()
+				toggle_telescope(harpoon:list())
+			end, { desc = "Open harpoon window" })
+		end,
+	},
 	{
 		"lomes0/vim-tmux-navigator",
 		cmd = {
