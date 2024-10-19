@@ -230,16 +230,6 @@ require("lazy").setup({
 		lazy = false,
 	},
 	{
-		"folke/which-key.nvim",
-		event = "VeryLazy",
-		config = function()
-			require("which-key").setup({
-				sort = { "desc", "alphanum", "lower", "icase", "mod" },
-				delay = 1500,
-			})
-		end,
-	},
-	{
 		"echasnovski/mini.ai",
 		version = "*",
 		lazy = false,
@@ -905,22 +895,15 @@ require("lazy").setup({
 				end
 			end
 
-			require("which-key").add({
-				{
-					"<lt>r",
-					Format,
-					mode = "n",
-					noremap = true,
-					silent = true,
-					desc = "Conform format",
-				},
-				-- {
-				-- 	"<lt>d",
-				-- 	FormatDiff,
-				-- 	noremap = true,
-				-- 	silent = true,
-				-- 	desc = "Conform format diff",
-				-- },
+			vim.keymap.set("n", "<lt>r", Format, {
+				noremap = true,
+				silent = true,
+				desc = "Conform format",
+			})
+			vim.keymap.set("n", "<lt>d", FormatDiff, {
+				noremap = true,
+				silent = true,
+				desc = "Conform format diff",
 			})
 		end,
 	},
@@ -1168,15 +1151,10 @@ require("lazy").setup({
 		},
 		config = function()
 			require("zen-mode").setup({})
-			require("which-key").add({
-				{
-					"<lt>z",
-					require("zen-mode").toggle,
-					mode = "n",
-					noremap = true,
-					silent = true,
-					desc = "Zenmode toggle",
-				},
+			vim.keymap.set("n", "<lt>z", require("zen-mode").toggle, {
+				noremap = true,
+				silent = true,
+				desc = "Zenmode toggle",
 			})
 		end,
 	},
@@ -1195,32 +1173,26 @@ require("lazy").setup({
 					vim.api.nvim_set_option_value("scrolloff", 5, {})
 				end,
 			})
-			require("which-key").add({
-				{
-					"<F1>",
-					fh.toggle,
-					noremap = true,
-					silent = true,
-					desc = "Floating help",
-				},
-				{
-					"<F3>",
-					function()
-						fh.open("t=cppman", vim.fn.expand("<cword>"))
-					end,
-					noremap = true,
-					silent = true,
-					desc = "Floating cppman",
-				},
-				{
-					"<F4>",
-					function()
-						fh.open("t=man", vim.fn.expand("<cword>"))
-					end,
-					noremap = true,
-					silent = true,
-					desc = "Floating linux man",
-				},
+			vim.keymap.set("n", "<F1>", fh.toggle, {
+				noremap = true,
+				silent = true,
+				desc = "Help nvim",
+			})
+
+			vim.keymap.set("n", "<F3>", function()
+				fh.open("t=cppman", vim.fn.expand("<cword>"))
+			end, {
+				noremap = true,
+				silent = true,
+				desc = "Help cpp",
+			})
+
+			vim.keymap.set("n", "<F4>", function()
+				fh.open("t=man", vim.fn.expand("<cword>"))
+			end, {
+				noremap = true,
+				silent = true,
+				desc = "Help unix",
 			})
 
 			local function cmd_abbrev(abbrev, expansion)
@@ -1373,35 +1345,24 @@ require("lazy").setup({
 				preview_window_title = { enable = true, position = "left" }, -- Whether to set the preview window title as the filename
 				same_file_float_preview = true,
 			})
-			require("which-key").add({
-				{
-					"gpr",
-					require("goto-preview").goto_preview_references,
-					noremap = true,
-					silent = true,
-					desc = "Lsp preview references",
-				},
-				{
-					"gpt",
-					require("goto-preview").goto_preview_type_definition,
-					noremap = true,
-					silent = true,
-					desc = "Lsp preview definitions",
-				},
-				{
-					"gpi",
-					require("goto-preview").goto_preview_implementation,
-					noremap = true,
-					silent = true,
-					desc = "Lsp preview implementations",
-				},
-				{
-					"gpd",
-					require("goto-preview").goto_preview_declaration,
-					noremap = true,
-					silent = true,
-					desc = "Lsp preview declaration",
-				},
+			vim.keymap.set("n", "gpr", require("goto-preview").goto_preview_references, {
+				noremap = true,
+				silent = true,
+			})
+
+			vim.keymap.set("n", "gpt", require("goto-preview").goto_preview_type_definition, {
+				noremap = true,
+				silent = true,
+			})
+
+			vim.keymap.set("n", "gpi", require("goto-preview").goto_preview_implementation, {
+				noremap = true,
+				silent = true,
+			})
+
+			vim.keymap.set("n", "gpd", require("goto-preview").goto_preview_declaration, {
+				noremap = true,
+				silent = true,
 			})
 		end,
 	},
@@ -1467,37 +1428,23 @@ require("lazy").setup({
 			})
 
 			lsp.on_attach(function(_, bufnr)
-				require("which-key").add({
-					{
-						"gd",
-						function()
-							vim.lsp.buf.definition()
-						end,
-						buffer = bufnr,
-						noremap = true,
-						silent = true,
-						desc = "Lsp goto definition",
-					},
-					{
-						"gh",
-						function()
-							vim.lsp.buf.hover()
-						end,
-						buffer = bufnr,
-						noremap = true,
-						silent = true,
-						desc = "Lsp hover",
-					},
-					{
-						"gca",
-						function()
-							vim.lsp.buf.code_action()
-						end,
-						buffer = bufnr,
-						noremap = true,
-						silent = true,
-						desc = "Lsp code action",
-					},
+				vim.keymap.set("n", "gd", vim.lsp.buf.definition, {
+					buffer = bufnr,
+					noremap = true,
+					silent = true,
+					desc = "lsp definition",
+				})
+				vim.keymap.set("n", "gh", vim.lsp.buf.hover, {
+					buffer = bufnr,
+					noremap = true,
+					silent = true,
+					desc = "lsp hover",
+				})
+				vim.keymap.set("n", "gca", vim.lsp.buf.code_action, {
+					buffer = bufnr,
+					noremap = true,
+					silent = true,
+					desc = "lsp code action",
 				})
 			end)
 		end,
@@ -1719,15 +1666,10 @@ require("lazy").setup({
 			-- 	}
 			-- ]]
 
-			require("which-key").add({
-				{
-					"<lt>u",
-					require("dapui").toggle,
-					mode = "n",
-					silent = true,
-					noremap = true,
-					desc = "Dapui toggle",
-				},
+			vim.keymap.set("n", "<lt>u", require("dapui").toggle, {
+				silent = true,
+				noremap = true,
+				desc = "Dapui toggle",
 			})
 		end,
 	},
@@ -1871,38 +1813,33 @@ require("lazy").setup({
 				return "."
 			end
 
-			require("which-key").add({
-				{
-					"<lt>g",
-					function()
-						require("telescope.builtin").live_grep({
-							cwd = telescope_search_dir(),
-						})
-					end,
-					noremap = true,
-					silent = true,
-					desc = "Telescope grep",
-				},
-				{
-					"<lt>f",
-					function()
-						require("telescope.builtin").find_files({
-							cwd = telescope_search_dir(),
-							no_ignore = false,
-							hidden = true,
-						})
-					end,
-					noremap = true,
-					silent = true,
-					desc = "Telescope find file",
-				},
-				{
-					"<lt>t",
-					require("telescope.builtin").treesitter,
-					noremap = true,
-					silent = true,
-					desc = "Telescope treesitter",
-				},
+			vim.keymap.set("n", "<lt>q", function()
+				require("telescope.builtin").live_grep({
+					cwd = telescope_search_dir(),
+				})
+			end, {
+				noremap = true,
+				silent = true,
+				desc = "Telescope grep",
+			})
+			vim.keymap.set("n", "<lt>f", function()
+				require("telescope.builtin").find_files({
+					cwd = telescope_search_dir(),
+				})
+			end, {
+				noremap = true,
+				silent = true,
+				desc = "Telescope find files",
+			})
+			vim.keymap.set("n", "<lt>t", require("telescope.builtin").treesitter, {
+				noremap = true,
+				silent = true,
+				desc = "Telescope treesitter",
+			})
+			vim.keymap.set("n", "<lt>k", require("telescope.builtin").keymaps, {
+				noremap = true,
+				silent = true,
+				desc = "Telescope keymaps",
 			})
 
 			require("telescope").load_extension("fzf")
@@ -1955,96 +1892,68 @@ require("lazy").setup({
 			require("gitsigns").setup({
 				on_attach = function(bufnr)
 					local gitsigns = require("gitsigns")
-					require("which-key").add({
-						{
-							" ",
-							function()
-								if vim.wo.diff then
-									vim.cmd.normal({ "]c", bang = true })
-								else
-									gitsigns.nav_hunk("next")
-								end
-							end,
-							mode = "n",
-							noremap = true,
-							silent = true,
-							buffer = bufnr,
-							desc = "Gitsigns next change",
-						},
-						{
-							"sa",
-							gitsigns.stage_hunk,
-							mode = "n",
-							noremap = true,
-							silent = true,
-							buffer = bufnr,
-							desc = "Gitsigns stage hunk",
-						},
-						{
-							"s",
-							function()
-								gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-							end,
-							mode = "v",
-							noremap = true,
-							silent = true,
-							buffer = bufnr,
-							desc = "Gitsigns stage selection",
-						},
-						{
-							"sb",
-							gitsigns.stage_buffer,
-							mode = "n",
-							noremap = true,
-							silent = true,
-							buffer = bufnr,
-							desc = "Gitsigns stage buffer",
-						},
-						{
-							"su",
-							gitsigns.undo_stage_hunk,
-							mode = "n",
-							noremap = true,
-							silent = true,
-							buffer = bufnr,
-							desc = "Gitsigns stage undo",
-						},
-						{
-							"sR",
-							gitsigns.reset_buffer,
-							mode = "n",
-							noremap = true,
-							silent = true,
-							buffer = bufnr,
-							desc = "Gitsigns reset buffer",
-						},
-						{
-							"sp",
-							gitsigns.preview_hunk,
-							mode = "n",
-							noremap = true,
-							silent = true,
-							buffer = bufnr,
-							desc = "Gitsigns preview hunk",
-						},
-						{
-							"st",
-							gitsigns.toggle_current_line_blame,
-							mode = "n",
-							noremap = true,
-							silent = true,
-							buffer = bufnr,
-							desc = "Gitsigns toggle blame",
-						},
-						{
-							"sd",
-							gitsigns.diffthis,
-							mode = "n",
-							noremap = true,
-							silent = true,
-							buffer = bufnr,
-							desc = "Gitsigns diffthis",
-						},
+					vim.keymap.set("n", " ", function()
+						if vim.wo.diff then
+							vim.cmd.normal({ "]c", bang = true })
+						else
+							gitsigns.nav_hunk("next")
+						end
+					end, {
+						noremap = true,
+						silent = true,
+						buffer = bufnr,
+						desc = "Gitsigns next change",
+					})
+
+					vim.keymap.set("n", "sa", gitsigns.stage_hunk, {
+						silent = true,
+						buffer = bufnr,
+						desc = "Gitsigns stage",
+					})
+
+					vim.keymap.set("v", "s", function()
+						gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+					end, {
+						silent = true,
+						buffer = bufnr,
+						desc = "Gitsigns stage selection",
+					})
+
+					vim.keymap.set("n", "sb", gitsigns.stage_buffer, {
+						noremap = true,
+						silent = true,
+						buffer = bufnr,
+						desc = "Gitsigns stage buffer",
+					})
+					vim.keymap.set("n", "su", gitsigns.undo_stage_hunk, {
+						noremap = true,
+						silent = true,
+						buffer = bufnr,
+						desc = "Gitsigns stage undo",
+					})
+					vim.keymap.set("n", "sR", gitsigns.reset_buffer, {
+						noremap = true,
+						silent = true,
+						buffer = bufnr,
+						desc = "Gitsigns reset buffer",
+					})
+					vim.keymap.set("n", "sp", gitsigns.preview_hunk, {
+						noremap = true,
+						silent = true,
+						buffer = bufnr,
+						desc = "Gitsigns preview hunk",
+					})
+					vim.keymap.set("n", "st", gitsigns.toggle_current_line_blame, {
+						noremap = true,
+						silent = true,
+						buffer = bufnr,
+						desc = "Gitsigns toggle blame",
+					})
+					vim.keymap.set("n", "sd", gitsigns.diffthis, {
+						noremap = true,
+						silent = true,
+						buffer = bufnr,
+						desc = "Gitsigns diffthis",
 					})
 
 					vim.wo.signcolumn = "yes"
