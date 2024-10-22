@@ -1,0 +1,1243 @@
+#compdef cx
+
+autoload -U is-at-least
+
+_suggest_worktree() {
+    _values 'worktree' `cx suggest worktree`
+}
+
+_suggest_repo() {
+    _values 'worktree' `cx suggest worktree`
+}
+
+_suggest_target() {
+    _values 'worktree' `cx suggest target`
+}
+
+_cx() {
+    typeset -A opt_args
+    typeset -a _arguments_options
+    local ret=1
+
+    if is-at-least 5.2; then
+        _arguments_options=(-s -S -C)
+    else
+        _arguments_options=(-s -C)
+    fi
+
+    local context curcontext="$curcontext" state line
+    _arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+'-V[Print version]' \
+'--version[Print version]' \
+":: :_cx_commands" \
+"*::: :->cx" \
+&& ret=0
+    case $state in
+    (cx)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-command-$line[1]:"
+        case $line[1] in
+            (init)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(status)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(new)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+":: :_cx__new_commands" \
+"*::: :->new" \
+&& ret=0
+
+    case $state in
+    (new)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-new-command-$line[1]:"
+        case $line[1] in
+            (worktree)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+':branch -- Branch name:_default' \
+':take -- Branch take number:_default' \
+':worktree:_suggest_worktree -- Worktree name:_default' \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" : \
+":: :_cx__new__help_commands" \
+"*::: :->help" \
+&& ret=0
+
+    case $state in
+    (help)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-new-help-command-$line[1]:"
+        case $line[1] in
+            (worktree)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+        esac
+    ;;
+esac
+;;
+(delete)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+":: :_cx__delete_commands" \
+"*::: :->delete" \
+&& ret=0
+
+    case $state in
+    (delete)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-delete-command-$line[1]:"
+        case $line[1] in
+            (worktree)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" : \
+":: :_cx__delete__help_commands" \
+"*::: :->help" \
+&& ret=0
+
+    case $state in
+    (help)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-delete-help-command-$line[1]:"
+        case $line[1] in
+            (worktree)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+        esac
+    ;;
+esac
+;;
+(add)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+":: :_cx__add_commands" \
+"*::: :->add" \
+&& ret=0
+
+    case $state in
+    (add)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-add-command-$line[1]:"
+        case $line[1] in
+            (repo)
+_arguments "${_arguments_options[@]}" : \
+'(-a --all)*-w+[Specify which worktrees to add the repository to]:WORKTREES:_default' \
+'(-a --all)*--worktrees=[Specify which worktrees to add the repository to]:WORKTREES:_default' \
+'-a[Add the repository to every available worktree]' \
+'--all[Add the repository to every available worktree]' \
+'-h[Print help]' \
+'--help[Print help]' \
+'*::modules -- One or more modules to add, separated by spaces:_default' \
+&& ret=0
+;;
+(target)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+':target:_default' \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" : \
+":: :_cx__add__help_commands" \
+"*::: :->help" \
+&& ret=0
+
+    case $state in
+    (help)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-add-help-command-$line[1]:"
+        case $line[1] in
+            (repo)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(target)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+        esac
+    ;;
+esac
+;;
+(remove)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+":: :_cx__remove_commands" \
+"*::: :->remove" \
+&& ret=0
+
+    case $state in
+    (remove)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-remove-command-$line[1]:"
+        case $line[1] in
+            (repo)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+':repo:_default' \
+':worktree:_default' \
+&& ret=0
+;;
+(target)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+':target:_default' \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" : \
+":: :_cx__remove__help_commands" \
+"*::: :->help" \
+&& ret=0
+
+    case $state in
+    (help)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-remove-help-command-$line[1]:"
+        case $line[1] in
+            (repo)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(target)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+        esac
+    ;;
+esac
+;;
+(rebase)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+':worktree:_suggest_worktree -- Worktree name:_default' \
+':take -- New target take:_default' \
+&& ret=0
+;;
+(fork)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+':worktree:_suggest_worktree -- New worktree name:_default' \
+&& ret=0
+;;
+(push)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(squash)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(generate)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+":: :_cx__generate_commands" \
+"*::: :->generate" \
+&& ret=0
+
+    case $state in
+    (generate)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-generate-command-$line[1]:"
+        case $line[1] in
+            (build-profile)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(compile-commands)
+_arguments "${_arguments_options[@]}" : \
+'-u+[]:UV_FILE:_files' \
+'--uv-file=[]:UV_FILE:_files' \
+'-l[Legacy arch support, assume make.log file is present.]' \
+'--legacy[Legacy arch support, assume make.log file is present.]' \
+'-h[Print help]' \
+'--help[Print help]' \
+'::worktree -- Worktree name (optional):_default' \
+&& ret=0
+;;
+(cscope-commands)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+'::worktree -- Worktree name (optional):_default' \
+&& ret=0
+;;
+(mapfile)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(launch-j-son)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(completions)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" : \
+":: :_cx__generate__help_commands" \
+"*::: :->help" \
+&& ret=0
+
+    case $state in
+    (help)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-generate-help-command-$line[1]:"
+        case $line[1] in
+            (build-profile)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(compile-commands)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(cscope-commands)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(mapfile)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(launch-j-son)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(completions)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+        esac
+    ;;
+esac
+;;
+(suggest)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+":: :_cx__suggest_commands" \
+"*::: :->suggest" \
+&& ret=0
+
+    case $state in
+    (suggest)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-suggest-command-$line[1]:"
+        case $line[1] in
+            (repo)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(branch)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(take)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(target)
+_arguments "${_arguments_options[@]}" : \
+'-h[Print help]' \
+'--help[Print help]' \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" : \
+":: :_cx__suggest__help_commands" \
+"*::: :->help" \
+&& ret=0
+
+    case $state in
+    (help)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-suggest-help-command-$line[1]:"
+        case $line[1] in
+            (repo)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(branch)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(take)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(target)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(help)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+        esac
+    ;;
+esac
+;;
+(help)
+_arguments "${_arguments_options[@]}" : \
+":: :_cx__help_commands" \
+"*::: :->help" \
+&& ret=0
+
+    case $state in
+    (help)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-help-command-$line[1]:"
+        case $line[1] in
+            (init)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(status)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(new)
+_arguments "${_arguments_options[@]}" : \
+":: :_cx__help__new_commands" \
+"*::: :->new" \
+&& ret=0
+
+    case $state in
+    (new)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-help-new-command-$line[1]:"
+        case $line[1] in
+            (worktree)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(delete)
+_arguments "${_arguments_options[@]}" : \
+":: :_cx__help__delete_commands" \
+"*::: :->delete" \
+&& ret=0
+
+    case $state in
+    (delete)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-help-delete-command-$line[1]:"
+        case $line[1] in
+            (worktree)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(add)
+_arguments "${_arguments_options[@]}" : \
+":: :_cx__help__add_commands" \
+"*::: :->add" \
+&& ret=0
+
+    case $state in
+    (add)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-help-add-command-$line[1]:"
+        case $line[1] in
+            (repo)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(target)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(remove)
+_arguments "${_arguments_options[@]}" : \
+":: :_cx__help__remove_commands" \
+"*::: :->remove" \
+&& ret=0
+
+    case $state in
+    (remove)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-help-remove-command-$line[1]:"
+        case $line[1] in
+            (repo)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(target)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(rebase)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(fork)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(push)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(squash)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(generate)
+_arguments "${_arguments_options[@]}" : \
+":: :_cx__help__generate_commands" \
+"*::: :->generate" \
+&& ret=0
+
+    case $state in
+    (generate)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-help-generate-command-$line[1]:"
+        case $line[1] in
+            (build-profile)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(compile-commands)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(cscope-commands)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(mapfile)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(launch-j-son)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(completions)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(suggest)
+_arguments "${_arguments_options[@]}" : \
+":: :_cx__help__suggest_commands" \
+"*::: :->suggest" \
+&& ret=0
+
+    case $state in
+    (suggest)
+        words=($line[1] "${words[@]}")
+        (( CURRENT += 1 ))
+        curcontext="${curcontext%:*:*}:cx-help-suggest-command-$line[1]:"
+        case $line[1] in
+            (repo)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(branch)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(take)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+(target)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+(help)
+_arguments "${_arguments_options[@]}" : \
+&& ret=0
+;;
+        esac
+    ;;
+esac
+;;
+        esac
+    ;;
+esac
+}
+
+(( $+functions[_cx_commands] )) ||
+_cx_commands() {
+    local commands; commands=(
+'init:Init a new project' \
+'status:Status and project information' \
+'new:Create new resources' \
+'delete:Delete resources' \
+'add:Add a repo/target to a worktree' \
+'remove:Remove an object from a worktree' \
+'rebase:Rebase worktree branch/take' \
+'fork:Fork an existing worktree to a seperate worktree' \
+'push:Push worktree commits to Gerrit' \
+'squash:Squash all commits above the worktree take tag' \
+'generate:Generate mapfile, compile commands, etc' \
+'suggest:Suggest sub-commands completions' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'cx commands' commands "$@"
+}
+(( $+functions[_cx__add_commands] )) ||
+_cx__add_commands() {
+    local commands; commands=(
+'repo:Add a repo to worktree.' \
+'target:Add a target mapping to worktree.' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'cx add commands' commands "$@"
+}
+(( $+functions[_cx__add__help_commands] )) ||
+_cx__add__help_commands() {
+    local commands; commands=(
+'repo:Add a repo to worktree.' \
+'target:Add a target mapping to worktree.' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'cx add help commands' commands "$@"
+}
+(( $+functions[_cx__add__help__help_commands] )) ||
+_cx__add__help__help_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx add help help commands' commands "$@"
+}
+(( $+functions[_cx__add__help__repo_commands] )) ||
+_cx__add__help__repo_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx add help repo commands' commands "$@"
+}
+(( $+functions[_cx__add__help__target_commands] )) ||
+_cx__add__help__target_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx add help target commands' commands "$@"
+}
+(( $+functions[_cx__add__repo_commands] )) ||
+_cx__add__repo_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx add repo commands' commands "$@"
+}
+(( $+functions[_cx__add__target_commands] )) ||
+_cx__add__target_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx add target commands' commands "$@"
+}
+(( $+functions[_cx__delete_commands] )) ||
+_cx__delete_commands() {
+    local commands; commands=(
+'worktree:' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'cx delete commands' commands "$@"
+}
+(( $+functions[_cx__delete__help_commands] )) ||
+_cx__delete__help_commands() {
+    local commands; commands=(
+'worktree:' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'cx delete help commands' commands "$@"
+}
+(( $+functions[_cx__delete__help__help_commands] )) ||
+_cx__delete__help__help_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx delete help help commands' commands "$@"
+}
+(( $+functions[_cx__delete__help__worktree_commands] )) ||
+_cx__delete__help__worktree_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx delete help worktree commands' commands "$@"
+}
+(( $+functions[_cx__delete__worktree_commands] )) ||
+_cx__delete__worktree_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx delete worktree commands' commands "$@"
+}
+(( $+functions[_cx__fork_commands] )) ||
+_cx__fork_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx fork commands' commands "$@"
+}
+(( $+functions[_cx__generate_commands] )) ||
+_cx__generate_commands() {
+    local commands; commands=(
+'build-profile:Generate a build profile file' \
+'compile-commands:Generate a compile_commands.json file' \
+'cscope-commands:Generate a cscope database file' \
+'mapfile:Generate an IM mapfile' \
+'launch-j-son:Generate a vscode launch.json file' \
+'completions:' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'cx generate commands' commands "$@"
+}
+(( $+functions[_cx__generate__build-profile_commands] )) ||
+_cx__generate__build-profile_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx generate build-profile commands' commands "$@"
+}
+(( $+functions[_cx__generate__compile-commands_commands] )) ||
+_cx__generate__compile-commands_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx generate compile-commands commands' commands "$@"
+}
+(( $+functions[_cx__generate__completions_commands] )) ||
+_cx__generate__completions_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx generate completions commands' commands "$@"
+}
+(( $+functions[_cx__generate__cscope-commands_commands] )) ||
+_cx__generate__cscope-commands_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx generate cscope-commands commands' commands "$@"
+}
+(( $+functions[_cx__generate__help_commands] )) ||
+_cx__generate__help_commands() {
+    local commands; commands=(
+'build-profile:Generate a build profile file' \
+'compile-commands:Generate a compile_commands.json file' \
+'cscope-commands:Generate a cscope database file' \
+'mapfile:Generate an IM mapfile' \
+'launch-j-son:Generate a vscode launch.json file' \
+'completions:' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'cx generate help commands' commands "$@"
+}
+(( $+functions[_cx__generate__help__build-profile_commands] )) ||
+_cx__generate__help__build-profile_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx generate help build-profile commands' commands "$@"
+}
+(( $+functions[_cx__generate__help__compile-commands_commands] )) ||
+_cx__generate__help__compile-commands_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx generate help compile-commands commands' commands "$@"
+}
+(( $+functions[_cx__generate__help__completions_commands] )) ||
+_cx__generate__help__completions_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx generate help completions commands' commands "$@"
+}
+(( $+functions[_cx__generate__help__cscope-commands_commands] )) ||
+_cx__generate__help__cscope-commands_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx generate help cscope-commands commands' commands "$@"
+}
+(( $+functions[_cx__generate__help__help_commands] )) ||
+_cx__generate__help__help_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx generate help help commands' commands "$@"
+}
+(( $+functions[_cx__generate__help__launch-j-son_commands] )) ||
+_cx__generate__help__launch-j-son_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx generate help launch-j-son commands' commands "$@"
+}
+(( $+functions[_cx__generate__help__mapfile_commands] )) ||
+_cx__generate__help__mapfile_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx generate help mapfile commands' commands "$@"
+}
+(( $+functions[_cx__generate__launch-j-son_commands] )) ||
+_cx__generate__launch-j-son_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx generate launch-j-son commands' commands "$@"
+}
+(( $+functions[_cx__generate__mapfile_commands] )) ||
+_cx__generate__mapfile_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx generate mapfile commands' commands "$@"
+}
+(( $+functions[_cx__help_commands] )) ||
+_cx__help_commands() {
+    local commands; commands=(
+'init:Init a new project' \
+'status:Status and project information' \
+'new:Create new resources' \
+'delete:Delete resources' \
+'add:Add a repo/target to a worktree' \
+'remove:Remove an object from a worktree' \
+'rebase:Rebase worktree branch/take' \
+'fork:Fork an existing worktree to a seperate worktree' \
+'push:Push worktree commits to Gerrit' \
+'squash:Squash all commits above the worktree take tag' \
+'generate:Generate mapfile, compile commands, etc' \
+'suggest:Suggest sub-commands completions' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'cx help commands' commands "$@"
+}
+(( $+functions[_cx__help__add_commands] )) ||
+_cx__help__add_commands() {
+    local commands; commands=(
+'repo:Add a repo to worktree.' \
+'target:Add a target mapping to worktree.' \
+    )
+    _describe -t commands 'cx help add commands' commands "$@"
+}
+(( $+functions[_cx__help__add__repo_commands] )) ||
+_cx__help__add__repo_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help add repo commands' commands "$@"
+}
+(( $+functions[_cx__help__add__target_commands] )) ||
+_cx__help__add__target_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help add target commands' commands "$@"
+}
+(( $+functions[_cx__help__delete_commands] )) ||
+_cx__help__delete_commands() {
+    local commands; commands=(
+'worktree:' \
+    )
+    _describe -t commands 'cx help delete commands' commands "$@"
+}
+(( $+functions[_cx__help__delete__worktree_commands] )) ||
+_cx__help__delete__worktree_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help delete worktree commands' commands "$@"
+}
+(( $+functions[_cx__help__fork_commands] )) ||
+_cx__help__fork_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help fork commands' commands "$@"
+}
+(( $+functions[_cx__help__generate_commands] )) ||
+_cx__help__generate_commands() {
+    local commands; commands=(
+'build-profile:Generate a build profile file' \
+'compile-commands:Generate a compile_commands.json file' \
+'cscope-commands:Generate a cscope database file' \
+'mapfile:Generate an IM mapfile' \
+'launch-j-son:Generate a vscode launch.json file' \
+'completions:' \
+    )
+    _describe -t commands 'cx help generate commands' commands "$@"
+}
+(( $+functions[_cx__help__generate__build-profile_commands] )) ||
+_cx__help__generate__build-profile_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help generate build-profile commands' commands "$@"
+}
+(( $+functions[_cx__help__generate__compile-commands_commands] )) ||
+_cx__help__generate__compile-commands_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help generate compile-commands commands' commands "$@"
+}
+(( $+functions[_cx__help__generate__completions_commands] )) ||
+_cx__help__generate__completions_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help generate completions commands' commands "$@"
+}
+(( $+functions[_cx__help__generate__cscope-commands_commands] )) ||
+_cx__help__generate__cscope-commands_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help generate cscope-commands commands' commands "$@"
+}
+(( $+functions[_cx__help__generate__launch-j-son_commands] )) ||
+_cx__help__generate__launch-j-son_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help generate launch-j-son commands' commands "$@"
+}
+(( $+functions[_cx__help__generate__mapfile_commands] )) ||
+_cx__help__generate__mapfile_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help generate mapfile commands' commands "$@"
+}
+(( $+functions[_cx__help__help_commands] )) ||
+_cx__help__help_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help help commands' commands "$@"
+}
+(( $+functions[_cx__help__init_commands] )) ||
+_cx__help__init_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help init commands' commands "$@"
+}
+(( $+functions[_cx__help__new_commands] )) ||
+_cx__help__new_commands() {
+    local commands; commands=(
+'worktree:Worktree name' \
+    )
+    _describe -t commands 'cx help new commands' commands "$@"
+}
+(( $+functions[_cx__help__new__worktree_commands] )) ||
+_cx__help__new__worktree_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help new worktree commands' commands "$@"
+}
+(( $+functions[_cx__help__push_commands] )) ||
+_cx__help__push_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help push commands' commands "$@"
+}
+(( $+functions[_cx__help__rebase_commands] )) ||
+_cx__help__rebase_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help rebase commands' commands "$@"
+}
+(( $+functions[_cx__help__remove_commands] )) ||
+_cx__help__remove_commands() {
+    local commands; commands=(
+'repo:' \
+'target:' \
+    )
+    _describe -t commands 'cx help remove commands' commands "$@"
+}
+(( $+functions[_cx__help__remove__repo_commands] )) ||
+_cx__help__remove__repo_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help remove repo commands' commands "$@"
+}
+(( $+functions[_cx__help__remove__target_commands] )) ||
+_cx__help__remove__target_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help remove target commands' commands "$@"
+}
+(( $+functions[_cx__help__squash_commands] )) ||
+_cx__help__squash_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help squash commands' commands "$@"
+}
+(( $+functions[_cx__help__status_commands] )) ||
+_cx__help__status_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help status commands' commands "$@"
+}
+(( $+functions[_cx__help__suggest_commands] )) ||
+_cx__help__suggest_commands() {
+    local commands; commands=(
+'repo:' \
+'branch:' \
+'take:' \
+'target:' \
+    )
+    _describe -t commands 'cx help suggest commands' commands "$@"
+}
+(( $+functions[_cx__help__suggest__branch_commands] )) ||
+_cx__help__suggest__branch_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help suggest branch commands' commands "$@"
+}
+(( $+functions[_cx__help__suggest__repo_commands] )) ||
+_cx__help__suggest__repo_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help suggest repo commands' commands "$@"
+}
+(( $+functions[_cx__help__suggest__take_commands] )) ||
+_cx__help__suggest__take_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help suggest take commands' commands "$@"
+}
+(( $+functions[_cx__help__suggest__target_commands] )) ||
+_cx__help__suggest__target_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx help suggest target commands' commands "$@"
+}
+(( $+functions[_cx__init_commands] )) ||
+_cx__init_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx init commands' commands "$@"
+}
+(( $+functions[_cx__new_commands] )) ||
+_cx__new_commands() {
+    local commands; commands=(
+'worktree:Worktree name' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'cx new commands' commands "$@"
+}
+(( $+functions[_cx__new__help_commands] )) ||
+_cx__new__help_commands() {
+    local commands; commands=(
+'worktree:Worktree name' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'cx new help commands' commands "$@"
+}
+(( $+functions[_cx__new__help__help_commands] )) ||
+_cx__new__help__help_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx new help help commands' commands "$@"
+}
+(( $+functions[_cx__new__help__worktree_commands] )) ||
+_cx__new__help__worktree_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx new help worktree commands' commands "$@"
+}
+(( $+functions[_cx__new__worktree_commands] )) ||
+_cx__new__worktree_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx new worktree commands' commands "$@"
+}
+(( $+functions[_cx__push_commands] )) ||
+_cx__push_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx push commands' commands "$@"
+}
+(( $+functions[_cx__rebase_commands] )) ||
+_cx__rebase_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx rebase commands' commands "$@"
+}
+(( $+functions[_cx__remove_commands] )) ||
+_cx__remove_commands() {
+    local commands; commands=(
+'repo:' \
+'target:' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'cx remove commands' commands "$@"
+}
+(( $+functions[_cx__remove__help_commands] )) ||
+_cx__remove__help_commands() {
+    local commands; commands=(
+'repo:' \
+'target:' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'cx remove help commands' commands "$@"
+}
+(( $+functions[_cx__remove__help__help_commands] )) ||
+_cx__remove__help__help_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx remove help help commands' commands "$@"
+}
+(( $+functions[_cx__remove__help__repo_commands] )) ||
+_cx__remove__help__repo_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx remove help repo commands' commands "$@"
+}
+(( $+functions[_cx__remove__help__target_commands] )) ||
+_cx__remove__help__target_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx remove help target commands' commands "$@"
+}
+(( $+functions[_cx__remove__repo_commands] )) ||
+_cx__remove__repo_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx remove repo commands' commands "$@"
+}
+(( $+functions[_cx__remove__target_commands] )) ||
+_cx__remove__target_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx remove target commands' commands "$@"
+}
+(( $+functions[_cx__squash_commands] )) ||
+_cx__squash_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx squash commands' commands "$@"
+}
+(( $+functions[_cx__status_commands] )) ||
+_cx__status_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx status commands' commands "$@"
+}
+(( $+functions[_cx__suggest_commands] )) ||
+_cx__suggest_commands() {
+    local commands; commands=(
+'repo:' \
+'branch:' \
+'take:' \
+'target:' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'cx suggest commands' commands "$@"
+}
+(( $+functions[_cx__suggest__branch_commands] )) ||
+_cx__suggest__branch_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx suggest branch commands' commands "$@"
+}
+(( $+functions[_cx__suggest__help_commands] )) ||
+_cx__suggest__help_commands() {
+    local commands; commands=(
+'repo:' \
+'branch:' \
+'take:' \
+'target:' \
+'help:Print this message or the help of the given subcommand(s)' \
+    )
+    _describe -t commands 'cx suggest help commands' commands "$@"
+}
+(( $+functions[_cx__suggest__help__branch_commands] )) ||
+_cx__suggest__help__branch_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx suggest help branch commands' commands "$@"
+}
+(( $+functions[_cx__suggest__help__help_commands] )) ||
+_cx__suggest__help__help_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx suggest help help commands' commands "$@"
+}
+(( $+functions[_cx__suggest__help__repo_commands] )) ||
+_cx__suggest__help__repo_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx suggest help repo commands' commands "$@"
+}
+(( $+functions[_cx__suggest__help__take_commands] )) ||
+_cx__suggest__help__take_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx suggest help take commands' commands "$@"
+}
+(( $+functions[_cx__suggest__help__target_commands] )) ||
+_cx__suggest__help__target_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx suggest help target commands' commands "$@"
+}
+(( $+functions[_cx__suggest__repo_commands] )) ||
+_cx__suggest__repo_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx suggest repo commands' commands "$@"
+}
+(( $+functions[_cx__suggest__take_commands] )) ||
+_cx__suggest__take_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx suggest take commands' commands "$@"
+}
+(( $+functions[_cx__suggest__target_commands] )) ||
+_cx__suggest__target_commands() {
+    local commands; commands=()
+    _describe -t commands 'cx suggest target commands' commands "$@"
+}
+
+if [ "$funcstack[1]" = "_cx" ]; then
+    _cx "$@"
+else
+    compdef _cx cx
+fi

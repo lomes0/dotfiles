@@ -61,12 +61,12 @@ return {
 				-- See `:h MiniBracketed.config` for more info.
 
 				buffer = { suffix = "b", options = {} },
-				comment = { suffix = "c", options = {} },
 				conflict = { suffix = "x", options = {} },
-				diagnostic = { suffix = "d", options = {} },
 				indent = { suffix = "i", options = {} },
 				treesitter = { suffix = "t", options = {} },
-				window = { suffix = "w", options = {} },
+				-- comment = { suffix = "c", options = {} },
+				-- diagnostic = { suffix = "d", options = {} },
+				-- window = { suffix = "w", options = {} },
 			})
 		end,
 	},

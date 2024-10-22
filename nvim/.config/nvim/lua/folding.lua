@@ -51,6 +51,8 @@ function FoldtextCoding()
 		return { { first_line, "" } }
 	end
 
+	local next_break = false
+
 	for id, node, _ in query:iter_captures(tree:root(), 0, foldstart - 1, -1) do
 		local text = T(node)
 		local name = query.captures[id]
@@ -58,6 +60,7 @@ function FoldtextCoding()
 
 		-- stop on start of body statements
 		if node:type() == "{" then
+			-- result[#result] = { text, "@" .. name .. "" }
 			break
 		end
 
@@ -71,20 +74,28 @@ function FoldtextCoding()
 		end
 
 		if start_col > prev_col then
-			table.insert(result, { " ", "Folded.folded" })
+			table.insert(result, { " ", "Folded" })
 		end
 		prev_col = end_col
 
 		if start_row > prev_row then
-			table.insert(result, { " ", "Folded.folded" })
+			table.insert(result, { " ", "Folded" })
 		end
 		prev_row = end_row
 
 		if processed_nodes[node:id()] then
-			result[#result] = { text, "@" .. name .. ".folded" }
+			result[#result] = { text, "@" .. name .. "" }
 		else
-			table.insert(result, { text, "@" .. name .. ".folded" })
+			table.insert(result, { text, "@" .. name .. "" })
 			processed_nodes[node:id()] = true
+		end
+
+		if next_break then
+			break
+		end
+
+		if name == "constant.macro" or name == "constant.macro.cpp" or name == "keyword.directive" or name == "keyword.directive.cpp" then
+			next_break = true
 		end
 
 		::continue::
@@ -150,7 +161,6 @@ function M.CreateFoldGroups(groups)
 	for _, group in ipairs(groups) do
 		local hl = get_highlight(group)
 		if hl then
-			-- vim.api.nvim_set_hl(0, group .. ".folded", { fg = hl.fg, bg = hl.bg, underline = true })
 			vim.api.nvim_set_hl(0, group .. ".folded", { fg = hl.fg, bg = "#51576d", underline = false })
 		else
 			vim.notify("Highlight group not found: " .. group, vim.log.levels.WARN)
@@ -160,10 +170,194 @@ end
 
 -- Function to get all highlight groups
 local function get_all_highlight_groups()
-	local groups = {}
-	for _, group in ipairs(vim.fn.getcompletion("", "highlight")) do
-		table.insert(groups, group)
-	end
+	local groups = {
+		"@attribute",
+		"@attribute.builtin",
+		"@boolean",
+		"@character",
+		"@character.special",
+		"@comment",
+		"@comment.error",
+		"@comment.note",
+		"@comment.todo",
+		"@comment.warning",
+		"@constant",
+		"@constant.macro",
+		"@constant.macro.cpp",
+		"@constant.builtin",
+		"@constructor",
+		"@constructor.lua",
+		"@diff.delta",
+		"@diff.minus",
+		"@diff.plus",
+		"@function",
+		"@function.builtin",
+		"@function.call",
+		"@keyword",
+		"@keyword.conditional",
+		"@keyword.directive",
+		"@keyword.directive.cpp",
+		"@keyword.exception",
+		"@keyword.function",
+		"@keyword.function.rust",
+		"@keyword.import",
+		"@keyword.luap",
+		"@keyword.modifier",
+		"@keyword.modifier.rust",
+		"@keyword.operator",
+		"@keyword.repeat",
+		"@keyword.repeat.c",
+		"@keyword.return",
+		"@keyword.type",
+		"@keyword.type.rust",
+		"@keyword.rust",
+		"@label",
+		"@lsp.mod.defaultLibrary.c",
+		"@lsp.mod.deprecated",
+		"@lsp.mod.readonly",
+		"@lsp.mod.typeHint",
+		"@lsp.type.bitwise",
+		"@lsp.type.builtinConstant",
+		"@lsp.type.class",
+		"@lsp.type.class.c",
+		"@lsp.type.comment",
+		"@lsp.type.comparison",
+		"@lsp.type.const",
+		"@lsp.type.decorator",
+		"@lsp.type.decorator.rust",
+		"@lsp.type.enum",
+		"@lsp.type.enumMember",
+		"@lsp.type.event",
+		"@lsp.type.function",
+		"@lsp.type.function.c",
+		"@lsp.type.interface",
+		"@lsp.type.keyword",
+		"@lsp.type.lifetime",
+		"@lsp.type.macro",
+		"@lsp.type.magicFunction",
+		"@lsp.type.method",
+		"@lsp.type.modifier",
+		"@lsp.type.namespace",
+		"@lsp.type.number",
+		"@lsp.type.operator",
+		"@lsp.type.parameter",
+		"@lsp.type.property",
+		"@lsp.type.punctuation",
+		"@lsp.type.regexp",
+		"@lsp.type.selfParameter",
+		"@lsp.type.string",
+		"@lsp.type.struct",
+		"@lsp.type.type",
+		"@lsp.type.typeParameter",
+		"@lsp.type.variable",
+		"@lsp.type.variable.c",
+		"@lsp.typemod.function.builtin",
+		"@lsp.typemod.function.defaultLibrary",
+		"@lsp.typemod.function.readonly",
+		"@lsp.typemod.keyword.documentation",
+		"@lsp.typemod.method.defaultLibrary",
+		"@lsp.typemod.operator.controlFlow",
+		"@lsp.typemod.variable.defaultLibrary",
+		"@lsp.typemod.variable.global",
+		"@lsp.typemod.variable.injected",
+		"@lsp.typemod.variable.static",
+		"@markup",
+		"@markup.environment",
+		"@markup.heading",
+		"@markup.italic",
+		"@markup.link",
+		"@markup.link.url",
+		"@markup.math",
+		"@markup.quote",
+		"@markup.raw",
+		"@markup.strikethrough",
+		"@markup.strong",
+		"@markup.underline",
+		"@module",
+		"@module.builtin",
+		"@number",
+		"@number.float",
+		"@operator",
+		"@property",
+		"@punctuation",
+		"@punctuation.bracket",
+		"@punctuation.delimiter",
+		"@punctuation.special",
+		"@string",
+		"@string.escape",
+		"@string.regexp",
+		"@string.special",
+		"@string.special.symbol",
+		"@string.special.url",
+		"@tag",
+		"@tag.attribute",
+		"@tag.builtin",
+		"@tag.delimiter",
+		"@type",
+		"@type.builtin",
+		"@type.builtin.c",
+		"@type.builtin.cpp",
+		"@variable",
+		"@variable.builtin",
+		"@variable.c",
+		"@variable.member",
+		"@variable.parameter",
+		"@variable.parameter.builtin",
+		"Boolean",
+		"Changed",
+		"Character",
+		"Comment",
+		"Conceal",
+		"Conditional",
+		"Constant",
+		"CurSearch",
+		"DapStoppedLine",
+		"Define",
+		"Delimiter",
+		"DiffAdd",
+		"DiffChange",
+		"DiffDelete",
+		"DiffText",
+		"Directory",
+		"Error",
+		"ErrorMsg",
+		"Exception",
+		"FoldColumn",
+		"Folded",
+		"Function",
+		"Identifier",
+		"Ignore",
+		"IncSearch",
+		"Include",
+		"Keyword",
+		"Label",
+		"LazyProgressTodo",
+		"LineNr",
+		"LspCodeLens",
+		"LspCodeLensSeparator",
+		"LspReferenceRead",
+		"LspReferenceText",
+		"LspReferenceWrite",
+		"LspSignatureActiveParameter",
+		"Macro",
+		"MatchParen",
+		"MsgArea",
+		"NonText",
+		"Normal",
+		"NormalNC",
+		"Number",
+		"Operator",
+		"PreCondit",
+		"PreProc",
+		"SignColumn",
+		"Statement",
+		"Structure",
+		"Substitute",
+		"Tag",
+		"Type",
+		"Typedef",
+	}
+
 	return groups
 end
 
@@ -172,12 +366,22 @@ function M.init()
 	vim.opt.foldenable = false
 	vim.opt.foldmethod = "expr"
 	vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-	vim.opt.foldtext = [[luaeval('FoldtextDefault')()]]
-
+	-- vim.opt.foldtext = [[luaeval('FoldtextDefault')()]]
 	vim.opt.fillchars:append({ fold = " " })
 
+	-- vim.api.nvim_create_autocmd('LspAttach', {
+	-- 	callback = function(args)
+	-- 		local client = vim.lsp.get_client_by_id(args.data.client_id)
+	--         if client:supports_method('textDocument/foldingRange') then
+	-- 			local win = vim.api.nvim_get_current_win()
+	-- 			vim.wo[win][0].foldmethod = 'expr'
+	-- 			vim.wo[win][0].foldexpr = 'v:lua.vim.lsp.foldexpr()'
+	-- 		end
+	-- 	end,
+	-- })
+
 	-- Create an autocommand group for better management
-	local group = vim.api.nvim_create_augroup("CppPostInit", { clear = true })
+	-- local group = vim.api.nvim_create_augroup("CppPostInit", { clear = true })
 
 	-- Define an autocommand for when color scheme and Tree-sitter are ready
 	vim.api.nvim_create_autocmd({ "FileType" }, {

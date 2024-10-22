@@ -1,4 +1,9 @@
 gui:
+  # enlargedSideViewLocation: 'top'
+  commitHashLength: 6
+  showCommandLog: false
+  screenMode: 'normal'
+  mainPanelSplitMode: 'vertical'
   editor: "nvr --remote-wait-silent"
   showIcons: false
   sidePanelWidth: 0.2
@@ -28,5 +33,4 @@ git:
   paging:
     colorArg: always
     pager: delta --light --paging=never --diff-so-fancy --true-color=always 
-    # pager: ydiff -s -p cat --wrap --width={{columnWidth}}
-    # pager: diff-so-fancy
+  branchLogCmd: "git log --perl-regexp --author='^((?!builder).*)$' --graph --color=always --abbrev-commit --decorate --date=relative --pretty=medium --oneline {{branchName}} --"

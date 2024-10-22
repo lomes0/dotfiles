@@ -78,7 +78,7 @@ function M.init()
 	end, { desc = "Toggle floatterm" })
 
 	-- vim.keymap.set("n", "<lt>ef", Embad_floatterm, { noremap = true, silent = true })
-	vim.keymap.set("n", "<Tab>", Focus_floatterm, { noremap = true, silent = true })
+	-- vim.keymap.set("n", "<Tab>", Focus_floatterm, { noremap = true, silent = true })
 end
 
 M.init()

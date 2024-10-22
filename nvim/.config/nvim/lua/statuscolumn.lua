@@ -2,8 +2,8 @@ local statuscolumn = {
 	levels = { true, true, true, true, true },
 	max_level = 5,
 	complement = true,
-	-- fold = "·",
-	fold = " ",
+	fold = "",
+	-- fold = " ",
 }
 
 statuscolumn.setHl = function()

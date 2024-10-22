@@ -171,6 +171,12 @@ local keymaps = {
 	},
 	{
 		"t",
+		"<C-Enter>",
+		[[<C-\><C-n>]],
+		desc = "Exit terminal mode",
+	},
+	{
+		"t",
 		"<c-\\>",
 		function()
 			Snacks.terminal.toggle()
@@ -181,13 +187,13 @@ local keymaps = {
 		"t",
 		"<c-tab>",
 		"<c-\\><c-n><cmd>tabnext<cr>",
-		desc = "next tab",
+		desc = "Next tab",
 	},
 	{
 		"t",
 		"<c-s-tab>",
 		"<c-\\><c-n><cmd>tabprev<cr>",
-		desc = "prev tab",
+		desc = "Prev tab",
 	},
 	{
 		"n",
@@ -363,12 +369,31 @@ function Move_floating_window(win_id, a, b)
 	vim.api.nvim_win_set_config(win_id, config)
 end
 
-local function cwd_dir()
+function bufdir()
 	return vim.api.nvim_buf_get_name(0):match("(.*/)")
 end
 
+function gitroot(dir)
+	if dir == nil then
+		return nil
+	end
+
+	while dir and dir ~= "/" do
+		if vim.loop.fs_stat(dir .. "/.git") ~= nil then
+			return dir
+		end
+		dir = vim.fn.fnamemodify(dir, ":h") -- Move up one directory
+	end
+	return nil
+end
+
+local function thisdir()
+	return "./"
+end
+
 local function set_cwd()
-	vim.api.nvim_command("cd " .. (cwd_dir() or "./"))
+	local dir = bufdir() or vim.fn.getcwd(-1, -1)
+	vim.api.nvim_command("cd " .. (gitroot(dir) or bufdir() or thisdir()))
 end
 
 vim.api.nvim_create_autocmd("TermOpen", {
@@ -394,12 +419,18 @@ register_keymaps(keymaps_noremap, false)
 set_cwd()
 
 vim.keymap.set({ "n", "x" }, "<lt>gg", function()
+	local gitdir = gitroot(bufdir())
+	if gitdir == nil then
+		print("Not a git repo")
+		return
+	end
+
 	local term_win = vim.api.nvim_get_current_win()
 	local prev_buf = vim.api.nvim_get_current_buf()
 	local term_buf = vim.api.nvim_create_buf(false, true)
 
 	vim.api.nvim_win_set_buf(term_win, term_buf)
-	vim.fn.termopen("lazygit", {
+	vim.fn.termopen("lazygit -w=" .. gitdir, {
 		on_exit = function()
 			-- First ensure the buffer is still valid, then delete it.
 			vim.api.nvim_win_set_buf(term_win, prev_buf)
@@ -414,3 +445,235 @@ vim.keymap.set({ "n", "x" }, "-", function()
 	Snacks.notifier.hide()
 	require("notify").dismiss({ silent = true, pending = true })
 end)
+
+local api = vim.api
+local autocmd = api.nvim_create_autocmd
+local augroup = api.nvim_create_augroup
+
+local g = augroup("user/keep_yank_position", { clear = true })
+
+autocmd("ModeChanged", {
+	pattern = { "n:no", "no:n" },
+	group = g,
+	callback = function(ev)
+		if vim.v.operator == "y" then
+			if ev.match == "n:no" then
+				vim.b.user_yank_last_pos = vim.fn.getpos(".")
+			else
+				if vim.b.user_yank_last_pos then
+					vim.fn.setpos(".", vim.b.user_yank_last_pos)
+					vim.b.user_yank_last_pos = nil
+				end
+			end
+		end
+	end,
+})
+
+autocmd("ModeChanged", {
+	pattern = {
+		"V:n",
+		"n:V",
+		"v:n",
+		"n:v",
+	},
+	group = g,
+	callback = function(ev)
+		local match = ev.match
+		if vim.tbl_contains({ "n:V", "n:v" }, match) then
+			-- vim.b.user_yank_last_pos = vim.fn.getpos(".")
+			vim.b.user_yank_last_pos = vim.api.nvim_win_get_cursor(0)
+		else
+			-- if vim.tbl_contains({ "V:n", "v:n" }, match) then
+			if vim.v.operator == "y" then
+				local last_pos = vim.b.user_yank_last_pos
+				if last_pos then
+					-- vim.fn.setpos(".", last_pos)
+					vim.api.nvim_win_set_cursor(0, last_pos)
+				end
+			end
+			vim.b.user_yank_last_pos = nil
+			-- end
+		end
+	end,
+})
+
+-- Set the commentstring for C++ files
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = { "cpp", "c", "cc", "h", "hpp", "rust" },
+	callback = function()
+		vim.bo.commentstring = "// %s"
+	end,
+})
+
+vim.keymap.set("n", "A", function()
+	local filepath = vim.fn.expand("%:p")
+	if filepath == "" then
+		print("No file to commit")
+		return
+	end
+
+	vim.cmd("silent! write") -- Save the buffer
+	-- vim.fn.system("git add " .. vim.fn.shellescape(filepath))
+	vim.fn.system("git commit --amend --no-edit")
+
+	print("Amended last commit with changes from " .. filepath)
+end, { noremap = true, silent = true })
+
+vim.g.clipboard = {
+	name = "OSC 52",
+	copy = {
+		["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+		["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+	},
+	paste = {
+		["+"] = require("vim.ui.clipboard.osc52").paste("+"),
+		["*"] = require("vim.ui.clipboard.osc52").paste("*"),
+	},
+}
+
+vim.api.nvim_create_user_command("RemoveSnacksNotifWindows", function()
+	for _, win in ipairs(vim.api.nvim_list_wins()) do
+		local buf = vim.api.nvim_win_get_buf(win)
+		local type = vim.bo[buf].filetype
+		if type == "snacks.notif" or type == "snacks_notif" then
+			vim.api.nvim_win_close(win, true)
+		end
+	end
+end, {})
+
+vim.api.nvim_create_autocmd("FileType", {
+	callback = function(args)
+		local ft = args.match
+		local blacklist = { "qf", "calltree", "CsStackView" }
+		if not vim.tbl_contains(blacklist, ft) then
+			vim.wo.signcolumn = "yes"
+			vim.o.statuscolumn = "%!v:lua.require('statuscolumn').statuscolumn()"
+		else
+			vim.wo.statuscolumn = "   "
+		end
+	end,
+})
+
+vim.keymap.set("n", "<leader>e", function()
+	local ts_utils = require("nvim-treesitter.ts_utils")
+	local node = ts_utils.get_node_at_cursor()
+
+	while node do
+		local type = node:type()
+		if
+			vim.tbl_contains(
+				{ "function_definition", "if_statement", "for_statement", "while_statement", "block" },
+				type
+			)
+		then
+			local _, _, end_row, _ = node:range()
+			vim.api.nvim_win_set_cursor(0, { end_row + 1, 0 }) -- go to start of line after block end
+			return
+		end
+		node = node:parent()
+	end
+end, { desc = "Go to end of current block" })
+
+vim.lsp.enable({ "clangd" })
+
+vim.api.nvim_create_autocmd("LspAttach", {
+	desc = "LSP actions",
+	callback = function(event)
+		local opts = { buffer = event.buf }
+
+		vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
+		vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
+		vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
+		vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
+		vim.keymap.set("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
+		vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
+		vim.keymap.set("n", "gi", function()
+			vim.api.nvim_exec("lua vim.lsp.buf.incoming_calls()", false)
+			vim.defer_fn(function()
+				vim.api.nvim_exec("LTOpenToCalltree", false)
+			end, 10)
+		end, opts)
+		vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
+		vim.keymap.set("n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
+		vim.keymap.set({ "n", "x" }, "<F3>", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", opts)
+		vim.keymap.set("n", "gca", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
+	end,
+})
+
+local progress = vim.defaulttable()
+vim.api.nvim_create_autocmd("LspProgress", {
+	---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
+	callback = function(ev)
+		local client = vim.lsp.get_client_by_id(ev.data.client_id)
+		local value = ev.data.params.value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
+		if not client or type(value) ~= "table" then
+			return
+		end
+		local p = progress[client.id]
+
+		for i = 1, #p + 1 do
+			if i == #p + 1 or p[i].token == ev.data.params.token then
+				p[i] = {
+					token = ev.data.params.token,
+					msg = ("[%3d%%] %s%s"):format(
+						value.kind == "end" and 100 or value.percentage or 100,
+						value.title or "",
+						value.message and (" **%s**"):format(value.message) or ""
+					),
+					done = value.kind == "end",
+				}
+				break
+			end
+		end
+
+		local msg = {} ---@type string[]
+		progress[client.id] = vim.tbl_filter(function(v)
+			return table.insert(msg, v.msg) or not v.done
+		end, p)
+
+		local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+		vim.notify(table.concat(msg, "\n"), 0, {
+			id = "lsp_progress",
+			title = client.name,
+			opts = function(notif)
+				notif.icon = #progress[client.id] == 0 and " "
+					or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+			end,
+		})
+	end,
+})
+
+vim.api.nvim_create_autocmd("LspAttach", {
+	callback = function(args)
+		local client = vim.lsp.get_client_by_id(args.data.client_id)
+
+		if client:supports_method("textDocument/documentHighlight") then
+			local autocmd = vim.api.nvim_create_autocmd
+			local augroup = vim.api.nvim_create_augroup("lsp_highlight", { clear = false })
+
+			vim.api.nvim_clear_autocmds({ buffer = bufnr, group = augroup })
+
+			autocmd({ "CursorHold" }, {
+				group = augroup,
+				buffer = args.buf,
+				callback = vim.lsp.buf.document_highlight,
+			})
+
+			autocmd({ "CursorMoved" }, {
+				group = augroup,
+				buffer = args.buf,
+				callback = vim.lsp.buf.clear_references,
+			})
+		end
+
+		if client:supports_method("textDocument/inlayHint") then
+			vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
+		end
+
+		if client:supports_method("textDocument/completion") then
+			vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+		end
+
+		-- vim.diagnostic.config({ virtual_text = { current_line = true } })
+	end,
+})

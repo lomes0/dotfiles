@@ -1,154 +1,110 @@
 return {
 	{
-		"yetone/avante.nvim",
-		event = "VeryLazy",
-		version = false, -- set this if you want to always pull the latest change
-		build = "make",
+		"t-troebst/perfanno.nvim",
+		config = function()
+			local perfanno = require("perfanno")
+			local util = require("perfanno.util")
+
+			perfanno.setup({
+				-- Creates a 10-step RGB color gradient beween background color and "#CC3300"
+				line_highlights = util.make_bg_highlights(nil, "#CC3300", 10),
+				vt_highlight = util.make_fg_highlight("#CC3300"),
+			})
+
+			local keymap = vim.api.nvim_set_keymap
+			local opts = { noremap = true, silent = true }
+
+			keymap("n", "<LEADER>plf", ":PerfLoadFlat<CR>", opts)
+			keymap("n", "<LEADER>plg", ":PerfLoadCallGraph<CR>", opts)
+			keymap("n", "<LEADER>plo", ":PerfLoadFlameGraph<CR>", opts)
+
+			keymap("n", "<LEADER>pe", ":PerfPickEvent<CR>", opts)
+
+			keymap("n", "<LEADER>pa", ":PerfAnnotate<CR>", opts)
+			keymap("n", "<LEADER>pf", ":PerfAnnotateFunction<CR>", opts)
+			keymap("v", "<LEADER>pa", ":PerfAnnotateSelection<CR>", opts)
+
+			keymap("n", "<LEADER>pt", ":PerfToggleAnnotations<CR>", opts)
+
+			keymap("n", "<LEADER>ph", ":PerfHottestLines<CR>", opts)
+			keymap("n", "<LEADER>ps", ":PerfHottestSymbols<CR>", opts)
+			keymap("n", "<LEADER>pc", ":PerfHottestCallersFunction<CR>", opts)
+			keymap("v", "<LEADER>pc", ":PerfHottestCallersSelection<CR>", opts)
+		end,
+	},
+	{
+		"dhananjaylatkar/cscope_maps.nvim",
 		dependencies = {
-			"stevearc/dressing.nvim",
-			"nvim-lua/plenary.nvim",
-			"MunifTanjim/nui.nvim",
-			"hrsh7th/nvim-cmp",
-			"nvim-tree/nvim-web-devicons",
-			{ "zbirenbaum/copilot.lua" },
-			{
-				"HakonHarnes/img-clip.nvim",
-				event = "VeryLazy",
-				opts = {
-					-- recommended settings
-					default = {
-						embed_image_as_base64 = false,
-						prompt_for_file_name = false,
-						drag_and_drop = {
-							insert_mode = true,
-						},
-						-- required for Windows users
-						use_absolute_path = true,
-					},
-				},
-			},
-			{
-				-- Make sure to set this up properly if you have lazy=true
-				"MeanderingProgrammer/render-markdown.nvim",
-				dependencies = {
-					"nvim-treesitter/nvim-treesitter",
-					"echasnovski/mini.nvim",
-				},
-				opts = {
-					file_types = { "markdown", "Avante" },
-					anti_conceal = { enabled = false },
-					win_options = {
-						concealcursor = {
-							default = vim.api.nvim_get_option_value("concealcursor", {}),
-							rendered = "nc",
-						},
-					},
-				},
-				ft = { "markdown", "Avante" },
-			},
+			"folke/snacks.nvim", -- optional [for picker="snacks"]
 		},
 		opts = {
-			-- provider = "ollama",
-			-- auto_suggestions_provider = "ollama",
-			provider = "deepseek",
-			auto_suggestions_provider = "deepseek",
-			-- provider = "openai",
-			-- auto_suggestions_provider = "openai", -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
-			vendors = {
-				ollama = {
-					endpoint = "127.0.0.1:11434/v1",
-					model = "llama3",
-					parse_curl_args = function(opts, code_opts)
-						return {
-							url = opts.endpoint .. "/chat/completions",
-							headers = {
-								["Accept"] = "application/json",
-								["Content-Type"] = "application/json",
-							},
-							body = {
-								model = opts.model,
-								messages = require("avante.providers").copilot.parse_messages(code_opts), -- you can make your own message, but this is very advanced
-								max_tokens = 2048,
-								stream = true,
-							},
-						}
-					end,
-					parse_response_data = function(data_stream, event_state, opts)
-						require("avante.providers").openai.parse_response(data_stream, event_state, opts)
-					end,
-				},
-				deepseek = {
-					__inherited_from = "openai",
-					api_key_name = "",
-					endpoint = "127.0.0.1:11434/v1",
-					-- model = "deepseek-r1:7b",
-					model = "deepseek-coder",
+			-- maps related defaults
+			disable_maps = false, -- "true" disables default keymaps
+			skip_input_prompt = true, -- "true" doesn't ask for input
+			prefix = "<leader>c", -- prefix to trigger maps
+
+			-- cscope related defaults
+			cscope = {
+				-- location of cscope db file
+				db_file = "./cscope.out", -- DB or table of DBs
+				-- NOTE:
+				--   when table of DBs is provided -
+				--   first DB is "primary" and others are "secondary"
+				--   primary DB is used for build and project_rooter
+				-- cscope executable
+				exec = "cscope", -- "cscope" or "gtags-cscope"
+				-- choose your fav picker
+				picker = "quickfix", -- "quickfix", "telescope", "fzf-lua", "mini-pick" or "snacks"
+				-- size of quickfix window
+				qf_window_size = 5, -- any positive integer
+				-- position of quickfix window
+				qf_window_pos = "bottom", -- "bottom", "right", "left" or "top"
+				-- "true" does not open picker for single result, just JUMP
+				skip_picker_for_single_result = false, -- "false" or "true"
+				-- custom script can be used for db build
+				db_build_cmd = { script = "default", args = { "-bqkv" } },
+				-- statusline indicator, default is cscope executable
+				statusline_indicator = nil,
+				-- try to locate db_file in parent dir(s)
+				project_rooter = {
+					enable = false, -- "true" or "false"
+					-- change cwd to where db_file is located
+					change_cwd = false, -- "true" or "false"
 				},
 			},
-			behaviour = {
-				auto_suggestions = false, -- Experimental stage
-				auto_set_highlight_group = true,
-				auto_set_keymaps = true,
-				auto_apply_diff_after_generation = false,
-				support_paste_from_clipboard = false,
+			-- stack view defaults
+			stack_view = {
+				tree_hl = true, -- toggle tree highlighting
 			},
-			mappings = {
-				--- @class AvanteConflictMappings
-				diff = {
-					ours = "co",
-					theirs = "ct",
-					all_theirs = "ca",
-					both = "cb",
-					cursor = "cc",
-					next = "]x",
-					prev = "[x",
-				},
-				suggestion = {
-					accept = "<M-l>",
-					next = "<M-]>",
-					prev = "<M-[>",
-					dismiss = "<C-]>",
-				},
-				jump = {
-					next = "]]",
-					prev = "[[",
-				},
-				submit = {
-					normal = "<CR>",
-					insert = "<C-s>",
-				},
-				sidebar = {
-					switch_windows = "<Tab>",
-					reverse_switch_windows = "<S-Tab>",
-				},
-			},
-			hints = { enabled = true },
-			windows = {
-				---@type "right" | "left" | "top" | "bottom"
-				position = "right", -- the position of the sidebar
-				wrap = true, -- similar to vim.o.wrap
-				width = 45, -- default % based on available width
-				sidebar_header = {
-					align = "center", -- left, center, right for title
-					rounded = true,
-				},
-			},
-			highlights = {
-				diff = {
-					current = "DiffText",
-					incoming = "DiffAdd",
-				},
-			},
-			--- @class AvanteConflictUserConfig
-			diff = {
-				autojump = true,
-				---@type string | fun(): any
-				list_opener = "copen",
-			},
+		},
+		config = function(_, opts)
+			require("cscope_maps").setup(opts)
+
+			local group = vim.api.nvim_create_augroup("CscopeBuild", { clear = true })
+			vim.api.nvim_create_autocmd("BufWritePost", {
+				pattern = { "*.c", "*.h" },
+				callback = function()
+					vim.cmd("Cscope db build")
+				end,
+				group = group,
+			})
+		end,
+	},
+	{
+		"daishengdong/calltree.nvim",
+		dependencies = {
+			"dhananjaylatkar/cscope_maps.nvim",
+		},
+		opts = {
+			prefix = "<leader>o", -- keep consistent with cscope_maps
+			-- brief: only shows a symbol's name
+			-- detailed: shows just more details
+			-- detailed_paths: shows filename and line number
+			tree_style = "brief", -- alternatives: detailed, detailed_paths
 		},
 	},
 	{
-		"lomes0/nvim-bqf",
+		"kevinhwang91/nvim-bqf",
 		ft = "qf",
 		dependencies = {
 			{
@@ -257,45 +213,137 @@ return {
 		end,
 	},
 	{
-		"stevearc/aerial.nvim",
+		"folke/trouble.nvim",
+		event = "VeryLazy",
 		config = function(_, opts)
-			require("aerial").setup({
-				-- optionally use on_attach to set keymaps when aerial has attached to a buffer
-				on_attach = function(bufnr)
-					-- Jump forwards/backwards with '{' and '}'
-					vim.keymap.set("n", "{", "<cmd>AerialPrev<CR>", { buffer = bufnr })
-					vim.keymap.set("n", "}", "<cmd>AerialNext<CR>", { buffer = bufnr })
+			require("trouble").setup({
+				auto_close = false, -- auto close when there are no items
+				auto_preview = false, -- automatically open preview when on an item
+				auto_refresh = false, -- auto refresh when open
+				auto_jump = false, -- auto jump to the item when there's only one
+				focus = false, -- Focus the window when opened
+				restore = true, -- restores the last location in the list when opening
+				follow = false, -- Follow the current item
+				indent_guides = true, -- show indent guides
+				max_items = 200, -- limit number of items that can be displayed per section
+				multiline = true, -- render multi-line messages
+				pinned = false, -- When pinned, the opened trouble window will be bound to the current buffer
+				warn_no_results = true, -- show a warning when there are no results
+				open_no_results = false, -- open the trouble window when there are no results
+				---@type trouble.Window.opts
+				win = {}, -- window options for the results window. Can be a split or a floating window.
+				-- Window options for the preview window. Can be a split, floating window,
+				-- or `main` to show the preview in the main editor window.
+				---@type trouble.Window.opts
+				preview = {
+					type = "main",
+					-- when a buffer is not yet loaded, the preview window will be created
+					-- in a scratch buffer with only syntax highlighting enabled.
+					-- Set to false, if you want the preview to always be a real loaded buffer.
+					scratch = true,
+				},
+				-- Throttle/Debounce settings. Should usually not be changed.
+				---@type table<string, number|{ms:number, debounce?:boolean}>
+				throttle = {
+					refresh = 20, -- fetches new data when needed
+					update = 10, -- updates the window
+					render = 10, -- renders the window
+					follow = 100, -- follows the current item
+					preview = { ms = 100, debounce = true }, -- shows the preview for the current item
+				},
+				---@type table<string, trouble.Mode>
+				modes = {
+					diagnostics = {
+						win = {
+							position = "right",
+							relative = "win",
+							size = 0.3,
+						},
+						auto_open = false,
+					},
+					lsp_document_symbols = {
+						win = {
+							position = "right",
+							relative = "win",
+							size = 0.3,
+						},
+						auto_open = false,
+					},
+					-- sources define their own modes, which you can use directly,
+					-- or override like in the example below
+					lsp_references = {
+						-- some modes are configurable, see the source code for more details
+						params = {
+							include_declaration = true,
+						},
+					},
+					-- The LSP base mode for:
+					-- * lsp_definitions, lsp_references, lsp_implementations
+					-- * lsp_type_definitions, lsp_declarations, lsp_command
+					lsp_base = {
+						params = {
+							-- don't include the current location in the results
+							include_current = false,
+						},
+					},
+					-- more advanced example that extends the lsp_document_symbols
+					symbols = {
+						desc = "document symbols",
+						mode = "lsp_document_symbols",
+						focus = false,
+						win = { position = "right" },
+						filter = {
+							-- remove Package since luals uses it for control flow structures
+							["not"] = { ft = "lua", kind = "Package" },
+							any = {
+								-- all symbol kinds for help / markdown files
+								ft = { "help", "markdown" },
+								-- default set of symbol kinds
+								kind = {
+									"Class",
+									"Constructor",
+									"Enum",
+									"Field",
+									"Function",
+									"Interface",
+									"Method",
+									"Module",
+									"Namespace",
+									"Package",
+									"Property",
+									"Struct",
+									"Trait",
+								},
+							},
+						},
+					},
+				},
+			})
+			vim.api.nvim_create_autocmd("BufEnter", {
+				pattern = "*.c",
+				callback = function()
+					require("trouble").refresh()
 				end,
 			})
 		end,
-		-- Optional dependencies
-		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
-			"nvim-tree/nvim-web-devicons",
-		},
-	},
-	{
-		"folke/trouble.nvim",
-		lazy = "true",
-		cmd = "Trouble",
-		opts = {
-			position = "right",
-		},
 		keys = {
 			{
-				"<lt>x",
-				"<cmd>Trouble diagnostics toggle filter.buf=0 win.position=right<cr>",
-				desc = "Buffer Diagnostics (Trouble)",
+				"<F11>",
+				function()
+					local trouble = require("trouble")
+					local opts = { mode = "diagnostics", focus = false }
+					trouble.toggle(opts)
+				end,
+				desc = "Trouble Buffer Diagnostics",
 			},
 			{
-				"<lt>X",
-				"<cmd>Trouble diagnostics toggle win.position=right<cr>",
-				desc = "Diagnostics (Trouble)",
-			},
-			{
-				"<lt>i",
-				"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-				desc = "LSP Definitions / references / ... (Trouble)",
+				"<F10>",
+				function()
+					local trouble = require("trouble")
+					local opts = { mode = "lsp_document_symbols", focus = false }
+					trouble.toggle(opts)
+				end,
+				desc = "Trouble Buffer Symbols",
 			},
 		},
 	},

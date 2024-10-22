@@ -94,9 +94,6 @@ return {
 						buffer = bufnr,
 						desc = "Gitsigns diffthis",
 					})
-
-					vim.wo.signcolumn = "yes"
-					vim.o.statuscolumn = "%!v:lua.require('statuscolumn').statuscolumn()"
 				end,
 			})
 		end,

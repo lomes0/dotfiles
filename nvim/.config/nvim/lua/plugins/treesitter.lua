@@ -41,9 +41,11 @@ return {
 						set_jumps = true,
 						goto_next_start = {
 							["]m"] = "@function.outer",
+							["]d"] = "@conditional.outer",
 						},
 						goto_next_end = {
 							["]M"] = "@function.outer",
+							["]D"] = "@conditional.outer",
 						},
 						goto_previous_start = {
 							["[m"] = "@function.outer",
@@ -61,7 +63,6 @@ return {
 					"kdl",
 					"markdown",
 					"toml",
-					"latex",
 					"cpp",
 					"lua",
 				},
@@ -69,6 +70,7 @@ return {
 				auto_install = true,
 				highlight = {
 					enable = true,
+					disable = { "text" },
 					-- disable = function(_, buf)
 					-- 	local max_filesize = 100 * 1024 -- 100 KB
 					-- 	local stats = vim.loop.fs_stat(vim.api.nvim_buf_get_name(buf))

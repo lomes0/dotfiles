@@ -97,6 +97,10 @@ return {
 		},
 		config = function()
 			require("nvim-tree").setup({
+				view = {
+					number = false,
+					relativenumber = false,
+				},
 				on_attach = function(bufnr)
 					local api = require("nvim-tree.api")
 
@@ -138,6 +142,12 @@ return {
 			vim.keymap.set("n", "`", function()
 				require("nvim-tree.api").tree.toggle({ focus = false })
 			end, { noremap = true, silent = true, desc = "NvimTree Toggle" })
+
+			local function open_nvim_tree()
+				require("nvim-tree.api").tree.toggle({ focus = false })
+			end
+
+			-- vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
 		end,
 	},
 	{
@@ -203,6 +213,84 @@ return {
 		event = "VeryLazy",
 	},
 	{
+		"nvim-neo-tree/neo-tree.nvim",
+		branch = "v3.x",
+		open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "edgy" },
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
+			"MunifTanjim/nui.nvim",
+			"folke/edgy.nvim",
+			-- {"3rd/image.nvim", opts = {}}, -- Optional image support in preview window: See `# Preview Mode` for more information
+		},
+	},
+	{
+		"folke/edgy.nvim",
+		event = "VeryLazy",
+		init = function()
+			vim.opt.laststatus = 3
+			vim.opt.splitkeep = "screen"
+		end,
+		opts = {
+			animate = {
+				enabled = false,
+			},
+			right = {
+				"Trouble",
+				-- {
+				-- 	title = "Trouble Symbols",
+				-- 	ft = "trouble",
+				-- 	open = function()
+				-- 		vim.cmd("Trouble lsp_document_symbols win.position=right")
+				-- 	end,
+				-- 	size = { height = 0.5 },
+				-- 	pinned = true,
+				-- 	collapsed = false, -- show window as closed/collapsed on start
+				-- },
+			},
+			left = {
+				-- Neo-tree filesystem always takes half the screen height
+				{
+					title = "Neo-Tree",
+					ft = "neo-tree",
+					filter = function(buf)
+						return vim.b[buf].neo_tree_source == "filesystem"
+					end,
+					pinned = true,
+					size = { height = 0.5 },
+					open = "Neotree position=left",
+				},
+				{
+					title = "Neo-Tree Git",
+					ft = "neo-tree",
+					filter = function(buf)
+						return vim.b[buf].neo_tree_source == "git_status"
+					end,
+					pinned = true,
+					collapsed = false, -- show window as closed/collapsed on start
+					open = "Neotree position=left git_status",
+				},
+				{
+					title = "Neo-Tree Buffers",
+					ft = "neo-tree",
+					filter = function(buf)
+						return vim.b[buf].neo_tree_source == "buffers"
+					end,
+					pinned = true,
+					collapsed = false, -- show window as closed/collapsed on start
+					open = "Neotree position=left buffers",
+				},
+			},
+			options = {
+				left = { size = 35 },
+				right = { size = 35 },
+				bottom = { size = 8 },
+				top = { size = 8 },
+			},
+		},
+		fix_win_height = true,
+	},
+	{
 		"folke/snacks.nvim",
 		priority = 1000,
 		lazy = false,
@@ -213,8 +301,8 @@ return {
 				border = "rounded",
 			},
 			bigfile = {
-				enabled = true,
-				size = 1.5 * 1024 * 1024, -- 1.5MB
+				enabled = false,
+				size = 256 * 1024, -- 256KB
 			},
 			dashboard = {
 				enabled = false,
@@ -227,9 +315,12 @@ return {
 				enabled = true,
 			},
 			statuscolumn = {
-				enabled = true,
+				enabled = false,
 			},
 			words = {
+				enabled = true,
+			},
+			terminal = {
 				enabled = true,
 			},
 			zen = {
@@ -267,12 +358,25 @@ return {
 			picker = {
 				enabled = true,
 			},
+			zen = {
+				enabled = true,
+				toggles = {
+					dim = false,
+				},
+			},
 		},
 		keys = {
 			{
 				"<lt>/",
 				function()
 					Snacks.picker.grep({ cwd = _G.snacks_dir })
+				end,
+				desc = "Snacks Picker Grep",
+			},
+			{
+				"<lt>w",
+				function()
+					Snacks.picker.lsp_workspace_symbols()
 				end,
 				desc = "Snacks Picker Grep",
 			},
@@ -290,22 +394,6 @@ return {
 				end,
 				desc = "Snacks Picker File Explorer",
 			},
-			-- find
-			{
-				"<lt>ff",
-				function()
-					Snacks.picker.files({ cwd = _G.snacks_dir })
-				end,
-				desc = "Snacks Picker Find Files",
-			},
-			{
-				"<lt>fg",
-				function()
-					Snacks.picker.git_files()
-				end,
-				desc = "Snacks Picker Find Git Files",
-			},
-			-- git
 			{
 				"<lt>gl",
 				function()
@@ -328,18 +416,11 @@ return {
 				desc = "Snacks Picker Git Log File",
 			},
 			{
-				"<lt>sk",
+				"<lt>k",
 				function()
 					Snacks.picker.keymaps()
 				end,
 				desc = "Snacks Picker Keymaps",
-			},
-			{
-				"<lt>w",
-				function()
-					Snacks.picker.lsp_workspace_symbols()
-				end,
-				desc = "Snacks Picker LSP Workspace Symbols",
 			},
 			{
 				"<lt>.",
@@ -457,9 +538,13 @@ return {
 					Snacks.toggle.inlay_hints({ name = "Snacks Inlay Hints" }):map("<lt>uh")
 					Snacks.toggle.zen({ name = "Snacks Zen" }):map("<lt>z")
 
-					_G.snacks_dir = vim.api.nvim_buf_get_name(0):match("(.*/)")
+					_G.snacks_dir = vim.fn.getcwd()
 					vim.keymap.set("n", "<lt>dp", function()
-						_G.snacks_dir = vim.fn.input("Enter directory path: ")
+						_G.snacks_dir = vim.fn.input({
+							prompt = "Enter directory path: ",
+							default = _G.snacks_dir,
+							completion = "file",
+						})
 					end, { noremap = true, silent = true })
 				end,
 			})
@@ -508,6 +593,7 @@ return {
 						name = "Zsh",
 					},
 				},
+				number = false,
 				-- globally enable different highlight colors per icon (default to true)
 				-- if set to false all icons will have the default icon's color
 				color_icons = true,
@@ -661,6 +747,9 @@ return {
 					progress = {
 						enabled = false,
 					},
+					hover = { enabled = false },
+					signature = { enabled = false },
+					message = { enabled = false },
 					override = {
 						-- override the default lsp markdown formatter with Noice
 						["vim.lsp.util.convert_input_to_markdown_lines"] = false,
@@ -827,7 +916,10 @@ return {
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-tree/nvim-web-devicons",
-			{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+			{
+				"nvim-telescope/telescope-fzf-native.nvim",
+				build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release",
+			},
 			"debugloop/telescope-undo.nvim",
 			"nvim-telescope/telescope-dap.nvim",
 		},
@@ -848,18 +940,22 @@ return {
 			require("telescope").setup({
 				defaults = {
 					layout_config = {
-						scroll_speed = 5,
+						prompt_position = "top",
 						horizontal = {
 							preview_cutoff = 120,
-							preview_width = 0.75, -- Ratio of the preview width
-							results_width = 0.25, -- Ratio of the results width
+							preview_width = 0.5, -- Ratio of the preview width
+							results_width = 0.5, -- Ratio of the results width
 						},
 						width = 0.75, -- Overall width ratio of the Telescope window
 						height = 0.85, -- Overall height ratio of the Telescope window
 					},
 					file_ignore_patterns = {
 						"node_modules",
-						--  ".git",
+						".git",
+						"target",
+						"CMpub",
+						"linux80",
+						"linux90",
 					},
 					file_previewer = require("telescope.previewers").vim_buffer_cat.new,
 					grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
@@ -868,15 +964,11 @@ return {
 						n = {
 							["<C-p>"] = require("telescope.actions.layout").toggle_preview,
 							["<Tab>"] = focus_preview,
-							["<S-t>"] = require("telescope.actions").select_tab,
-							["<S-h>"] = require("telescope.actions").select_vertical,
-							["<S-k>"] = require("telescope.actions").select_horizontal,
+							["<C-]>"] = require("telescope.actions").select_vertical,
 						},
 						i = {
 							["<esc>"] = require("telescope.actions").close,
-							["<S-t>"] = require("telescope.actions").select_tab,
-							["<S-h>"] = require("telescope.actions").select_vertical,
-							["<S-k>"] = require("telescope.actions").select_horizontal,
+							["<C-]>"] = require("telescope.actions").select_vertical,
 							["<C-u>"] = false,
 							["<S-Tab>"] = false,
 							["<Tab>"] = focus_preview,
@@ -895,33 +987,165 @@ return {
 						override_generic_sorter = true, -- override the generic sorter
 						override_file_sorter = true, -- override the file sorter
 						case_mode = "smart_case", -- or "ignore_case" or "respect_case"
-						-- the default case_mode is "smart_case"
 					},
-					undo = {},
 				},
 			})
 
-			-- vim.keymap.set("n", "<lt>f", function()
-			-- 	require("telescope.builtin").find_files({
-			-- 		cwd = Snacks.git.get_root(),
-			-- 	})
-			-- end, {
-			-- 	noremap = true,
-			-- 	silent = true,
-			-- 	desc = "Telescope find files",
-			-- })
-			--
+			vim.keymap.set("n", "<lt>ff", function()
+				require("telescope.builtin").find_files({
+					cwd = _G.snacks_dir,
+					path_display = { "absolute" },
+				})
+			end, {
+				noremap = true,
+				silent = true,
+				desc = "Telescope find files",
+			})
+
 			-- vim.keymap.set("n", "<lt>k", require("telescope.builtin").keymaps, {
 			-- 	noremap = true,
 			-- 	silent = true,
 			-- 	desc = "Telescope keymaps",
 			-- })
-
+			--
 			require("telescope").load_extension("fzf")
-
-			require("telescope").load_extension("undo")
-
-			require("telescope").load_extension("dap")
 		end,
 	},
+	{
+		"LhKipp/nvim-nu",
+		lazy = true,
+		ft = { "nu" },
+		config = function()
+			require("nu").setup({
+				use_lsp_features = false,
+			})
+		end,
+	},
+	{
+		"lomes0/vim-tmux-navigator",
+		cmd = {
+			"TmuxNavigateLeft",
+			"TmuxNavigateDown",
+			"TmuxNavigateUp",
+			"TmuxNavigateRight",
+		},
+		keys = {
+			{ "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
+			{ "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
+			{ "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
+			{ "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
+		},
+	},
+	{
+		"mikavilpas/yazi.nvim",
+		lazy = true,
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+		},
+		config = function()
+			require("yazi").setup({
+				open_for_directories = false,
+			})
+		end,
+		keys = {
+			{
+				"\\",
+				function()
+					require("yazi").yazi()
+				end,
+				desc = "Open the file manager",
+			},
+		},
+		opts = {
+			-- enable this if you want to open yazi instead of netrw.
+			-- Note that if you enable this, you need to call yazi.setup() to
+			-- initialize the plugin. lazy.nvim does this for you in certain cases.
+			open_for_directories = false,
+			floating_window_scaling_factor = 0.85,
+			-- the transparency of the yazi floating window (0-100). See :h winblend
+			yazi_floating_window_winblend = 0,
+
+			log_level = vim.log.levels.OFF,
+			yazi_floating_window_border = "none",
+		},
+	},
 }
+-- {
+-- 	"swaits/zellij-nav.nvim",
+-- 	lazy = true,
+-- 	event = "VeryLazy",
+-- 	keys = {
+-- 		{ "<C-h>", "<cmd>ZellijNavigateLeft<cr>", { silent = true, desc = "navigate left" } },
+-- 		{ "<C-j>", "<cmd>ZellijNavigateDown<cr>", { silent = true, desc = "navigate down" } },
+-- 		{ "<C-k>", "<cmd>ZellijNavigateUp<cr>", { silent = true, desc = "navigate up" } },
+-- 		{ "<C-l>", "<cmd>ZellijNavigateRight<cr>", { silent = true, desc = "navigate right" } },
+-- 	},
+-- 	opts = {},
+-- },
+--
+-----------------------------------------
+-------------- Navigation ---------------
+-----------------------------------------
+-- {
+-- 	"ThePrimeagen/harpoon",
+-- 	lazy = false,
+-- 	branch = "harpoon2",
+-- 	dependencies = { "nvim-lua/plenary.nvim" },
+-- 	config = function()
+-- 		local harpoon = require("harpoon")
+--
+-- 		-- REQUIRED
+-- 		harpoon:setup()
+-- 		-- REQUIRED
+--
+-- 		vim.keymap.set("n", "<leader>a", function()
+-- 			harpoon:list():add()
+-- 		end)
+--
+-- 		vim.keymap.set("n", "<C-h>", function()
+-- 			harpoon:list():select(1)
+-- 		end)
+-- 		vim.keymap.set("n", "<C-t>", function()
+-- 			harpoon:list():select(2)
+-- 		end)
+-- 		vim.keymap.set("n", "<C-n>", function()
+-- 			harpoon:list():select(3)
+-- 		end)
+-- 		vim.keymap.set("n", "<C-s>", function()
+-- 			harpoon:list():select(4)
+-- 		end)
+--
+-- 		-- Toggle previous & next buffers stored within Harpoon list
+-- 		-- vim.keymap.set("n", "", function()
+-- 		-- 	harpoon:list():prev()
+-- 		-- end)
+-- 		-- vim.keymap.set("n", "", function()
+-- 		-- 	harpoon:list():next()
+-- 		-- end)
+--
+-- 		-- basic telescope configuration
+-- 		local conf = require("telescope.config").values
+-- 		local function toggle_telescope(harpoon_files)
+-- 			local file_paths = {}
+-- 			for _, item in ipairs(harpoon_files.items) do
+-- 				table.insert(file_paths, item.value)
+-- 			end
+--
+-- 			require("telescope.pickers")
+-- 				.new({}, {
+-- 					prompt_title = "Harpoon",
+-- 					finder = require("telescope.finders").new_table({
+-- 						results = file_paths,
+-- 					}),
+-- 					previewer = conf.file_previewer({}),
+-- 					sorter = conf.generic_sorter({}),
+-- 				})
+-- 				:find()
+-- 		end
+--
+-- 		vim.keymap.set("n", "<lt>h", function()
+-- 			toggle_telescope(harpoon:list())
+-- 		end, { desc = "Open harpoon window" })
+-- 	end,
+-- },
+

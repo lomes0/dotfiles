@@ -16,9 +16,9 @@ function M.set_color_visual()
 	})
 end
 
-function M.set_color_cursor_hl(opts)
-	vim.api.nvim_set_hl(0, "LspReferenceText", opts)
-end
+-- function M.set_color_cursor_hl(opts)
+-- 	vim.api.nvim_set_hl(0, "LspReferenceText", opts)
+-- end
 
 function M.set_color_win_seperator()
 	vim.api.nvim_set_hl(0, "WinSeparator", {
@@ -83,7 +83,7 @@ function M.set_color_bufferline()
 end
 
 M.colorscheme_opts = {
-	["kanagawa-paper"] = {
+	["kanagawa"] = {
 		-- cursor
 		{
 			bg = "#3d3e42",
@@ -194,7 +194,7 @@ function M.SetColorScheme(scheme)
 
 	vim.api.nvim_set_hl(0, "Folded", { bg = "none" })
 	M.set_color_ts_context(opts_ts)
-	M.set_color_cursor_hl(opts_cursor)
+	-- M.set_color_cursor_hl(opts_cursor)
 	M.set_color_bufferline()
 	M.set_color_win_seperator()
 	M.set_color_visual()
@@ -204,43 +204,9 @@ function M.SetColorScheme(scheme)
 end
 
 function M.init()
-	local filetypes_schemes = {
-		-- { "catppuccin-macchiato", "*" },
-		-- { "tokyonight-moon", "*.c" },
-		-- { "tokyonight-moon", "*.cc" },
-		-- { "tokyonight-moon", "*.cpp" },
-		-- { "tokyonight-moon", "*.h" },
-		-- { "tokyonight-moon", "*.hpp" },
-		-- { "kanagawa-paper", "*.lua" },
-	}
-
-	local blacklist = {
-		"",
-		"NvimTree",
-		"snacks_terminal",
-		"terminal",
-		"help",
-		"gitcommit",
-		"dashboard",
-	}
-
-	M.SetColorScheme("kanagawa-paper")
-
-	for i, _ in ipairs(filetypes_schemes) do
-		local scheme = filetypes_schemes[i][1]
-		local filetype = filetypes_schemes[i][2]
-		vim.api.nvim_create_autocmd("BufEnter", {
-			pattern = filetype,
-			callback = function(args)
-				if filetype ~= M.last_type then
-					if not vim.tbl_contains(blacklist, vim.bo[args.buf].filetype) then
-						M.SetColorScheme(scheme)
-						M.last_type = filetype
-					end
-				end
-			end,
-		})
-	end
+	M.SetColorScheme("kanagawa")
+	-- M.SetColorScheme("catppuccin-macchiato")
+	-- M.SetColorScheme("tokyonight-moon")
 end
 
 return M
