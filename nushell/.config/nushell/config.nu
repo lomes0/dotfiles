@@ -290,7 +290,7 @@ $env.config = {
 			columns: ["name"]
             type: {
                 layout: columnar
-                columns: 4
+                columns: 1
                 col_width: 20     # Optional value. If missing all the screen width is used to calculate column width
                 col_padding: 2
             }
