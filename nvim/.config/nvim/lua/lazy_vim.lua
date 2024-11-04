@@ -1916,13 +1916,13 @@ require("lazy").setup({
 						desc = "Gitsigns next change",
 					})
 
+					-- stage
 					vim.keymap.set("n", "sa", gitsigns.stage_hunk, {
 						silent = true,
 						buffer = bufnr,
 						desc = "Gitsigns stage",
 					})
-
-					vim.keymap.set("v", "s", function()
+					vim.keymap.set("v", "sa", function()
 						gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
 					end, {
 						silent = true,
@@ -1930,24 +1930,20 @@ require("lazy").setup({
 						desc = "Gitsigns stage selection",
 					})
 
-					vim.keymap.set("n", "sb", gitsigns.stage_buffer, {
-						noremap = true,
-						silent = true,
-						buffer = bufnr,
-						desc = "Gitsigns stage buffer",
-					})
-					vim.keymap.set("n", "su", gitsigns.undo_stage_hunk, {
-						noremap = true,
-						silent = true,
-						buffer = bufnr,
-						desc = "Gitsigns stage undo",
-					})
 					vim.keymap.set("n", "sR", gitsigns.reset_buffer, {
 						noremap = true,
 						silent = true,
 						buffer = bufnr,
 						desc = "Gitsigns reset buffer",
 					})
+					vim.keymap.set("n", "sr", gitsigns.reset_hunk, {
+						noremap = true,
+						silent = true,
+						buffer = bufnr,
+						desc = "Gitsigns reset hunk",
+					})
+
+					-- review
 					vim.keymap.set("n", "sp", gitsigns.preview_hunk, {
 						noremap = true,
 						silent = true,
@@ -1966,6 +1962,19 @@ require("lazy").setup({
 						buffer = bufnr,
 						desc = "Gitsigns diffthis",
 					})
+
+					-- vim.keymap.set("n", "sb", gitsigns.stage_buffer, {
+					-- 	noremap = true,
+					-- 	silent = true,
+					-- 	buffer = bufnr,
+					-- 	desc = "Gitsigns stage buffer",
+					-- })
+					-- vim.keymap.set("n", "su", gitsigns.undo_stage_hunk, {
+					-- 	noremap = true,
+					-- 	silent = true,
+					-- 	buffer = bufnr,
+					-- 	desc = "Gitsigns stage undo",
+					-- })
 
 					vim.wo.signcolumn = "yes"
 				end,
