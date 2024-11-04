@@ -6,9 +6,10 @@
 	autocrlf = false
 	; pager = diff-so-fancy | less --tabs=4 -RF
 	pager = delta
+	editor = /bin/vim
 [diff]
 	prompt = false
-	editor = nvim
+	editor = /bin/vim
 	tool = nvimdiff
 [difftool "nvimdiff"]
 	cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
