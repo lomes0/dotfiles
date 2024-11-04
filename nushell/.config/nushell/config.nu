@@ -264,6 +264,25 @@ $env.config = {
     menus: [
         # Configuration for default nushell menus
         # Note the lack of source parameter
+		{
+            name: zoxide_menu
+            only_buffer_difference: true
+            marker: "| "
+            type: {
+                layout: columnar
+                page_size: 20
+                columns: 1
+            }
+            style: {
+                text: green
+                selected_text: green_reverse
+                description_text: yellow
+            }
+			source: { |buffer, position|
+				ls -l
+				| each { |it| { value: ($it.name | path basename) } }
+			}
+        }
         {
             name: completion_menu
             only_buffer_difference: false
