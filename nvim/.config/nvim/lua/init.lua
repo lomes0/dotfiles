@@ -44,6 +44,12 @@ local keymaps_noremap = {
 		'"_x',
 		desc = "Delete into void register",
 	},
+	{
+		{ "v" },
+		";p",
+		'"_xP',
+		desc = "Delete into void register",
+	},
 }
 
 local move_floating_window_scale = 4
