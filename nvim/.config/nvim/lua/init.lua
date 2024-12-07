@@ -325,38 +325,38 @@ local keymaps = {
 		"<cmd>qa<cr>",
 		desc = "Close neovim",
 	},
-	{
-		"n",
-		"<left>",
-		function()
-			Move_floating_window(vim.api.nvim_get_current_win(), 0, -1 * move_floating_window_scale)
-		end,
-		desc = "Move floating window left",
-	},
-	{
-		"n",
-		"<up>",
-		function()
-			Move_floating_window(vim.api.nvim_get_current_win(), -1 * move_floating_window_scale, 0)
-		end,
-		desc = "Moving floating window up",
-	},
-	{
-		"n",
-		"<down>",
-		function()
-			Move_floating_window(vim.api.nvim_get_current_win(), move_floating_window_scale, 0)
-		end,
-		desc = "Moving floating window down",
-	},
-	{
-		"n",
-		"<right>",
-		function()
-			Move_floating_window(vim.api.nvim_get_current_win(), 0, move_floating_window_scale)
-		end,
-		desc = "Moving floating window right",
-	},
+	-- {
+	-- 	"n",
+	-- 	"<left>",
+	-- 	function()
+	-- 		Move_floating_window(vim.api.nvim_get_current_win(), 0, -1 * move_floating_window_scale)
+	-- 	end,
+	-- 	desc = "Move floating window left",
+	-- },
+	-- {
+	-- 	"n",
+	-- 	"<up>",
+	-- 	function()
+	-- 		Move_floating_window(vim.api.nvim_get_current_win(), -1 * move_floating_window_scale, 0)
+	-- 	end,
+	-- 	desc = "Moving floating window up",
+	-- },
+	-- {
+	-- 	"n",
+	-- 	"<down>",
+	-- 	function()
+	-- 		Move_floating_window(vim.api.nvim_get_current_win(), move_floating_window_scale, 0)
+	-- 	end,
+	-- 	desc = "Moving floating window down",
+	-- },
+	-- {
+	-- 	"n",
+	-- 	"<right>",
+	-- 	function()
+	-- 		Move_floating_window(vim.api.nvim_get_current_win(), 0, move_floating_window_scale)
+	-- 	end,
+	-- 	desc = "Moving floating window right",
+	-- },
 }
 
 local function register_opts(opts_array)

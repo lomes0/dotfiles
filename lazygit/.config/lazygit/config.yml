@@ -1,4 +1,5 @@
 gui:
+  editor: "nvr --remote-wait-silent"
   showIcons: false
   sidePanelWidth: 0.2
   theme:
@@ -8,14 +9,17 @@ gui:
       - '#b9e1eb'
   showFileTree: true # for rendering changes files in a tree format
 os:
-  editCommand: "nvim"
-  editCommandTemplate: "{{editor}} {{filename}}"
+  # editCommand: "nvim"
+  # editCommandTemplate: "{{editor}} {{filename}}"
+  # editPreset: 'nvim-remote'
+  # edit: "nvr --remote-send '<C-space>:q<CR><Esc>:lua vim.cmd(\"e \" .. {{filename}})<CR>'"
+  # editAtLine: "nvr --remote-send '<C-space>:q<CR><Esc>:lua vim.cmd(\"e \" .. {{filename}})<CR>{{line}}G'"
 keybinding:
   universal:
     quit: "q"
 promptToReturnFromSubprocess: false
 disableStartupPopups: true
-# git:
-#   paging:
-#     colorArg: never
-#     pager: ydiff -s -p cat --wrap --width={{columnWidth}}
+git:
+  paging:
+    colorArg: never
+    pager: ydiff -s -p cat --wrap --width={{columnWidth}}
