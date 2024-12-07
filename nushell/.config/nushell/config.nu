@@ -264,7 +264,7 @@ $env.config = {
     menus: [
         # Configuration for default nushell menus
         # Note the lack of source parameter
-		{
+	{
             name: zoxide_menu
             only_buffer_difference: true
             marker: "| "
@@ -278,16 +278,15 @@ $env.config = {
                 selected_text: green_reverse
                 description_text: yellow
             }
-			source: { |buffer, position|
-				ls -l
-				| each { |it| { value: ($it.name | path basename) } }
-			}
+            source: { |buffer, position|
+                ls -l | each { |it| { value: ($it.name | path basename) } }
+            }
         }
         {
             name: completion_menu
             only_buffer_difference: false
             marker: ""
-			columns: ["name"]
+            columns: ["name"]
             type: {
                 layout: columnar
                 columns: 1
@@ -371,15 +370,14 @@ $env.config = {
 
     keybindings: [
 	    {
-			name: change_dir_with_fzf
-			modifier: control
-			keycode: char_l
-            mode: [emacs, vi_normal, vi_insert]
-			event:[
+		name: change_dir_with_fzf
+		modifier: control
+		keycode: char_l
+            	mode: [emacs, vi_normal, vi_insert]
+		    event:[
       		    { edit: Clear }
       		    { edit: InsertString,
-      		      value: "cd (ls | where type == dir | each { |it| $it.name} | str join (char nl) | fzf | decode utf-8 | str trim)"
-
+      		      value: "cd (ls | where type == dir | each { |it| $it.name} | str join (char nl) | fzf --height=25% | decode utf-8 | str trim)"
       		    }
                 { send: menunext }
       		    { send: Enter }
