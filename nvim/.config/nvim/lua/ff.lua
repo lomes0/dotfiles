@@ -115,4 +115,4 @@ M.treesitter = function(_)
 	-- return M.advance(iterator, opts)
 end
 
-return M
+M.init()

@@ -1,4 +1,3 @@
-vim.g.mapleader = "<"
 vim.opt.fillchars = { eob = " " }
 
 local opts = {
@@ -464,9 +463,4 @@ register_opts(opts)
 register_keymaps(keymaps, true)
 register_keymaps(keymaps_noremap, false)
 
-require("lazy_vim")
-require("neovide").init()
-require("folding").init()
-require("floatterm").init()
-require("colors").init()
 set_cwd()

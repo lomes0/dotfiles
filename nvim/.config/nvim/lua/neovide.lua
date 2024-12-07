@@ -47,4 +47,4 @@ M.init = function()
 	end
 end
 
-return M
+M.init()

@@ -130,4 +130,4 @@ function M.init()
 	-- })
 end
 
-return M
+M.init()

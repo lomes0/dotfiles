@@ -76,4 +76,4 @@ end
 
 vim.keymap.set("n", "<lt>ef", Embad_floatterm, { noremap = true, silent = true })
 
-return M
+M.init()

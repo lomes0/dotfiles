@@ -151,4 +151,4 @@ function M.init()
 	M.SetCatppuccin()
 end
 
-return M
+M.init()
