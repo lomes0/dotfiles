@@ -145,10 +145,8 @@ function M.SetTokyo()
 end
 
 function M.init()
-	vim.keymap.set("n", "c1", M.SetTokyo, { silent = true, noremap = true })
-	vim.keymap.set("n", "c2", M.SetCatppuccin, { silent = true, noremap = true })
-	vim.keymap.set("n", "c3", M.SetKan, { silent = true, noremap = true })
-	vim.keymap.set("n", "c4", M.SetRose, { silent = true, noremap = true })
+	vim.keymap.set("n", "c1", M.SetCatppuccin, { silent = true, noremap = true })
+	vim.keymap.set("n", "c2", M.SetKan, { silent = true, noremap = true })
 
 	M.SetCatppuccin()
 end

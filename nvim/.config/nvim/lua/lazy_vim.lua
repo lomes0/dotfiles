@@ -1408,7 +1408,7 @@ require("lazy").setup({
 					vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
 					vim.keymap.set("n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
 					vim.keymap.set({ "n", "x" }, "<F3>", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", opts)
-					vim.keymap.set("n", "<F4>", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
+					vim.keymap.set("n", "gca", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
 				end,
 			})
 
@@ -1421,6 +1421,7 @@ require("lazy").setup({
 			require("lspconfig").clangd.setup({})
 
 			local cmp = require("cmp")
+			local cmp_select = { behavior = cmp.SelectBehavior.Select }
 
 			cmp.setup({
 				sources = {
@@ -1432,56 +1433,62 @@ require("lazy").setup({
 						vim.snippet.expand(args.body)
 					end,
 				},
-				mapping = cmp.mapping.preset.insert({}),
+				mapping = cmp.mapping.preset.insert({
+					["<C-Space>"] = cmp.mapping.complete(),
+					["<C-u>"] = cmp.mapping.scroll_docs(-4),
+					["<C-d>"] = cmp.mapping.scroll_docs(4),
+					["<Tab>"] = cmp.mapping.select_next_item(cmp_select),
+					["<S-Tab>"] = cmp.mapping.select_prev_item(cmp_select),
+					["<Enter>"] = cmp.mapping.confirm({ select = true }),
+				}),
+				window = {
+					completion = cmp.config.window.bordered(),
+					documentation = cmp.config.window.bordered(),
+				},
 			})
-			-- local lsp = require("lsp-zero")
-			-- local cmp = require("cmp")
-			-- local cmp_action = require("lsp-zero").cmp_action()
-			-- local cmp_select = { behavior = cmp.SelectBehavior.Select }
-			-- lsp.extend_lspconfig()
-			--
-			-- lsp.preset("recommended")
-			-- cmp.setup({
-			-- 	window = {
-			-- 		completion = cmp.config.window.bordered(),
-			-- 		documentation = cmp.config.window.bordered(),
-			-- 	},
-			-- 	mapping = cmp.mapping.preset.insert({
-			-- 		["<C-Space>"] = cmp.mapping.complete(),
-			-- 		["<C-f>"] = cmp_action.luasnip_jump_forward(),
-			-- 		["<C-b>"] = cmp_action.luasnip_jump_backward(),
-			-- 		["<C-u>"] = cmp.mapping.scroll_docs(-4),
-			-- 		["<C-d>"] = cmp.mapping.scroll_docs(4),
-			-- 		["<Tab>"] = cmp.mapping.select_next_item(cmp_select),
-			-- 		["<S-Tab>"] = cmp.mapping.select_prev_item(cmp_select),
-			-- 		["<Enter>"] = cmp.mapping.confirm({ select = true }),
-			-- 	}),
-			-- })
-			--
-			-- lsp.set_preferences({
-			-- 	sign_icons = {},
-			-- })
-			--
-			-- lsp.on_attach(function(_, bufnr)
-			-- 	vim.keymap.set("n", "gd", vim.lsp.buf.definition, {
-			-- 		buffer = bufnr,
-			-- 		noremap = true,
-			-- 		silent = true,
-			-- 		desc = "lsp definition",
-			-- 	})
-			-- 	vim.keymap.set("n", "gh", vim.lsp.buf.hover, {
-			-- 		buffer = bufnr,
-			-- 		noremap = true,
-			-- 		silent = true,
-			-- 		desc = "lsp hover",
-			-- 	})
-			-- 	vim.keymap.set("n", "gca", vim.lsp.buf.code_action, {
-			-- 		buffer = bufnr,
-			-- 		noremap = true,
-			-- 		silent = true,
-			-- 		desc = "lsp code action",
-			-- 	})
-			-- end)
+
+			local progress = vim.defaulttable()
+			vim.api.nvim_create_autocmd("LspProgress", {
+				---@param ev {data: {client_id: integer, params: lsp.ProgressParams}}
+				callback = function(ev)
+					local client = vim.lsp.get_client_by_id(ev.data.client_id)
+					local value = ev.data.params.value --[[@as {percentage?: number, title?: string, message?: string, kind: "begin" | "report" | "end"}]]
+					if not client or type(value) ~= "table" then
+						return
+					end
+					local p = progress[client.id]
+
+					for i = 1, #p + 1 do
+						if i == #p + 1 or p[i].token == ev.data.params.token then
+							p[i] = {
+								token = ev.data.params.token,
+								msg = ("[%3d%%] %s%s"):format(
+									value.kind == "end" and 100 or value.percentage or 100,
+									value.title or "",
+									value.message and (" **%s**"):format(value.message) or ""
+								),
+								done = value.kind == "end",
+							}
+							break
+						end
+					end
+
+					local msg = {} ---@type string[]
+					progress[client.id] = vim.tbl_filter(function(v)
+						return table.insert(msg, v.msg) or not v.done
+					end, p)
+
+					local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+					vim.notify(table.concat(msg, "\n"), "info", {
+						id = "lsp_progress",
+						title = client.name,
+						opts = function(notif)
+							notif.icon = #progress[client.id] == 0 and " "
+								or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+						end,
+					})
+				end,
+			})
 		end,
 	},
 	{
