@@ -526,75 +526,6 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"akinsho/toggleterm.nvim",
-		lazy = true,
-		cmd = { "Toggleterm" },
-		keys = { "<c-\\>", "<lt>l" },
-		version = "*",
-		dependencies = {
-			"nvim-telescope/telescope.nvim",
-		},
-		config = function()
-			require("toggleterm").setup({
-				open_mapping = [[<c-\>]],
-				hide_numbers = true, -- hide the number column in toggleterm buffers
-				shade_filetypes = {},
-				autochdir = false, -- when neovim changes it current directory the terminal will change it's own when next it's opened
-				start_in_insert = true,
-				insert_mappings = true, -- whether or not the open mapping applies in insert mode
-				terminal_mappings = true, -- whether or not the open mapping applies in the opened terminals
-				direction = "float",
-				persist_size = true,
-				persist_mode = true, -- if set to true (default) the previous terminal mode will be remembered
-				close_on_exit = true, -- close the terminal window when the process exits
-				-- Change the default shell. Can be a string or a function returning a string
-				shell = vim.o.shell,
-				auto_scroll = true, -- automatically scroll to the bottom on terminal output
-				winbar = {
-					enabled = false,
-					name_formatter = function(term) --  term: Terminal
-						return term.name
-					end,
-				},
-			})
-			local Terminal = require("toggleterm.terminal").Terminal
-			function Lazygit_toggle()
-				local buf_dir = vim.fn.expand("%:p:h")
-				local git_dir_cmd = "git -C " .. buf_dir .. " rev-parse --show-toplevel"
-				local git_dir = vim.fn.system(git_dir_cmd)
-				local lazygit = Terminal:new({
-					cmd = "lazygit -p=" .. git_dir,
-					dir = "",
-					direction = "float",
-					float_opts = {
-						border = "double",
-					},
-					-- function to run on opening the terminal
-					on_open = function(term)
-						vim.cmd("startinsert!")
-						vim.api.nvim_buf_set_keymap(
-							term.bufnr,
-							"n",
-							"q",
-							"<cmd>close<CR>",
-							{ noremap = true, silent = true }
-						)
-					end,
-					-- function to run on closing the terminal
-					on_close = function()
-						vim.cmd("startinsert!")
-					end,
-				})
-				lazygit:toggle()
-			end
-			vim.keymap.set("n", "<lt>l", Lazygit_toggle, {
-				noremap = true,
-				silent = true,
-				desc = "Lazygit open",
-			})
-		end,
-	},
-	{
 		"sindrets/winshift.nvim",
 		lazy = true,
 		cmd = { "WinShift" },
@@ -1014,10 +945,10 @@ require("lazy").setup({
 			local treesitter_ctx = require("treesitter-context")
 			vim.keymap.set("n", "[[", function()
 				treesitter_ctx.go_to_context()
-			end, { noremap = true, silent = true })
+			end, { noremap = true, silent = true, desc = "Treesitter prev context" })
 			vim.keymap.set("n", "[]", function()
 				treesitter_ctx.toggle()
-			end, { noremap = true, silent = true })
+			end, { noremap = true, silent = true, desc = "Treesitter toggle context" })
 			treesitter_ctx.disable()
 		end,
 	},
@@ -1084,13 +1015,22 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"mg979/vim-visual-multi",
-		lazy = true,
-		keys = { "<c-n>" },
+		"smoka7/multicursors.nvim",
+		event = "VeryLazy",
+		dependencies = {
+			"nvimtools/hydra.nvim",
+		},
+		opts = {},
+		cmd = { "MCstart", "MCvisual", "MCclear", "MCpattern", "MCvisualPattern", "MCunderCursor" },
+		keys = {
+			{
+				mode = { "v", "n" },
+				"<Leader>m",
+				"<cmd>MCstart<cr>",
+				desc = "Create a selection for selected text or word under the cursor",
+			},
+		},
 	},
-	--------------
-	-- View
-	--------------
 	{
 		"lomes0/nvim-bqf",
 		ft = "qf",
@@ -1211,8 +1151,8 @@ require("lazy").setup({
 					-- popupmenu
 					enabled = true, -- enables the Noice messages UI
 					view = "notify", -- default view for messages
-					view_error = "popup", -- view for errors
-					view_warn = "popup", -- view for warnings
+					view_error = "notify", -- view for errors
+					view_warn = "notify", -- view for warnings
 					view_history = "messages", -- view for :messages
 					view_search = "virtualtext", -- view for search count messages. Set to `false` to disable
 				},
@@ -1257,80 +1197,6 @@ require("lazy").setup({
 		config = function()
 			require("nu").setup({
 				use_lsp_features = false,
-			})
-		end,
-	},
-	{
-		"folke/twilight.nvim",
-		cmd = { "Twilight" },
-		lazy = true,
-		opts = {
-			dimming = {
-				alpha = 0.25, -- amount of dimming
-				-- we try to get the foreground from the highlight groups or fallback color
-				color = { "Normal", "#ffffff" },
-				term_bg = "#000000", -- if guibg=NONE, this will be used to calculate text color
-				inactive = false, -- when true, other windows will be fully dimmed (unless they contain the same buffer)
-			},
-			context = 10, -- amount of lines we will try to show around the current line
-			treesitter = true, -- use treesitter when available for the filetype
-			-- treesitter is used to automatically expand the visible text,
-			-- but you can further control the types of nodes that should always be fully expanded
-			expand = { -- for treesitter, we we always try to expand to the top-most ancestor with these types
-				"function",
-				"method",
-				"table",
-				"if_statement",
-			},
-			exclude = {}, -- exclude these filetypes
-		},
-	},
-	{
-		"folke/zen-mode.nvim",
-		dependencies = {
-			"folke/twilight.nvim",
-		},
-		lazy = true,
-		cmd = { "ZenMode" },
-		keys = { "<lt>z" },
-		opts = {
-			window = {
-				backdrop = 0.95, -- shade the backdrop of the Zen window. Set to 1 to keep the same as Normal
-				width = 120, -- width of the Zen window
-				height = 1, -- height of the Zen window
-				options = {},
-			},
-			plugins = {
-				options = {
-					enabled = true,
-					ruler = false, -- disables the ruler text in the cmd line area
-					showcmd = false, -- disables the command in the last line of the screen
-					laststatus = 0, -- turn off the statusline in zen mode
-				},
-				twilight = { enabled = false }, -- enable to start Twilight when zen mode opens
-				gitsigns = { enabled = false }, -- disables git signs
-				tmux = { enabled = false }, -- disables the tmux statusline
-				kitty = {
-					enabled = true,
-					font = "+4", -- font size increment
-				},
-				alacritty = {
-					enabled = true,
-					font = "14", -- font size
-				},
-				wezterm = {
-					enabled = false,
-					-- can be either an absolute font size or the number of incremental steps
-					font = "+4", -- (10% increase per step)
-				},
-			},
-		},
-		config = function()
-			require("zen-mode").setup({})
-			vim.keymap.set("n", "<lt>z", require("zen-mode").toggle, {
-				noremap = true,
-				silent = true,
-				desc = "Zenmode toggle",
 			})
 		end,
 	},
