@@ -167,11 +167,19 @@ local keymaps = {
 		"<cmd>tabprev<cr>",
 		desc = "prev tab",
 	},
+	-- {
+	-- 	"t",
+	-- 	"<c-;>",
+	-- 	"<c-\\><c-n>:",
+	-- 	desc = "cmd mode",
+	-- },
 	{
 		"t",
-		"<c-;>",
-		"<c-\\><c-n>:",
-		desc = "cmd mode",
+		"<c-\\>",
+		function ()
+			Snacks.terminal.toggle()
+		end,
+		desc = "Toggle float term",
 	},
 	{
 		"t",

@@ -139,7 +139,7 @@ return {
 			require("nvim-tree").setup({})
 
 			vim.keymap.set("n", "`", function()
-				vim.api.nvim_command("NvimTreeToggle")
+				require('nvim-tree.api').tree.toggle({ focus = false })
 			end, { noremap = true, silent = true, desc = "NvimTree toggle" })
 
 			vim.keymap.set("n", "U", function()
