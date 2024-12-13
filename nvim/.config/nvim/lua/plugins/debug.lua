@@ -8,14 +8,14 @@ return {
 		},
 		config = function()
 			local dap = require("dap")
-			require("dapui").setup()
-			require("nvim-dap-virtual-text").setup()
+			require("dapui").setup({})
+			require("nvim-dap-virtual-text").setup({})
 
 			dap.adapters.lldb = {
 				type = "server",
 				port = "${port}",
 				executable = {
-					command = "/home/eransa/.local/share/nvim/mason/bin/codelldb",
+					command = "~/.local/share/nvim/mason/bin/codelldb",
 					args = { "--port", "${port}" },
 				},
 			}
