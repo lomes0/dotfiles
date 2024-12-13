@@ -733,4 +733,139 @@ return {
 			})
 		end,
 	},
+	{
+		"nvim-telescope/telescope.nvim",
+		event = "VeryLazy",
+		tag = "0.1.4",
+		dependencies = {
+			"nvim-lua/plenary.nvim",
+			"nvim-tree/nvim-web-devicons",
+			{ "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
+			"debugloop/telescope-undo.nvim",
+			"nvim-telescope/telescope-dap.nvim",
+		},
+		config = function()
+			local focus_preview = function(prompt_bufnr)
+				local action_state = require("telescope.actions.state")
+				local picker = action_state.get_current_picker(prompt_bufnr)
+				local prompt_win = picker.prompt_win
+				local previewer = picker.previewer
+				local winid = previewer.state.winid
+				local bufnr = previewer.state.bufnr
+				vim.keymap.set("n", "<Tab>", function()
+					vim.cmd(string.format("noautocmd lua vim.api.nvim_set_current_win(%s)", prompt_win))
+				end, { buffer = bufnr })
+				vim.cmd(string.format("noautocmd lua vim.api.nvim_set_current_win(%s)", winid))
+				-- api.nvim_set_current_win(winid)
+			end
+			require("telescope").setup({
+				defaults = {
+					layout_config = {
+						scroll_speed = 5,
+						horizontal = {
+							preview_cutoff = 120,
+							preview_width = 0.75, -- Ratio of the preview width
+							results_width = 0.25, -- Ratio of the results width
+						},
+						width = 0.75, -- Overall width ratio of the Telescope window
+						height = 0.85, -- Overall height ratio of the Telescope window
+					},
+					file_ignore_patterns = {
+						"node_modules",
+						--  ".git",
+					},
+					file_previewer = require("telescope.previewers").vim_buffer_cat.new,
+					grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
+					qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
+					mappings = {
+						n = {
+							["<C-p>"] = require("telescope.actions.layout").toggle_preview,
+							["<Tab>"] = focus_preview,
+							["<S-t>"] = require("telescope.actions").select_tab,
+							["<S-h>"] = require("telescope.actions").select_vertical,
+							["<S-k>"] = require("telescope.actions").select_horizontal,
+						},
+						i = {
+							["<esc>"] = require("telescope.actions").close,
+							["<S-t>"] = require("telescope.actions").select_tab,
+							["<S-h>"] = require("telescope.actions").select_vertical,
+							["<S-k>"] = require("telescope.actions").select_horizontal,
+							["<C-u>"] = false,
+							["<S-Tab>"] = false,
+							["<Tab>"] = focus_preview,
+							["<C-p>"] = require("telescope.actions.layout").toggle_preview,
+						},
+					},
+				},
+				pickers = {
+					lsp_references = {
+						-- theme = "dropdown",
+					},
+				},
+				extensions = {
+					fzf = {
+						fuzzy = true, -- false will only do exact matching
+						override_generic_sorter = true, -- override the generic sorter
+						override_file_sorter = true, -- override the file sorter
+						case_mode = "smart_case", -- or "ignore_case" or "respect_case"
+						-- the default case_mode is "smart_case"
+					},
+					undo = {},
+				},
+			})
+
+			local function git_root()
+				local handle = io.popen("git rev-parse --show-toplevel 2> /dev/null")
+				if handle ~= nil then
+					local result = handle:read("*a")
+					handle:close()
+					return result:match("^%s*(.-)%s*$")
+				end
+			end
+
+			local function telescope_search_dir()
+				local git_dir = git_root()
+				if git_dir ~= nil then
+					return git_dir
+				end
+
+				return "."
+			end
+
+			vim.keymap.set("n", "<lt>q", function()
+				require("telescope.builtin").live_grep({
+					cwd = telescope_search_dir(),
+				})
+			end, {
+				noremap = true,
+				silent = true,
+				desc = "Telescope grep",
+			})
+			vim.keymap.set("n", "<lt>f", function()
+				require("telescope.builtin").find_files({
+					cwd = telescope_search_dir(),
+				})
+			end, {
+				noremap = true,
+				silent = true,
+				desc = "Telescope find files",
+			})
+			vim.keymap.set("n", "<lt>t", require("telescope.builtin").treesitter, {
+				noremap = true,
+				silent = true,
+				desc = "Telescope treesitter",
+			})
+			vim.keymap.set("n", "<lt>k", require("telescope.builtin").keymaps, {
+				noremap = true,
+				silent = true,
+				desc = "Telescope keymaps",
+			})
+
+			require("telescope").load_extension("fzf")
+
+			require("telescope").load_extension("undo")
+
+			require("telescope").load_extension("dap")
+		end,
+	},
 }
