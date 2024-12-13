@@ -157,6 +157,12 @@ local keymaps = {
 	},
 	{
 		"n",
+		"<c-n>",
+		"<cmd>tabnew<cr>",
+		desc = "Tab new",
+	},
+	{
+		"n",
 		"<c-tab>",
 		"<cmd>tabnext<cr>",
 		desc = "Tab next",
