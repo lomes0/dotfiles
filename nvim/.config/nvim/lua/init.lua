@@ -159,13 +159,13 @@ local keymaps = {
 		"n",
 		"<c-tab>",
 		"<cmd>tabnext<cr>",
-		desc = "next tab",
+		desc = "Tab next",
 	},
 	{
 		"n",
 		"<c-s-tab>",
 		"<cmd>tabprev<cr>",
-		desc = "prev tab",
+		desc = "Tab prev",
 	},
 	-- {
 	-- 	"t",
