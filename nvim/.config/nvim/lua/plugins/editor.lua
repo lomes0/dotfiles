@@ -154,9 +154,10 @@ return {
 			require("bufferline").setup({
 				options = {
 					mode = "tabs",
-					show_buffer_icons = false,
-					show_buffer_close_icons = false,
-					show_close_icon = false,
+					separator_style = "thick",
+					show_buffer_icons = true,
+					show_buffer_close_icons = true,
+					show_close_icon = true,
 					tab_size = 20, -- Set the fixed width of tabs
 					diagnostics = false,
 					always_show_bufferline = true,
@@ -169,8 +170,36 @@ return {
 						},
 					},
 				},
+				highlights = {
+					fill = {
+						fg = "#ffffff", -- Foreground color
+						bg = "#1e1e2e", -- Background color
+					},
+					buffer_selected = {
+						fg = "#c678dd",
+						bg = "#3b3b4f",
+						bold = true,
+						italic = false,
+					},
+					separator = {
+						fg = "#44475a",
+						bg = "#1e1e2e",
+					},
+					separator_selected = {
+						fg = "#ff79c6",
+						bg = "#1e1e2e",
+					},
+					background = {
+						fg = "#6272a4",
+						bg = "#1e1e2e",
+					},
+					close_button = {
+						fg = "#6272a4",
+						bg = "#1e1e2e",
+					},
+				},
 			})
-			vim.o.showtabline = 1
+			-- vim.o.showtabline = 2
 		end,
 	},
 	{
