@@ -15,7 +15,39 @@ return {
 	{
 		"stevearc/conform.nvim",
 		lazy = true,
-		keys = { "<lt>r", "<lt>R" },
+		keys = {
+			{
+				"<lt>r",
+				function()
+					require("conform").format({ bufnr = vim.api.nvim_get_current_buf() })
+				end,
+				desc = "Conform format",
+			},
+			{
+				"<lt>R",
+				function()
+					function GetGitFilePath()
+						local bufname = vim.fn.bufname("%")
+						local filepath = vim.fn.fnamemodify(bufname, ":p")
+						local git_root = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
+						if vim.v.shell_error ~= 0 then
+							return nil
+						end
+						local relative_path = filepath:sub(#git_root + 2)
+						return relative_path
+					end
+
+					local gitpath = GetGitFilePath()
+					if gitpath ~= nil then
+						os.execute(
+							"git diff -U0 --no-color --relative HEAD -- " .. gitpath .. " | clang-format-diff -p1 -i"
+						)
+						vim.api.nvim_command("e")
+					end
+				end,
+				desc = "Conform format git diff",
+			},
+		},
 		config = function()
 			require("conform").setup({
 				formatters_by_ft = {
@@ -34,43 +66,6 @@ return {
 				},
 				log_level = vim.log.levels.ERROR,
 				notify_on_error = true,
-			})
-
-			function GetGitFilePath()
-				local bufname = vim.fn.bufname("%")
-				local filepath = vim.fn.fnamemodify(bufname, ":p")
-				local git_root = vim.fn.systemlist("git rev-parse --show-toplevel")[1]
-				if vim.v.shell_error ~= 0 then
-					return nil
-				end
-				local relative_path = filepath:sub(#git_root + 2)
-				return relative_path
-			end
-
-			function Format()
-				local buf = vim.api.nvim_get_current_buf()
-				require("conform").format({ bufnr = buf })
-			end
-
-			function FormatDiff()
-				local gitpath = GetGitFilePath()
-				if gitpath ~= nil then
-					os.execute(
-						"git diff -U0 --no-color --relative HEAD -- " .. gitpath .. " | clang-format-diff -p1 -i"
-					)
-					vim.api.nvim_command("e")
-				end
-			end
-
-			vim.keymap.set("n", "<lt>r", Format, {
-				noremap = true,
-				silent = true,
-				desc = "Conform format",
-			})
-			vim.keymap.set("n", "<lt>R", FormatDiff, {
-				noremap = true,
-				silent = true,
-				desc = "Conform format diff",
 			})
 		end,
 	},
