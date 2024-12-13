@@ -15,7 +15,7 @@ return {
 	{
 		"stevearc/conform.nvim",
 		lazy = true,
-		keys = { "<lt>r" },
+		keys = { "<lt>r", "<lt>R" },
 		config = function()
 			require("conform").setup({
 				formatters_by_ft = {
@@ -67,7 +67,7 @@ return {
 				silent = true,
 				desc = "Conform format",
 			})
-			vim.keymap.set("n", "<lt>d", FormatDiff, {
+			vim.keymap.set("n", "<lt>R", FormatDiff, {
 				noremap = true,
 				silent = true,
 				desc = "Conform format diff",
@@ -139,7 +139,7 @@ return {
 			require("nvim-tree").setup({})
 
 			vim.keymap.set("n", "`", function()
-				require('nvim-tree.api').tree.toggle({ focus = false })
+				require("nvim-tree.api").tree.toggle({ focus = false })
 			end, { noremap = true, silent = true, desc = "NvimTree toggle" })
 
 			vim.keymap.set("n", "U", function()

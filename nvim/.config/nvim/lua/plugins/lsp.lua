@@ -26,8 +26,7 @@ return {
 		config = function()
 			local lsp = require("lsp-zero")
 			require("mason-lspconfig").setup({
-				-- Replace the language servers listed here
-				-- with the ones you want to install
+				automatic_installation = false,
 				ensure_installed = { "rust_analyzer", "clangd" },
 				handlers = {
 					lsp.default_setup,
@@ -39,20 +38,18 @@ return {
 		"VonHeikemen/lsp-zero.nvim",
 		lazy = false,
 		dependencies = {
-			{ "neovim/nvim-lspconfig" }, -- Required
-			{ -- Optional, for auto-installing LSP servers
+			{ "neovim/nvim-lspconfig" },
+			{
 				"williamboman/mason.nvim",
 				build = ":MasonUpdate",
 			},
-			{ "williamboman/mason-lspconfig.nvim" }, -- Optional
-
-			-- Autocompletion
-			{ "hrsh7th/nvim-cmp" }, -- Required
-			{ "hrsh7th/cmp-nvim-lsp" }, -- Required
-			{ "hrsh7th/cmp-buffer" }, -- Optional
-			{ "hrsh7th/cmp-path" }, -- Optional
-			{ "saadparwaiz1/cmp_luasnip" }, -- Optional
-			{ "hrsh7th/cmp-nvim-lua" }, -- Optional
+			{ "williamboman/mason-lspconfig.nvim" },
+			{ "hrsh7th/nvim-cmp" },
+			{ "hrsh7th/cmp-nvim-lsp" },
+			{ "hrsh7th/cmp-buffer" },
+			{ "hrsh7th/cmp-path" },
+			{ "saadparwaiz1/cmp_luasnip" },
+			{ "hrsh7th/cmp-nvim-lua" },
 		},
 		branch = "v4.x",
 		config = function()
@@ -68,8 +65,6 @@ return {
 				require("cmp_nvim_lsp").default_capabilities()
 			)
 
-			-- This is where you enable features that only work
-			-- if there is a language server active in the file
 			vim.api.nvim_create_autocmd("LspAttach", {
 				desc = "LSP actions",
 				callback = function(event)
@@ -88,39 +83,11 @@ return {
 				end,
 			})
 
-			-- These are just examples. Replace them with the language
-			-- servers you have installed in your system
-			local lsp = require("lsp-zero")
-			lsp.extend_lspconfig()
+			local capabilities = require("cmp_nvim_lsp").default_capabilities()
 			require("lspconfig").gleam.setup({})
 			require("lspconfig").rust_analyzer.setup({})
-			require("lspconfig").clangd.setup({})
-
-			local cmp = require("cmp")
-			local cmp_select = { behavior = cmp.SelectBehavior.Select }
-
-			cmp.setup({
-				sources = {
-					{ name = "nvim_lsp" },
-				},
-				snippet = {
-					expand = function(args)
-						-- You need Neovim v0.10 to use vim.snippet
-						vim.snippet.expand(args.body)
-					end,
-				},
-				mapping = cmp.mapping.preset.insert({
-					["<C-Space>"] = cmp.mapping.complete(),
-					["<C-u>"] = cmp.mapping.scroll_docs(-4),
-					["<C-d>"] = cmp.mapping.scroll_docs(4),
-					["<Tab>"] = cmp.mapping.select_next_item(cmp_select),
-					["<S-Tab>"] = cmp.mapping.select_prev_item(cmp_select),
-					["<Enter>"] = cmp.mapping.confirm({ select = true }),
-				}),
-				window = {
-					completion = cmp.config.window.bordered(),
-					documentation = cmp.config.window.bordered(),
-				},
+			require("lspconfig").clangd.setup({
+				capabilities = capabilities,
 			})
 
 			local progress = vim.defaulttable()
@@ -155,7 +122,7 @@ return {
 					end, p)
 
 					local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
-					vim.notify(table.concat(msg, "\n"), "info", {
+					vim.notify(table.concat(msg, "\n"), 0, {
 						id = "lsp_progress",
 						title = client.name,
 						opts = function(notif)
