@@ -4,6 +4,14 @@ return {
 		event = "VeryLazy",
 		config = function()
 			require("gitsigns").setup({
+				signs = {
+					add = { text = "+" },
+					change = { text = "│" },
+					delete = { text = "_" },
+					topdelete = { text = "‾" },
+					changedelete = { text = "~" },
+				},
+				sign_priority = 6, -- Default priority for all gitsigns
 				on_attach = function(bufnr)
 					local gitsigns = require("gitsigns")
 					vim.keymap.set("n", "  ", function()

@@ -11,6 +11,7 @@ local opts = {
 	{ "conceallevel", 2 },
 	{ "report", 999 },
 	{ "cmdheight", 0 },
+	{ "numberwidth", 8 },
 	{ "title", true },
 	{ "showcmd", true },
 	{ "smartindent", true },

@@ -156,8 +156,8 @@ return {
 					mode = "tabs",
 					separator_style = "thick",
 					show_buffer_icons = true,
-					show_buffer_close_icons = true,
-					show_close_icon = true,
+					show_buffer_close_icons = false,
+					show_close_icon = false,
 					tab_size = 20, -- Set the fixed width of tabs
 					diagnostics = false,
 					always_show_bufferline = true,
