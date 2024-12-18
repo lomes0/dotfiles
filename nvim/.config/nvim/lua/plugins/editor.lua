@@ -187,13 +187,19 @@ return {
 			require("bufferline").setup({
 				options = {
 					mode = "tabs",
-					separator_style = "thick",
+					separator_style = "slant",
 					show_buffer_icons = true,
 					show_buffer_close_icons = false,
 					show_close_icon = false,
 					tab_size = 20, -- Set the fixed width of tabs
 					diagnostics = false,
 					always_show_bufferline = true,
+					show_tab_indicators = true,
+					buffer_close_icon = "", -- Icon to close buffer
+					modified_icon = "●", -- Icon for modified buffers
+					close_icon = "", -- Close all buffers icon
+					left_trunc_marker = "", -- Icon for truncated buffers on the left
+					right_trunc_marker = "", -- Icon for truncated buffers on the right
 					offsets = {
 						{
 							filetype = "NvimTree",
@@ -209,24 +215,20 @@ return {
 						bg = "#1e1e2e", -- Background color
 					},
 					buffer_selected = {
-						fg = "#c678dd",
-						bg = "#3b3b4f",
+						fg = "#d1e3ff",
+						bg = "#1e1e2e",
 						bold = true,
 						italic = false,
 					},
 					separator = {
-						fg = "#44475a",
+						fg = "#1e1e2e",
 						bg = "#1e1e2e",
 					},
 					separator_selected = {
-						fg = "#ff79c6",
+						fg = "#1e1e2e",
 						bg = "#1e1e2e",
 					},
 					background = {
-						fg = "#6272a4",
-						bg = "#1e1e2e",
-					},
-					close_button = {
 						fg = "#6272a4",
 						bg = "#1e1e2e",
 					},
