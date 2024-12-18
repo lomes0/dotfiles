@@ -6,11 +6,12 @@ return {
 			require("gitsigns").setup({
 				signs = {
 					add = { text = "+" },
-					change = { text = "│" },
+					change = { text = "~" },
 					delete = { text = "_" },
 					topdelete = { text = "‾" },
 					changedelete = { text = "~" },
 				},
+				signcolumn = true,
 				sign_priority = 6, -- Default priority for all gitsigns
 				on_attach = function(bufnr)
 					local gitsigns = require("gitsigns")
@@ -89,6 +90,7 @@ return {
 					-- })
 
 					vim.wo.signcolumn = "yes"
+					vim.opt.statuscolumn = '%s%=%{v:relnum?v:relnum:v:lnum} '
 				end,
 			})
 		end,
