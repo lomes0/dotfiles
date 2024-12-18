@@ -131,15 +131,48 @@ return {
 			"nvim-tree/nvim-web-devicons",
 		},
 		config = function()
-			require("nvim-tree").setup({})
+			require("nvim-tree").setup({
+				on_attach = function(bufnr)
+					local api = require("nvim-tree.api")
+
+					local function opts(desc)
+						return {
+							desc = "nvim-tree: " .. desc,
+							buffer = bufnr,
+							noremap = true,
+							silent = true,
+							nowait = true,
+						}
+					end
+
+					-- default mappings
+					api.config.mappings.default_on_attach(bufnr)
+					-- custom mappings
+					vim.keymap.set("n", "<c-y>", api.tree.change_root_to_parent, opts("NvimTree Up"))
+				end,
+			})
+
+			local nt_api = require("nvim-tree.api")
+			local tree_open = false
+			local function tab_enter()
+				if tree_open then
+					nt_api.tree.open()
+					vim.api.nvim_command("wincmd p")
+				else
+					nt_api.tree.close()
+				end
+			end
+			nt_api.events.subscribe(nt_api.events.Event.TreeOpen, function()
+				tree_open = true
+			end)
+			nt_api.events.subscribe(nt_api.events.Event.TreeClose, function()
+				tree_open = false
+			end)
+			vim.api.nvim_create_autocmd({ "TabEnter" }, { callback = tab_enter })
 
 			vim.keymap.set("n", "`", function()
 				require("nvim-tree.api").tree.toggle({ focus = false })
-			end, { noremap = true, silent = true, desc = "NvimTree toggle" })
-
-			vim.keymap.set("n", "U", function()
-				require("nvim-tree").change_dir("..")
-			end, { noremap = true, silent = true, desc = "NvimTree cwd up" })
+			end, { noremap = true, silent = true, desc = "NvimTree Toggle" })
 		end,
 	},
 	{
