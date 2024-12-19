@@ -40,13 +40,13 @@ local opts = {
 local keymaps_noremap = {
 	{
 		{ "n", "v" },
-		";d",
+		"x",
 		'"_x',
 		desc = "Delete into void register",
 	},
 	{
 		{ "v" },
-		";p",
+		"p",
 		'"_xP',
 		desc = "Delete into void register",
 	},
