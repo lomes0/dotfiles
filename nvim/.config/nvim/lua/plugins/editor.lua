@@ -849,47 +849,42 @@ return {
 				},
 			})
 
-			local function git_root()
-				local handle = io.popen("git rev-parse --show-toplevel 2> /dev/null")
-				if handle ~= nil then
-					local result = handle:read("*a")
-					handle:close()
-					return result:match("^%s*(.-)%s*$")
-				end
-			end
-
-			local function telescope_search_dir()
-				local git_dir = git_root()
-				if git_dir ~= nil then
-					return git_dir
-				end
-
-				return "."
-			end
-
-			vim.keymap.set("n", "<lt>q", function()
+			vim.keymap.set("n", "<lt>qg", function()
 				require("telescope.builtin").live_grep({
-					cwd = telescope_search_dir(),
+					cwd = Snacks.git.get_root(),
 				})
 			end, {
 				noremap = true,
 				silent = true,
-				desc = "Telescope grep",
+				desc = "Telescope grep git root dir",
 			})
+
+			vim.keymap.set("n", "<lt>qf", function()
+				require("telescope.builtin").live_grep({
+					cwd = vim.api.nvim_buf_get_name(0):match("(.*/)"),
+				})
+			end, {
+				noremap = true,
+				silent = true,
+				desc = "Telescope grep buffer dir",
+			})
+
 			vim.keymap.set("n", "<lt>f", function()
 				require("telescope.builtin").find_files({
-					cwd = telescope_search_dir(),
+					cwd = Snacks.git.get_root(),
 				})
 			end, {
 				noremap = true,
 				silent = true,
 				desc = "Telescope find files",
 			})
+
 			vim.keymap.set("n", "<lt>t", require("telescope.builtin").treesitter, {
 				noremap = true,
 				silent = true,
 				desc = "Telescope treesitter",
 			})
+
 			vim.keymap.set("n", "<lt>k", require("telescope.builtin").keymaps, {
 				noremap = true,
 				silent = true,
