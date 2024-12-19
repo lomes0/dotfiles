@@ -59,7 +59,7 @@ end
 
 function M.init()
 	table.insert(M.Terminals, Floatterm:new())
-	vim.keymap.set({ "n", "t" }, "<F2>", function()
+	vim.keymap.set({ "n", "t" }, "<F12>", function()
 		Launch_floatterm(1)
 	end, { desc = "Toggle floatterm" })
 end
