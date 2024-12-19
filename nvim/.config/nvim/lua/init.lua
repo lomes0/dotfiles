@@ -106,14 +106,6 @@ local keymaps = {
 	},
 	{
 		"n",
-		"<lt>w",
-		function()
-			vim.api.nvim_command("cd " .. vim.api.nvim_buf_get_name(0):match("(.*/)"))
-		end,
-		desc = "Editor change workdir",
-	},
-	{
-		"n",
 		"<C-a>",
 		"gg<S-v>G",
 		desc = "Editor select all",
@@ -129,12 +121,6 @@ local keymaps = {
 		"K",
 		":m '<-2<cr>gv=gv",
 		desc = "Editor move lines down",
-	},
-	{
-		"v",
-		"<C-c>",
-		'"+y',
-		desc = "copy to system clipboard",
 	},
 	{
 		"n",
@@ -174,12 +160,6 @@ local keymaps = {
 		"<cmd>tabprev<cr>",
 		desc = "Tab prev",
 	},
-	-- {
-	-- 	"t",
-	-- 	"<c-;>",
-	-- 	"<c-\\><c-n>:",
-	-- 	desc = "cmd mode",
-	-- },
 	{
 		"t",
 		"<c-\\>",
