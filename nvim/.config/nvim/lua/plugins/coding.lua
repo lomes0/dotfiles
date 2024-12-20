@@ -28,9 +28,21 @@ return {
 				},
 			},
 			{
+				-- Make sure to set this up properly if you have lazy=true
 				"MeanderingProgrammer/render-markdown.nvim",
+				dependencies = {
+					"nvim-treesitter/nvim-treesitter",
+					"echasnovski/mini.nvim",
+				},
 				opts = {
 					file_types = { "markdown", "Avante" },
+					anti_conceal = { enabled = false },
+					win_options = {
+						concealcursor = {
+							default = vim.api.nvim_get_option_value("concealcursor", {}),
+							rendered = "nc",
+						},
+					},
 				},
 				ft = { "markdown", "Avante" },
 			},
