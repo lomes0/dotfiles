@@ -76,21 +76,8 @@ return {
 						desc = "Gitsigns diffthis",
 					})
 
-					-- vim.keymap.set("n", "sb", gitsigns.stage_buffer, {
-					-- 	noremap = true,
-					-- 	silent = true,
-					-- 	buffer = bufnr,
-					-- 	desc = "Gitsigns stage buffer",
-					-- })
-					-- vim.keymap.set("n", "su", gitsigns.undo_stage_hunk, {
-					-- 	noremap = true,
-					-- 	silent = true,
-					-- 	buffer = bufnr,
-					-- 	desc = "Gitsigns stage undo",
-					-- })
-
 					vim.wo.signcolumn = "yes"
-					vim.opt.statuscolumn = '%s%=%{v:relnum?v:relnum:v:lnum} '
+					vim.opt.statuscolumn = "%s%=%{v:relnum?v:relnum:v:lnum} "
 				end,
 			})
 		end,
