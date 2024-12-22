@@ -107,11 +107,20 @@ function CppFold()
 	return line .. expansionString .. foldSizeStr
 end
 
+function DefaultFold()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local line_str = vim.api.nvim_buf_get_text(bufnr, vim.v.foldstart - 1, 0, vim.v.foldstart, -1, {})[1] or ""
+	local spaces_for_tabs = string.rep(" ", vim.o.tabstop)
+	return line_str:gsub("\t", spaces_for_tabs)
+end
+
 function M.init()
 	vim.opt.foldlevel = 99
 	vim.opt.foldenable = false
 	vim.opt.foldmethod = "expr"
 	vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+	vim.opt.foldtext = "v:lua.DefaultFold()"
+	vim.opt.fillchars = { fold = " " }
 
 	vim.api.nvim_create_autocmd("FileType", {
 		pattern = { "c", "cpp" },
@@ -119,15 +128,6 @@ function M.init()
 			vim.opt.foldtext = "v:lua.CppFold()"
 		end,
 	})
-
-	-- vim.api.nvim_create_autocmd("FileType", {
-	-- 	pattern = { "markdown", "text" },
-	-- 	callback = function()
-	-- 		-- Set foldmethod to 'manual' for markdown and text files
-	-- 		vim.opt_local.foldmethod = "manual"
-	-- 		vim.opt_local.foldlevel = 99 -- Open all folds by default
-	-- 	end,
-	-- })
 end
 
 M.init()
