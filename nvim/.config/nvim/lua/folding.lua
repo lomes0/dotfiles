@@ -3,20 +3,29 @@
 --
 local ts = vim.treesitter
 
+local spaces_for_tabs = string.rep(" ", vim.o.tabstop)
+
 local M = {}
 
-local query_string = [[
-    type: _ @type
-	declarator: (function_declarator 
-		declarator: (identifier) @name
-        parameters: (parameter_list) @params)
-]]
+-- local function prev_named_sibling(node)
+-- 	while node:prev_named_sibling() ~= nil do
+-- 		node = node:prev_named_sibling()
+-- 	end
+-- 	return node
+-- end
 
 function T(node)
 	return ts.get_node_text(node, 0)
 end
 
 local function fold_function_definition(root)
+	local query_string = [[
+    type: _ @type
+	declarator: (function_declarator 
+		declarator: (identifier) @name
+        parameters: (parameter_list) @params)
+]]
+
 	local query = vim.treesitter.query.parse("c", query_string)
 
 	local line = ""
@@ -36,28 +45,27 @@ local function fold_function_definition(root)
 	return line
 end
 
-local function fold_comment(root)
-	return "..."
+local function fold_start_raw_string()
+	local bufnr = vim.api.nvim_get_current_buf()
+	return vim.api.nvim_buf_get_text(bufnr, vim.v.foldstart - 1, 0, vim.v.foldstart, -1, {})[1] or ""
 end
 
+local function fold_comment(_)
+	local line_str = fold_start_raw_string():match("^%s*")
+	return line_str:gsub("\t", spaces_for_tabs) .. "..."
+end
 
 local folds = {
-	[196] = fold_function_definition, -- function
-	[164] = fold_comment, -- comment
+	["function_definition"] = fold_function_definition,
+	["comment"] = fold_comment,
 }
-
-local function prev_named_sibling(node)
-	while node:prev_named_sibling() ~= nil do
-		node = node:prev_named_sibling()
-	end
-	return node
-end
 
 ---@param root TSNode
 ---@param lnum integer
 ---@param col integer
-local function get_last_node_at_line(root, lnum, col)
-	return root:descendant_for_range(lnum - 1, col, lnum - 1, col + 1)
+local function get_last_node_at_line(root)
+	local line = vim.v.foldstart
+	return root:descendant_for_range(line, 0, line, 1)
 end
 
 local function fold_root_node()
@@ -65,8 +73,7 @@ local function fold_root_node()
 	local parser = parsers.get_parser()
 	local tree = parser:parse()[1]
 	local root = tree:root()
-	local node = get_last_node_at_line(root, vim.v.foldstart, 0)
-	node = prev_named_sibling(node)
+	local node = get_last_node_at_line(root)
 
 	while node:parent() ~= nil and node:parent():type() ~= root:type() do
 		local psr, _ = node:parent():start()
@@ -81,27 +88,18 @@ local function fold_root_node()
 	return node
 end
 
-local function default_fold(_)
-	local fs = vim.v.foldstart
-
-	while vim.fn.getline(fs):match("^%s*$") do
-		fs = vim.fn.nextnonblank(fs + 1)
-	end
-
-	if fs > vim.v.foldend then
-		return vim.fn.getline(vim.v.foldstart)
-	else
-		return vim.fn.getline(fs):gsub("\t", string.rep(" ", vim.o.tabstop))
-	end
+function DefaultFold()
+	local line_str = fold_start_raw_string()
+	return line_str:gsub("\t", spaces_for_tabs)
 end
 
 function CppFold()
 	local function cpp_fold_str()
 		local root = fold_root_node()
-		local fold_func = default_fold
+		local fold_func = DefaultFold
 
 		if root ~= nil then
-			fold_func = folds[root:symbol()] or default_fold
+			fold_func = folds[root:type()] or DefaultFold
 		end
 
 		return fold_func(root)
@@ -111,13 +109,6 @@ function CppFold()
 	local foldSizeStr = " " .. foldSize .. " lines "
 	local expansionString = string.rep(" ", vim.api.nvim_win_get_width(0) - #line - #foldSizeStr - 4)
 	return line .. expansionString .. foldSizeStr
-end
-
-function DefaultFold()
-	local bufnr = vim.api.nvim_get_current_buf()
-	local line_str = vim.api.nvim_buf_get_text(bufnr, vim.v.foldstart - 1, 0, vim.v.foldstart, -1, {})[1] or ""
-	local spaces_for_tabs = string.rep(" ", vim.o.tabstop)
-	return line_str:gsub("\t", spaces_for_tabs)
 end
 
 function M.init()
