@@ -36,8 +36,14 @@ local function fold_function_definition(root)
 	return line
 end
 
+local function fold_comment(root)
+	return "..."
+end
+
+
 local folds = {
-	["function_definition"] = fold_function_definition,
+	[196] = fold_function_definition, -- function
+	[164] = fold_comment, -- comment
 }
 
 local function prev_named_sibling(node)
@@ -95,7 +101,7 @@ function CppFold()
 		local fold_func = default_fold
 
 		if root ~= nil then
-			fold_func = folds[root:type()] or default_fold
+			fold_func = folds[root:symbol()] or default_fold
 		end
 
 		return fold_func(root)
