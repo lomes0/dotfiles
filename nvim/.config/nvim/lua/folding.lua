@@ -115,12 +115,12 @@ function DefaultFold()
 end
 
 function M.init()
-	vim.o.foldlevel = 99
-	vim.o.foldenable = false
-	vim.o.foldmethod = "expr"
-	vim.o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-	vim.o.foldtext = "v:lua.DefaultFold()"
-	vim.o.fillchars = { fold = " " }
+	vim.opt.foldlevel = 99
+	vim.opt.foldenable = false
+	vim.opt.foldmethod = "expr"
+	vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+	vim.opt.foldtext = "v:lua.DefaultFold()"
+	vim.opt.fillchars = { fold = " " }
 
 	vim.api.nvim_create_autocmd("FileType", {
 		pattern = { "c", "cpp" },
