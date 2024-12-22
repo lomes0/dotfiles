@@ -7,28 +7,33 @@ local spaces_for_tabs = string.rep(" ", vim.o.tabstop)
 
 local M = {}
 
--- local function prev_named_sibling(node)
--- 	while node:prev_named_sibling() ~= nil do
--- 		node = node:prev_named_sibling()
--- 	end
--- 	return node
--- end
-
 function T(node)
 	return ts.get_node_text(node, 0)
+end
+
+local function fold_start_raw_string ()
+	local bufnr = vim.api.nvim_get_current_buf()
+	return vim.api.nvim_buf_get_text(bufnr, vim.v.foldstart - 1, 0, vim.v.foldstart, -1, {})[1] or ""
+end
+
+local function fold_start_prefix ()
+	local line_raw = fold_start_raw_string()
+	local line_prefix = line_raw:match("^%s*")
+	return line_prefix:gsub("\t", spaces_for_tabs)
 end
 
 local function fold_function_definition(root)
 	local query_string = [[
     type: _ @type
-	declarator: (function_declarator 
-		declarator: (identifier) @name
-        parameters: (parameter_list) @params)
+	(function_definition 
+		declarator: (function_declarator 
+			declarator: (identifier) @name
+    	    parameters: (parameter_list) @params))
 ]]
 
 	local query = vim.treesitter.query.parse("c", query_string)
 
-	local line = ""
+	local line = fold_start_prefix()
 	for id, capture, _ in query:iter_captures(root, 0, 0, -1) do
 		local key = query.captures[id]
 
@@ -45,18 +50,33 @@ local function fold_function_definition(root)
 	return line
 end
 
-local function fold_start_raw_string()
-	local bufnr = vim.api.nvim_get_current_buf()
-	return vim.api.nvim_buf_get_text(bufnr, vim.v.foldstart - 1, 0, vim.v.foldstart, -1, {})[1] or ""
+local function fold_for_statement(root)
+	local query_string = [[
+    type: _ @type
+	(for_statement
+		condition: (binary_expression)@cond)
+]]
+	local query = vim.treesitter.query.parse("c", query_string)
+
+	local line = fold_start_prefix() .. "for ("
+	for id, capture, _ in query:iter_captures(root, 0, 0, -1) do
+		local key = query.captures[id]
+
+		if key == "cond" then
+			line = line ..  T(capture)
+		end
+	end
+
+	return line .. ")"
 end
 
 local function fold_comment(_)
-	local line_str = fold_start_raw_string():match("^%s*")
-	return line_str:gsub("\t", spaces_for_tabs) .. "..."
+	return fold_start_prefix() .. "..."
 end
 
 local folds = {
 	["function_definition"] = fold_function_definition,
+	["for_statement"] = fold_for_statement,
 	["comment"] = fold_comment,
 }
 
