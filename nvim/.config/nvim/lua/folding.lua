@@ -11,12 +11,12 @@ function T(node)
 	return ts.get_node_text(node, 0)
 end
 
-local function fold_start_raw_string ()
+local function fold_start_raw_string()
 	local bufnr = vim.api.nvim_get_current_buf()
 	return vim.api.nvim_buf_get_text(bufnr, vim.v.foldstart - 1, 0, vim.v.foldstart, -1, {})[1] or ""
 end
 
-local function fold_start_prefix ()
+local function fold_start_prefix()
 	local line_raw = fold_start_raw_string()
 	local line_prefix = line_raw:match("^%s*")
 	return line_prefix:gsub("\t", spaces_for_tabs)
@@ -63,7 +63,7 @@ local function fold_for_statement(root)
 		local key = query.captures[id]
 
 		if key == "cond" then
-			line = line ..  T(capture)
+			line = line .. T(capture)
 		end
 	end
 
