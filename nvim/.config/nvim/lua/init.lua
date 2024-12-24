@@ -1,5 +1,3 @@
-vim.opt.fillchars = { eob = " " }
-
 local opts = {
 	{ "guifont", "Hack" },
 	{ "autowriteall", true },
