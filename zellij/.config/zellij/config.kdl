@@ -211,7 +211,7 @@ keybinds clear-defaults=true {
         bind "Ctrl u" { SwitchToMode "Resize"; }
     }
     shared_except "scroll" "locked" {
-        bind "Ctrl s" { SwitchToMode "Scroll"; }
+        bind "Ctrl e" { SwitchToMode "Scroll"; }
     }
     shared_except "session" "locked" {
         bind "Alt s" { SwitchToMode "Session"; }
