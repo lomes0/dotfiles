@@ -33,7 +33,7 @@ local function fold_function_definition(root)
 
 	local query = vim.treesitter.query.parse("c", query_string)
 
-	local line = fold_start_prefix()
+	local line = "⌽  ".. fold_start_prefix()
 	for id, capture, _ in query:iter_captures(root, 0, 0, -1) do
 		local key = query.captures[id]
 
@@ -58,7 +58,7 @@ local function fold_for_statement(root)
 ]]
 	local query = vim.treesitter.query.parse("c", query_string)
 
-	local line = fold_start_prefix() .. "for ("
+	local line = fold_start_prefix() .. "౽ " .. "for ("
 	for id, capture, _ in query:iter_captures(root, 0, 0, -1) do
 		local key = query.captures[id]
 
@@ -179,12 +179,12 @@ function M.init()
 	vim.opt.fillchars = { fold = " " }
 	vim.opt.foldtext = [[luaeval('HighlightedFoldtext')()]]
 
-	-- vim.api.nvim_create_autocmd("FileType", {
-	-- 	pattern = { "c", "cpp" },
-	-- 	callback = function()
-	-- 		vim.opt.foldtext = "v:lua.CppFold()"
-	-- 	end,
-	-- })
+	vim.api.nvim_create_autocmd("FileType", {
+		pattern = { "c", "cpp" },
+		callback = function()
+			vim.opt.foldtext = "v:lua.CppFold()"
+		end,
+	})
 end
 
 M.init()
