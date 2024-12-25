@@ -33,7 +33,7 @@ local function fold_function_definition(root)
 
 	local query = vim.treesitter.query.parse("c", query_string)
 
-	local line = "⌽  ".. fold_start_prefix()
+	local line = ""
 	for id, capture, _ in query:iter_captures(root, 0, 0, -1) do
 		local key = query.captures[id]
 
@@ -58,7 +58,7 @@ local function fold_for_statement(root)
 ]]
 	local query = vim.treesitter.query.parse("c", query_string)
 
-	local line = fold_start_prefix() .. "౽ " .. "for ("
+	local line = "for ("
 	for id, capture, _ in query:iter_captures(root, 0, 0, -1) do
 		local key = query.captures[id]
 
@@ -71,7 +71,7 @@ local function fold_for_statement(root)
 end
 
 local function fold_comment(_)
-	return fold_start_prefix() .. "..."
+	return "..."
 end
 
 local folds = {
@@ -109,8 +109,7 @@ local function fold_root_node()
 end
 
 function DefaultFold()
-	local line_str = fold_start_raw_string()
-	return line_str:gsub("\t", spaces_for_tabs)
+	return fold_start_raw_string():gsub("^%s+", "")
 end
 
 function CppFold()
@@ -124,11 +123,12 @@ function CppFold()
 
 		return fold_func(root)
 	end
+
 	local line = cpp_fold_str()
-	local foldSize = 1 + vim.v.foldend - vim.v.foldstart
-	local foldSizeStr = " " .. foldSize .. " lines "
-	local expansionString = string.rep(" ", vim.api.nvim_win_get_width(0) - #line - #foldSizeStr - 4)
-	return line .. expansionString .. foldSizeStr
+	-- local foldSize = 1 + vim.v.foldend - vim.v.foldstart
+	-- local foldSizeStr = " " .. foldSize .. " lines "
+	-- local expansionString = string.rep(" ", vim.api.nvim_win_get_width(0) - #line - #foldSizeStr - 4)
+	return { { fold_start_prefix(), "" }, { line, "FoldedScoped" } }
 end
 
 function HighlightedFoldtext()
@@ -149,6 +149,7 @@ function HighlightedFoldtext()
 
 	local prev_range = nil
 
+	local s = ""
 	for id, node, _ in query:iter_captures(tree:root(), 0, pos - 1, pos) do
 		local name = query.captures[id]
 		local start_row, start_col, end_row, end_col = node:range()
@@ -180,9 +181,17 @@ function M.init()
 	vim.opt.foldtext = [[luaeval('HighlightedFoldtext')()]]
 
 	vim.api.nvim_create_autocmd("FileType", {
+		pattern = { "*" },
+		callback = function()
+			vim.api.nvim_set_hl(0, "FoldedScoped", { fg = "#8caaee", bg = "#51576d", bold = true })
+			vim.api.nvim_set_hl(0, "Folded", { bg = "none" })
+		end,
+	})
+
+	vim.api.nvim_create_autocmd("FileType", {
 		pattern = { "c", "cpp" },
 		callback = function()
-			vim.opt.foldtext = "v:lua.CppFold()"
+			vim.opt.foldtext = [[luaeval('CppFold')()]]
 		end,
 	})
 end
