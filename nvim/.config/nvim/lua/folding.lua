@@ -149,7 +149,6 @@ function HighlightedFoldtext()
 
 	local prev_range = nil
 
-	local s = ""
 	for id, node, _ in query:iter_captures(tree:root(), 0, pos - 1, pos) do
 		local name = query.captures[id]
 		local start_row, start_col, end_row, end_col = node:range()
@@ -180,17 +179,17 @@ function M.init()
 	vim.opt.fillchars = { fold = " " }
 	vim.opt.foldtext = [[luaeval('HighlightedFoldtext')()]]
 
-	vim.api.nvim_create_autocmd("FileType", {
-		pattern = { "*" },
-		callback = function()
-			vim.api.nvim_set_hl(0, "FoldedScoped", { fg = "#8caaee", bg = "#51576d", bold = true })
-			vim.api.nvim_set_hl(0, "Folded", { bg = "none" })
-		end,
-	})
+	-- vim.api.nvim_create_autocmd("FileType", {
+	-- 	pattern = { "*" },
+	-- 	callback = function()
+	-- 	end,
+	-- })
 
 	vim.api.nvim_create_autocmd("FileType", {
 		pattern = { "c", "cpp" },
 		callback = function()
+			vim.api.nvim_set_hl(0, "FoldedScoped", { fg = "#8caaee", bg = "#51576d", bold = true })
+			vim.api.nvim_set_hl(0, "Folded", { bg = "none" })
 			vim.opt.foldtext = [[luaeval('CppFold')()]]
 		end,
 	})
