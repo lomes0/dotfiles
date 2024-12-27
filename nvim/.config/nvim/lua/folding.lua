@@ -224,7 +224,7 @@ function M.init()
 	vim.opt.foldtext = [[luaeval('HighlightedFoldtext')()]]
 
 	vim.api.nvim_create_autocmd("FileType", {
-		pattern = { "c", "cpp" },
+		pattern = { "c", "cpp", "rust" },
 		callback = function()
 			vim.api.nvim_set_hl(0, "FoldedScoped", { fg = "#8caaee", bg = "#51576d", bold = true })
 			vim.api.nvim_set_hl(0, "Folded", { bg = "none" })

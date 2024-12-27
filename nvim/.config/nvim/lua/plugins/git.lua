@@ -77,7 +77,7 @@ return {
 					})
 
 					vim.wo.signcolumn = "yes"
-					vim.opt.statuscolumn = "%s%=%{v:relnum?v:relnum:v:lnum} "
+					vim.o.statuscolumn = "%!v:lua.require('statuscolumn').statuscolumn()";
 				end,
 			})
 		end,
