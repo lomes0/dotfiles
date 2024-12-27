@@ -80,9 +80,9 @@ return {
 				height = 0.9, -- Decimals are a percentage of the editor
 				position = "E", -- NW,N,NW,W,C,E,SW,S,SE (C==center)
 				border = "rounded", -- rounded,double,single
-				onload = function()
-					vim.api.nvim_set_option_value("scrolloff", 5, {})
-				end,
+				-- onload = function()
+				-- 	vim.api.nvim_set_option_value("scrolloff", 5, {})
+				-- end,
 			})
 			vim.keymap.set("n", "<F1>", fh.toggle, {
 				noremap = true,
@@ -292,77 +292,77 @@ return {
 		},
 		keys = {
 			{
-				"<leader>.",
+				"<lt>.",
 				function()
 					Snacks.scratch()
 				end,
 				desc = "Snacks Toggle Scratch Buffer",
 			},
 			{
-				"<leader>S",
+				"<lt>S",
 				function()
 					Snacks.scratch.select()
 				end,
 				desc = "Snacks Select Scratch Buffer",
 			},
 			{
-				"<leader>n",
+				"<lt>n",
 				function()
 					Snacks.notifier.show_history()
 				end,
 				desc = "Snacks Notification History",
 			},
 			{
-				"<leader>bd",
+				"<lt>bd",
 				function()
 					Snacks.bufdelete()
 				end,
 				desc = "Snacks Delete Buffer",
 			},
 			{
-				"<leader>cR",
+				"<lt>cR",
 				function()
 					Snacks.rename.rename_file()
 				end,
 				desc = "Snacks Rename File",
 			},
 			{
-				"<leader>gB",
+				"<lt>gB",
 				function()
 					Snacks.gitbrowse()
 				end,
 				desc = "Snacks Git Browse",
 			},
 			{
-				"<leader>gb",
+				"<lt>gb",
 				function()
 					Snacks.git.blame_line()
 				end,
 				desc = "Snacks Git Blame Line",
 			},
 			{
-				"<leader>gf",
+				"<lt>gf",
 				function()
 					Snacks.lazygit.log_file()
 				end,
 				desc = "Snacks Lazygit Current File History",
 			},
 			{
-				"<leader>gg",
+				"<lt>gg",
 				function()
 					Snacks.lazygit()
 				end,
 				desc = "Snacks Lazygit",
 			},
 			{
-				"<leader>gl",
+				"<lt>gl",
 				function()
 					Snacks.lazygit.log()
 				end,
 				desc = "Snacks Lazygit Log (cwd)",
 			},
 			{
-				"<leader>un",
+				"<lt>un",
 				function()
 					Snacks.notifier.hide()
 				end,
@@ -392,7 +392,7 @@ return {
 				mode = { "n", "t" },
 			},
 			{
-				"<leader>N",
+				"<lt>N",
 				desc = "Snacks Neovim News",
 				function()
 					Snacks.win({
@@ -424,19 +424,19 @@ return {
 					vim.print = _G.dd -- Override print to use snacks for `:=` command
 
 					-- Create some toggle mappings
-					Snacks.toggle.option("spell", { name = "Snacks Spelling" }):map("<leader>us")
-					Snacks.toggle.option("wrap", { name = "Snacks Wrap" }):map("<leader>uw")
-					Snacks.toggle.option("relativenumber", { name = "Snacks Relative Number" }):map("<leader>uL")
-					Snacks.toggle.diagnostics({ name = "Snacks Diagnostics" }):map("<leader>ud")
-					Snacks.toggle.line_number({ name = "" }):map("<leader>ul")
+					Snacks.toggle.option("spell", { name = "Snacks Spelling" }):map("<lt>us")
+					Snacks.toggle.option("wrap", { name = "Snacks Wrap" }):map("<lt>uw")
+					Snacks.toggle.option("relativenumber", { name = "Snacks Relative Number" }):map("<lt>uL")
+					Snacks.toggle.diagnostics({ name = "Snacks Diagnostics" }):map("<lt>ud")
+					Snacks.toggle.line_number({ name = "" }):map("<lt>ul")
 					Snacks.toggle
 						.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 })
-						:map("<leader>uc")
-					Snacks.toggle.treesitter({ name = "Snacks Treesitter" }):map("<leader>uT")
+						:map("<lt>uc")
+					Snacks.toggle.treesitter({ name = "Snacks Treesitter" }):map("<lt>uT")
 					Snacks.toggle
 						.option("background", { off = "light", on = "dark", name = "Dark Background" })
-						:map("<leader>ub")
-					Snacks.toggle.inlay_hints({ name = "Snacks Inlay Hints" }):map("<leader>uh")
+						:map("<lt>ub")
+					Snacks.toggle.inlay_hints({ name = "Snacks Inlay Hints" }):map("<lt>uh")
 				end,
 			})
 		end,
