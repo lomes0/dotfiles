@@ -378,7 +378,7 @@ return {
 			{
 				";;",
 				function()
-					Snacks.words.jump(vim.v.count1)
+					Snacks.words.jump(vim.v.count1, true)
 				end,
 				desc = "Snacks Next Reference",
 				mode = { "n", "t" },
@@ -386,7 +386,7 @@ return {
 			{
 				";[",
 				function()
-					Snacks.words.jump(-vim.v.count1)
+					Snacks.words.jump(-vim.v.count1, true)
 				end,
 				desc = "Snacks Prev Reference",
 				mode = { "n", "t" },
