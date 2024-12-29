@@ -47,14 +47,18 @@ local statuscolumn = {}
 -- 	end
 -- end
 
-statuscolumn.border = function()
-	-- See how the characters is larger then the rest? That's how we make the border look like a single line
-	-- NOTE: lua tables start at 1 but relnum starts at 0, so we add 1 to it to get the highlight group
-	if vim.v.relnum < 9 then
-		return "%#Gradient_" .. (vim.v.lnum + 1) .. "#│"
-	else
-		return "%#Gradient_10#│"
-	end
+-- statuscolumn.border = function()
+-- 	-- See how the characters is larger then the rest? That's how we make the border look like a single line
+-- 	-- NOTE: lua tables start at 1 but relnum starts at 0, so we add 1 to it to get the highlight group
+-- 	if vim.v.relnum < 9 then
+-- 		return "%#Gradient_" .. (vim.v.lnum + 1) .. "#│"
+-- 	else
+-- 		return "%#Gradient_10#│"
+-- 	end
+-- end
+
+statuscolumn.setHl = function()
+	vim.api.nvim_set_hl(0, "FoldSign", { fg = "#ffffff" })
 end
 
 statuscolumn.folds = function()
@@ -72,7 +76,7 @@ statuscolumn.folds = function()
 
 	-- Line is a closed fold(I know second condition feels unnecessary but I will still add it)
 	if foldclosed ~= -1 and foldclosed == vim.v.lnum then
-		return "▶"
+		return "%#FoldSign#"
 	end
 
 	return " "
@@ -92,6 +96,8 @@ end
 
 statuscolumn.statuscolumn = function()
 	local text = ""
+	statuscolumn.setHl()
+
 	text = table.concat({
 		"%s%=%{v:relnum}",
 		" ",

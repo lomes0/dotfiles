@@ -1,3 +1,5 @@
+vim.opt.fillchars = { eob = " " }
+
 local opts = {
 	{ "guifont", "Hack" },
 	{ "autowriteall", true },
@@ -161,7 +163,7 @@ local keymaps = {
 	{
 		"t",
 		"<c-\\>",
-		function ()
+		function()
 			Snacks.terminal.toggle()
 		end,
 		desc = "Toggle float term",
@@ -457,3 +459,30 @@ register_keymaps(keymaps, true)
 register_keymaps(keymaps_noremap, false)
 
 set_cwd()
+
+-- require("tutor").setup({
+-- 	annotations = {
+-- 		{
+-- 			file = "main.c",
+-- 			line = 15,
+-- 			column = 5,
+-- 			message = [[
+--       - This function initializes the main loop.
+--       - This function initializes the main loop.
+--       - This function initializes the main loop.
+--       - This function initializes the main loop.
+--       ```c
+--       void main_loop() {
+--           // ...
+--       }
+--       ```
+--       ]],
+-- 		},
+-- 		-- {
+-- 		--   file = "utils.py",
+-- 		--   line = 23,
+-- 		--   column = 1,
+-- 		--   message = "This helper function optimizes array processing.",
+-- 		-- },
+-- 	},
+-- })

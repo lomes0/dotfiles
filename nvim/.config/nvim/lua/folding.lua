@@ -25,8 +25,8 @@ end
 -- local function fold_function_definition(root)
 -- 	local query_string = [[
 --     type: _ @type
--- 	(function_definition 
--- 		declarator: (function_declarator 
+-- 	(function_definition
+-- 		declarator: (function_declarator
 -- 			declarator: (identifier) @name
 --     	    parameters: (parameter_list) @params))
 -- ]]
@@ -220,13 +220,13 @@ function M.init()
 	vim.opt.foldenable = false
 	vim.opt.foldmethod = "expr"
 	vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-	vim.opt.fillchars = { fold = " " }
 	vim.opt.foldtext = [[luaeval('HighlightedFoldtext')()]]
+
+	vim.opt.fillchars:append({ fold = " " })
 
 	vim.api.nvim_create_autocmd("FileType", {
 		pattern = { "c", "cpp", "rust" },
 		callback = function()
-			vim.api.nvim_set_hl(0, "FoldedScoped", { fg = "#8caaee", bg = "#51576d", bold = true })
 			vim.api.nvim_set_hl(0, "Folded", { bg = "none" })
 			vim.opt.foldtext = [[luaeval('CppFold')()]]
 		end,
