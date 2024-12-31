@@ -297,22 +297,22 @@ local keymaps = {
 	-- 	"<C-\\><C-n>",
 	-- 	desc = "Terminal escape",
 	-- },
-	{
-		"n",
-		"<lt>q",
-		function()
-			Window_remove_active_buffer()
-		end,
-		desc = "Remove active buffer",
-	},
-	{
-		"t",
-		"<lt>q",
-		function()
-			Window_remove_active_buffer()
-		end,
-		desc = "Remove active buffer",
-	},
+	-- {
+	-- 	"n",
+	-- 	"<lt>q",
+	-- 	function()
+	-- 		Window_remove_active_buffer()
+	-- 	end,
+	-- 	desc = "Remove active buffer",
+	-- },
+	-- {
+	-- 	"t",
+	-- 	"<lt>q",
+	-- 	function()
+	-- 		Window_remove_active_buffer()
+	-- 	end,
+	-- 	desc = "Remove active buffer",
+	-- },
 	{
 		"n",
 		"Q",
@@ -369,59 +369,59 @@ local function register_keymaps(maps_array, noremap)
 	end
 end
 
-function buffer_remove(bufnr)
-	bufnr = bufnr or vim.api.nvim_get_current_buf()
-	local startwin = vim.api.nvim_get_current_win()
+-- local function buffer_remove(bufnr)
+-- 	bufnr = bufnr or vim.api.nvim_get_current_buf()
+-- 	local startwin = vim.api.nvim_get_current_win()
+--
+-- 	if not vim.api.nvim_buf_is_valid(bufnr) then
+-- 		print("buffer does not exists")
+-- 		return
+-- 	end
+--
+-- 	local window = vim.fn.win_findbuf(bufnr)
+--
+-- 	for _, win in ipairs(window) do
+-- 		vim.api.nvim_set_current_win(win)
+-- 		vim.cmd("bnext")
+-- 		if vim.api.nvim_get_current_buf() == bufnr then
+-- 			vim.cmd("enew")
+-- 		end
+-- 	end
+--
+-- 	vim.cmd("bdelete " .. bufnr)
+-- 	vim.api.nvim_set_current_win(startwin)
+-- end
 
-	if not vim.api.nvim_buf_is_valid(bufnr) then
-		print("buffer does not exists")
-		return
-	end
-
-	local window = vim.fn.win_findbuf(bufnr)
-
-	for _, win in ipairs(window) do
-		vim.api.nvim_set_current_win(win)
-		vim.cmd("bnext")
-		if vim.api.nvim_get_current_buf() == bufnr then
-			vim.cmd("enew")
-		end
-	end
-
-	vim.cmd("bdelete " .. bufnr)
-	vim.api.nvim_set_current_win(startwin)
-end
-
-function Window_remove_active_buffer()
-	local bufnr = vim.api.nvim_get_current_buf()
-	local bufwin = vim.api.nvim_get_current_win()
-	local buftype = vim.api.nvim_get_option_value("buftype", { buf = bufnr })
-
-	if buftype == "terminal" then
-		vim.cmd("enew")
-		vim.cmd("bdelete! " .. bufnr)
-		return
-	end
-
-	local window = vim.fn.win_findbuf(bufnr)
-	local can_remove = true
-
-	for _, win in ipairs(window) do
-		vim.api.nvim_set_current_win(win)
-		-- buf is present in other window
-		if (bufwin ~= win) and (bufnr == vim.api.nvim_get_current_buf()) then
-			can_remove = false
-			break
-		end
-	end
-
-	if can_remove then
-		buffer_remove(bufnr)
-	else
-		vim.api.nvim_set_current_win(bufwin)
-		vim.cmd("enew")
-	end
-end
+-- function Window_remove_active_buffer()
+-- 	local bufnr = vim.api.nvim_get_current_buf()
+-- 	local bufwin = vim.api.nvim_get_current_win()
+-- 	local buftype = vim.api.nvim_get_option_value("buftype", { buf = bufnr })
+--
+-- 	if buftype == "terminal" then
+-- 		vim.cmd("enew")
+-- 		vim.cmd("bdelete! " .. bufnr)
+-- 		return
+-- 	end
+--
+-- 	local window = vim.fn.win_findbuf(bufnr)
+-- 	local can_remove = true
+--
+-- 	for _, win in ipairs(window) do
+-- 		vim.api.nvim_set_current_win(win)
+-- 		-- buf is present in other window
+-- 		if (bufwin ~= win) and (bufnr == vim.api.nvim_get_current_buf()) then
+-- 			can_remove = false
+-- 			break
+-- 		end
+-- 	end
+--
+-- 	if can_remove then
+-- 		buffer_remove(bufnr)
+-- 	else
+-- 		vim.api.nvim_set_current_win(bufwin)
+-- 		vim.cmd("enew")
+-- 	end
+-- end
 
 function Move_floating_window(win_id, a, b)
 	local config = vim.api.nvim_win_get_config(win_id)
