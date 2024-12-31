@@ -22,104 +22,11 @@ local function fold_start_prefix()
 	return line_prefix:gsub("\t", spaces_for_tabs)
 end
 
--- local function fold_function_definition(root)
--- 	local query_string = [[
---     type: _ @type
--- 	(function_definition
--- 		declarator: (function_declarator
--- 			declarator: (identifier) @name
---     	    parameters: (parameter_list) @params))
--- ]]
---
--- 	local query = ts.query.parse("c", query_string)
---
--- 	local line = ""
--- 	for id, capture, _ in query:iter_captures(root, 0, 0, -1) do
--- 		local key = query.captures[id]
---
--- 		if key == "name" or key == "type" then
--- 			line = line .. T(capture) .. " "
--- 		end
---
--- 		if key == "params" then
--- 			line = line .. "()"
--- 			break
--- 		end
--- 	end
---
--- 	return line
--- end
+local function get_last_node_at_line(root, line)
+	return root:descendant_for_range(line, 0, line, 1)
+end
 
--- local function fold_for_statement(root)
--- 	local query_string = [[
---     type: _ @type
--- 	(for_statement
--- 		condition: (binary_expression)@cond)
--- ]]
--- 	local query = ts.query.parse("c", query_string)
---
--- 	local line = "for ("
--- 	for id, capture, _ in query:iter_captures(root, 0, 0, -1) do
--- 		local key = query.captures[id]
---
--- 		if key == "cond" then
--- 			line = line .. T(capture)
--- 		end
--- 	end
---
--- 	return line .. ")"
--- end
-
--- local function fold_comment(_)
--- 	return "..."
--- end
-
--- local folds = {
--- 	["function_definition"] = nil,
--- 	["for_statement"] = nil,
--- 	["comment"] = nil,
--- }
-
--- local function get_last_node_at_line(root)
--- 	local line = vim.v.foldstart
--- 	return root:descendant_for_range(line, 0, line, 1)
--- end
---
--- local function fold_root_node()
--- 	local parsers = require("nvim-treesitter.parsers")
--- 	local parser = parsers.get_parser()
--- 	local tree = parser:parse()[1]
--- 	local root = tree:root()
--- 	local node = get_last_node_at_line(root)
---
--- 	while node:parent() ~= nil and node:parent():type() ~= root:type() do
--- 		local psr, _ = node:parent():start()
---
--- 		if (psr + 1) < vim.v.foldstart then
--- 			return node
--- 		end
---
--- 		node = node:parent()
--- 	end
---
--- 	return node
--- end
-
--- local function DefaultFold()
--- 	return fold_start_raw_string():gsub("^%s+", "")
--- end
-
--- local function calc_foldend(root)
--- 	local node = get_last_node_at_line(root)
--- 	local parent = node:parent()
--- 	return vim.v.foldstart + 1
--- 	if parent:type() == "function_declarator" then
---
--- 	end
--- 	if node:parent():type())
--- end
-
-function CppFold()
+function FoldtextCoding()
 	local lang = ts.language.get_lang(vim.bo.filetype)
 	local parser = ts.get_parser(0, lang)
 	local query = ts.query.get(parser:lang(), "highlights")
@@ -137,6 +44,13 @@ function CppFold()
 	local foldstart = vim.v.foldstart
 
 	local tree = parser:parse({ foldstart - 1, foldstart })[1]
+	local start_node = get_last_node_at_line(tree:root(), vim.v.foldstart)
+
+	if start_node:type() == "comment" then
+		local first_line = vim.api.nvim_buf_get_lines(0, vim.v.foldstart - 1, vim.v.foldstart, false)[1]
+		return { { first_line, "" } }
+	end
+
 	for id, node, _ in query:iter_captures(tree:root(), 0, foldstart - 1, -1) do
 		local text = T(node)
 		local name = query.captures[id]
@@ -144,6 +58,10 @@ function CppFold()
 
 		-- stop on start of body statements
 		if node:type() == "{" then
+			break
+		end
+
+		if start_row + 1 >= vim.v.foldend then
 			break
 		end
 
@@ -175,7 +93,7 @@ function CppFold()
 	return result
 end
 
-function HighlightedFoldtext()
+function FoldtextDefault()
 	local pos = vim.v.foldstart
 	local line = vim.api.nvim_buf_get_lines(0, pos - 1, pos, false)[1]
 	local lang = ts.language.get_lang(vim.bo.filetype)
@@ -220,7 +138,7 @@ function M.init()
 	vim.opt.foldenable = false
 	vim.opt.foldmethod = "expr"
 	vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-	vim.opt.foldtext = [[luaeval('HighlightedFoldtext')()]]
+	vim.opt.foldtext = [[luaeval('FoldtextDefault')()]]
 
 	vim.opt.fillchars:append({ fold = " " })
 
@@ -228,7 +146,7 @@ function M.init()
 		pattern = { "c", "cpp", "rust" },
 		callback = function()
 			vim.api.nvim_set_hl(0, "Folded", { bg = "none" })
-			vim.opt.foldtext = [[luaeval('CppFold')()]]
+			vim.opt.foldtext = [[luaeval('FoldtextCoding')()]]
 		end,
 	})
 end
