@@ -99,7 +99,7 @@ statuscolumn.statuscolumn = function()
 	statuscolumn.setHl()
 
 	text = table.concat({
-		"%s%=%{v:relnum}",
+		"%s%=%{v:relnum?v:relnum:v:lnum}",
 		" ",
 		statuscolumn.folds(),
 		" ",
