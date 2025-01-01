@@ -284,6 +284,12 @@ return {
 			words = {
 				enabled = true,
 			},
+			zen = {
+				enabled = true,
+				toggles = {
+					dim = false,
+				},
+			},
 			styles = {
 				notification = {
 					wo = { wrap = true }, -- Wrap notifications
