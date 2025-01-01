@@ -97,18 +97,6 @@ function M.SetCatppuccin()
 	set_highlight("Folded", { bg = "#51576d", fg = "#8caaee" })
 end
 
-function M.SetRose()
-	set_color_common("rose-pine-moon", {
-		bg = "none",
-		fg = "#d6ccca",
-	})
-
-	set_highlight("NormalFloat", { link = "Normal" })
-	set_highlight("FloatBorder", { link = "Normal" })
-	set_highlight("Float", { link = "Normal" })
-	set_highlight("Folded", { bg = "#51576d", fg = "#bbaaaa" })
-end
-
 function M.SetKan()
 	local opts_noice = { fg = "#b1c9b8", bg = "none" }
 	local opts_noice_search = { fg = "#ffd675", bg = "none" }
@@ -135,13 +123,6 @@ function M.SetKan()
 	set_highlight("NormalFloat", { link = "Normal" })
 	set_highlight("Float", { link = "Normal" })
 	set_highlight("Folded", { bg = "#51576d", fg = "#808080" })
-end
-
-function M.SetTokyo()
-	set_color_common("tokyonight", {
-		bg = "#51576d",
-		fg = "",
-	})
 end
 
 function M.init()
