@@ -76,7 +76,8 @@ statuscolumn.folds = function()
 
 	-- Line is a closed fold(I know second condition feels unnecessary but I will still add it)
 	if foldclosed ~= -1 and foldclosed == vim.v.lnum then
-		return "%#FoldSign#"
+		-- return "%#FoldSign#"
+		return "%#FoldSign#·"
 	end
 
 	return " "

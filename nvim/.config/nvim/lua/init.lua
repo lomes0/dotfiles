@@ -279,40 +279,18 @@ local keymaps = {
 		"<C-\\><C-n><C-w>",
 		desc = "Terminal window cmd",
 	},
+	-- {
+	-- 	"t",
+	-- 	"<C-_>",
+	-- 	"<C-\\><C-n>/",
+	-- 	desc = "Terminal search buffer",
+	-- },
 	{
 		"t",
-		"<C-_>",
-		"<C-\\><C-n>/",
-		desc = "Terminal search buffer",
+		"<C-;>",
+		"<C-\\><C-n>",
+		desc = "Terminal command",
 	},
-	-- {
-	-- 	"t",
-	-- 	":",
-	-- 	"<C-\\><C-n>:",
-	-- 	desc = "Terminal command",
-	-- },
-	-- {
-	-- 	"t",
-	-- 	"<C-f>",
-	-- 	"<C-\\><C-n>",
-	-- 	desc = "Terminal escape",
-	-- },
-	-- {
-	-- 	"n",
-	-- 	"<lt>q",
-	-- 	function()
-	-- 		Window_remove_active_buffer()
-	-- 	end,
-	-- 	desc = "Remove active buffer",
-	-- },
-	-- {
-	-- 	"t",
-	-- 	"<lt>q",
-	-- 	function()
-	-- 		Window_remove_active_buffer()
-	-- 	end,
-	-- 	desc = "Remove active buffer",
-	-- },
 	{
 		"n",
 		"Q",

@@ -216,7 +216,7 @@ return {
 					},
 					buffer_selected = {
 						fg = "#d1e3ff",
-						bg = "#1e1e2e",
+						bg = "#4a4a4a",
 						bold = true,
 						italic = false,
 					},
