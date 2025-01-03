@@ -57,13 +57,6 @@ function Launch_floatterm(idx)
 	M.Terminals[idx]:toggle()
 end
 
-function M.init()
-	table.insert(M.Terminals, Floatterm:new())
-	vim.keymap.set({ "n", "t" }, "<F10>", function()
-		Launch_floatterm(1)
-	end, { desc = "Toggle floatterm" })
-end
-
 function Embad_floatterm()
 	local win = vim.api.nvim_get_current_win()
 	local buf = vim.api.nvim_win_get_buf(win)
@@ -74,6 +67,18 @@ function Embad_floatterm()
 	vim.api.nvim_win_set_cursor(vim.api.nvim_get_current_win(), cursor)
 end
 
-vim.keymap.set("n", "<lt>ef", Embad_floatterm, { noremap = true, silent = true })
+function Focus_floatterm()
+	vim.api.nvim_set_current_win(M.Terminals[1].win)
+end
+
+function M.init()
+	table.insert(M.Terminals, Floatterm:new())
+	vim.keymap.set({ "n", "t" }, "<F10>", function()
+		Launch_floatterm(1)
+	end, { desc = "Toggle floatterm" })
+
+	vim.keymap.set("n", "<lt>ef", Embad_floatterm, { noremap = true, silent = true })
+	vim.keymap.set("n", "<Tab>", Focus_floatterm, { noremap = true, silent = true })
+end
 
 M.init()
