@@ -65,7 +65,7 @@ alias cat="bat"
 alias z="~/.local/bin/zoxide"
 
 export ZSH_HIGHLIGHT_STYLES[comment]='fg=gray,dimmed'
-export ZSH_HIGHLIGHT_STYLES[command]='fg=blue,dimmed'
+export ZSH_HIGHLIGHT_STYLES[command]='fg=cyan,bold'
 # default,unknown-token,reserved-word,alias,builtin,function,command,hashed-command,precommand,commandseparator,autodirectory,path,globbing,history-expansion,single-hyphen-option,double-hyphen-option,back-quoted-argument,single-quoted-argument,double-quoted-argument,dollar-double-quoted-argument,back-double-quoted-argument,assign,redirection,comment,named-fd,arg0
 # bold, faint, standout, underline, blink, no-bold, no-faint, no-standout, no-underline, no-blink, reset
 # black, red, green, yellow, blue, magenta, cyan, white

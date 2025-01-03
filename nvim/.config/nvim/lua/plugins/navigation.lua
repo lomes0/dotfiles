@@ -1,15 +1,18 @@
 return {
 	{
-		"swaits/zellij-nav.nvim",
-		lazy = true,
-		event = "VeryLazy",
-		keys = {
-			{ "<C-h>", "<cmd>ZellijNavigateLeft<cr>", { silent = true, desc = "navigate left" } },
-			{ "<C-j>", "<cmd>ZellijNavigateDown<cr>", { silent = true, desc = "navigate down" } },
-			{ "<C-k>", "<cmd>ZellijNavigateUp<cr>", { silent = true, desc = "navigate up" } },
-			{ "<C-l>", "<cmd>ZellijNavigateRight<cr>", { silent = true, desc = "navigate right" } },
+		"lomes0/vim-tmux-navigator",
+		cmd = {
+			"TmuxNavigateLeft",
+			"TmuxNavigateDown",
+			"TmuxNavigateUp",
+			"TmuxNavigateRight",
 		},
-		opts = {},
+		keys = {
+			{ "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
+			{ "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
+			{ "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
+			{ "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
+		},
 	},
 	{
 		"mikavilpas/yazi.nvim",
@@ -45,26 +48,22 @@ return {
 		},
 	},
 }
-
+-- {
+-- 	"swaits/zellij-nav.nvim",
+-- 	lazy = true,
+-- 	event = "VeryLazy",
+-- 	keys = {
+-- 		{ "<C-h>", "<cmd>ZellijNavigateLeft<cr>", { silent = true, desc = "navigate left" } },
+-- 		{ "<C-j>", "<cmd>ZellijNavigateDown<cr>", { silent = true, desc = "navigate down" } },
+-- 		{ "<C-k>", "<cmd>ZellijNavigateUp<cr>", { silent = true, desc = "navigate up" } },
+-- 		{ "<C-l>", "<cmd>ZellijNavigateRight<cr>", { silent = true, desc = "navigate right" } },
+-- 	},
+-- 	opts = {},
+-- },
+--
 -----------------------------------------
 -------------- Navigation ---------------
 -----------------------------------------
--- {
--- 	"lomes0/vim-tmux-navigator",
--- 	cmd = {
--- 		"TmuxNavigateLeft",
--- 		"TmuxNavigateDown",
--- 		"TmuxNavigateUp",
--- 		"TmuxNavigateRight",
--- 	},
--- 	keys = {
--- 		{ "<c-h>", "<cmd><C-U>TmuxNavigateLeft<cr>" },
--- 		{ "<c-j>", "<cmd><C-U>TmuxNavigateDown<cr>" },
--- 		{ "<c-k>", "<cmd><C-U>TmuxNavigateUp<cr>" },
--- 		{ "<c-l>", "<cmd><C-U>TmuxNavigateRight<cr>" },
--- 	},
--- },
-
 -- {
 -- 	"ThePrimeagen/harpoon",
 -- 	lazy = false,

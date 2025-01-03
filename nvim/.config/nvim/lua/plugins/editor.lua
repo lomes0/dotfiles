@@ -211,26 +211,22 @@ return {
 				},
 				highlights = {
 					fill = {
-						fg = "#ffffff", -- Foreground color
-						bg = "#1e1e2e", -- Background color
-					},
-					buffer_selected = {
-						fg = "#d1e3ff",
-						bg = "#4a4a4a",
-						bold = true,
-						italic = false,
-					},
-					separator = {
-						fg = "#1e1e2e",
-						bg = "#1e1e2e",
-					},
-					separator_selected = {
-						fg = "#1e1e2e",
-						bg = "#1e1e2e",
+						fg = "none", -- Foreground color
+						bg = "none", -- Background color
 					},
 					background = {
-						fg = "#6272a4",
-						bg = "#1e1e2e",
+						bg = "#4a4a4a",
+					},
+					separator = {
+						bg = "#4a4a4a",
+					},
+					separator_selected = {
+						bg = "#4a4a4a",
+						fg = "#4a4a4a",
+					},
+					buffer_selected = {
+						bg = "#4a4a4a",
+						fg = "#ffffff",
 					},
 				},
 			})
