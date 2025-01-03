@@ -150,7 +150,7 @@ local keymaps = {
 	},
 	{
 		"n",
-		"<F12>",
+		"<F8>",
 		"<cmd>tabnew<cr>",
 		desc = "Tab new",
 	},

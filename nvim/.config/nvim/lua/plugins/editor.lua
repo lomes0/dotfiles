@@ -84,27 +84,27 @@ return {
 				-- 	vim.api.nvim_set_option_value("scrolloff", 5, {})
 				-- end,
 			})
-			vim.keymap.set("n", "<F1>", fh.toggle, {
-				noremap = true,
-				silent = true,
-				desc = "Help nvim",
-			})
+			-- vim.keymap.set("n", "<F1>", fh.toggle, {
+			-- 	noremap = true,
+			-- 	silent = true,
+			-- 	desc = "Help nvim",
+			-- })
 
-			vim.keymap.set("n", "<F3>", function()
-				fh.open("t=cppman", vim.fn.expand("<cword>"))
-			end, {
-				noremap = true,
-				silent = true,
-				desc = "Help cpp",
-			})
+			-- vim.keymap.set("n", "<F3>", function()
+			-- 	fh.open("t=cppman", vim.fn.expand("<cword>"))
+			-- end, {
+			-- 	noremap = true,
+			-- 	silent = true,
+			-- 	desc = "Help cpp",
+			-- })
 
-			vim.keymap.set("n", "<F4>", function()
-				fh.open("t=man", vim.fn.expand("<cword>"))
-			end, {
-				noremap = true,
-				silent = true,
-				desc = "Help unix",
-			})
+			-- vim.keymap.set("n", "<F4>", function()
+			-- 	fh.open("t=man", vim.fn.expand("<cword>"))
+			-- end, {
+			-- 	noremap = true,
+			-- 	silent = true,
+			-- 	desc = "Help unix",
+			-- })
 
 			local function cmd_abbrev(abbrev, expansion)
 				local cmd = "cabbr "
