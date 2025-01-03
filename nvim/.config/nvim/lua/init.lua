@@ -144,6 +144,12 @@ local keymaps = {
 	},
 	{
 		"n",
+		"<C-w>",
+		"<cmd>tabclose<cr>",
+		desc = "Tab close",
+	},
+	{
+		"n",
 		"<F12>",
 		"<cmd>tabnew<cr>",
 		desc = "Tab new",
