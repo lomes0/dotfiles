@@ -1,4 +1,6 @@
-local statuscolumn = {}
+local statuscolumn = {
+	level = 1,
+}
 
 -- statuscolumn.number = function(user_config)
 -- 	-- As a failsafe we will return an empty string if something breaks
@@ -76,8 +78,11 @@ statuscolumn.folds = function()
 
 	-- Line is a closed fold(I know second condition feels unnecessary but I will still add it)
 	if foldclosed ~= -1 and foldclosed == vim.v.lnum then
+		if foldlevel >= statuscolumn.level then
+			return "%#FoldSign#·"
+		end
+		return "%#FoldSign# "
 		-- return "%#FoldSign#"
-		return "%#FoldSign#·"
 	end
 
 	return " "
@@ -108,5 +113,19 @@ statuscolumn.statuscolumn = function()
 
 	return text
 end
+
+vim.keymap.set("n", "z=", function()
+	statuscolumn.level = statuscolumn.level + 1
+	vim.api.nvim_command("normal! zx")
+	print(statuscolumn.level)
+end)
+
+vim.keymap.set("n", "z-", function()
+	if statuscolumn.level >= 2 then
+		statuscolumn.level = statuscolumn.level - 1
+	end
+	vim.api.nvim_command("normal! zx")
+	print(statuscolumn.level)
+end)
 
 return statuscolumn
