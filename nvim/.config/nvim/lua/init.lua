@@ -144,13 +144,13 @@ local keymaps = {
 	},
 	{
 		"n",
-		"<F3>",
+		"<F4>",
 		"<cmd>tabnew<cr>",
 		desc = "Tab new",
 	},
 	{
 		"n",
-		"<F4>",
+		"<F3>",
 		"<cmd>tabclose<cr>",
 		desc = "Tab close",
 	},
