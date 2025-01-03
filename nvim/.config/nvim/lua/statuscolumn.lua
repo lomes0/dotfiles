@@ -79,13 +79,11 @@ statuscolumn.folds = function()
 	-- Line is a closed fold(I know second condition feels unnecessary but I will still add it)
 	if foldclosed ~= -1 and foldclosed == vim.v.lnum then
 		if foldlevel >= statuscolumn.level then
-			return "%#FoldSign#·"
+			return "%#FoldSign#·" -- ""
 		end
 		return "%#FoldSign# "
-		-- return "%#FoldSign#"
 	end
 
-	return " "
 	-- I didn't use ~= because it couldn't make a nested fold have a lower level than it's parent fold and it's not something I would use
 	-- if foldlevel > foldlevel_before then
 	-- 	return "▽"
@@ -98,6 +96,8 @@ statuscolumn.folds = function()
 	--
 	-- -- Line is in the middle of an open fold
 	-- return "╎"
+
+	return " "
 end
 
 statuscolumn.statuscolumn = function()
@@ -114,18 +114,21 @@ statuscolumn.statuscolumn = function()
 	return text
 end
 
+local function statuscolumn_update()
+	vim.api.nvim_command("redraw!")
+	print(statuscolumn.level)
+end
+
 vim.keymap.set("n", "z=", function()
 	statuscolumn.level = statuscolumn.level + 1
-	vim.api.nvim_command("normal! zx")
-	print(statuscolumn.level)
+	statuscolumn_update()
 end)
 
 vim.keymap.set("n", "z-", function()
 	if statuscolumn.level >= 2 then
 		statuscolumn.level = statuscolumn.level - 1
 	end
-	vim.api.nvim_command("normal! zx")
-	print(statuscolumn.level)
+	statuscolumn_update()
 end)
 
 return statuscolumn
