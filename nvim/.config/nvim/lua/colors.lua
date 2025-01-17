@@ -126,9 +126,6 @@ function M.SetKan()
 end
 
 function M.init()
-	-- vim.keymap.set("n", "c1", M.SetCatppuccin, { silent = true, noremap = true })
-	-- vim.keymap.set("n", "c2", M.SetKan, { silent = true, noremap = true })
-
 	M.SetCatppuccin()
 end
 

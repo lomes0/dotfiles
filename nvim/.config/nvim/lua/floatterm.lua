@@ -32,7 +32,7 @@ function Floatterm:toggle()
 			relative = "editor",
 			style = "minimal",
 			height = math.ceil(vim.o.lines * 0.92),
-			width = math.ceil(vim.o.columns * 0.45),
+			width = math.ceil(vim.o.columns * 0.75),
 			row = 10, --> Top of the window
 			col = math.ceil(vim.o.columns * 1.0), --> Far right; should add up to 1 with win_width
 			focusable = true,
