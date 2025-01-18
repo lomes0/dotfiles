@@ -232,35 +232,40 @@ return {
 		"hrsh7th/nvim-cmp",
 		event = "InsertEnter",
 		dependencies = {
-			-- {
-			-- 	-- snippet plugin
-			-- 	"L3MON4D3/LuaSnip",
-			-- 	dependencies = "rafamadriz/friendly-snippets",
-			-- 	opts = {
-			-- 		history = true,
-			-- 		updateevents = "TextChanged,TextChangedI",
-			-- 		enable_autosnippets = true,
-			-- 		store_selection_keys = "<Tab>",
-			-- 	},
-			-- 	config = function(_, opts)
-			-- 		require("luasnip").config.set_config(opts)
-			-- 		require("luasnip.loaders.from_lua").load({ paths = "~/.config/nvim/LuaSnip/" })
-			-- 		vim.keymap.set({ "i" }, "<C-K>", function()
-			-- 			require("luasnip").expand()
-			-- 		end, { silent = true })
-			-- 		vim.keymap.set({ "i", "s" }, "<C-L>", function()
-			-- 			require("luasnip").jump(1)
-			-- 		end, { silent = true })
-			-- 		vim.keymap.set({ "i", "s" }, "<C-J>", function()
-			-- 			require("luasnip").jump(-1)
-			-- 		end, { silent = true })
-			-- 		vim.keymap.set({ "i", "s" }, "<C-E>", function()
-			-- 			if require("luasnip").choice_active() then
-			-- 				require("luasnip").change_choice(1)
-			-- 			end
-			-- 		end, { silent = true })
-			-- 	end,
-			-- },
+			{
+				"L3MON4D3/LuaSnip",
+				dependencies = "rafamadriz/friendly-snippets",
+				lazy = false,
+				opts = {
+					history = true,
+					updateevents = "TextChanged,TextChangedI",
+					enable_autosnippets = true,
+					store_selection_keys = "<Tab>",
+				},
+				config = function(_, opts)
+					local luasnip = require("luasnip")
+					local luasnip_loaders = require("luasnip.loaders.from_lua")
+
+					luasnip.config.set_config(opts)
+					luasnip_loaders.load({
+						paths = { "~/.config/nvim/LuaSnip/" },
+					})
+					vim.keymap.set({ "i" }, "<C-K>", function()
+						luasnip.expand()
+					end, { silent = true })
+					vim.keymap.set({ "i", "s" }, "<Tab>", function()
+						luasnip.jump(1)
+					end, { silent = true })
+					vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
+						luasnip.jump(-1)
+					end, { silent = true })
+					vim.keymap.set({ "i", "s" }, "<C-E>", function()
+						if luasnip.choice_active() then
+							luasnip.change_choice(1)
+						end
+					end, { silent = true })
+				end,
+			},
 			{
 				"hrsh7th/cmp-nvim-lua",
 				"hrsh7th/cmp-nvim-lsp",
@@ -268,22 +273,24 @@ return {
 				"hrsh7th/cmp-path",
 				"hrsh7th/cmp-cmdline",
 				"hrsh7th/cmp-buffer",
+				"saadparwaiz1/cmp_luasnip",
 			},
 		},
 		config = function(_)
 			local cmp = require("cmp")
 			local cmp_select = { behavior = cmp.SelectBehavior.Select }
+			local luasnip = require("luasnip")
 
 			cmp.setup({
 				window = {
 					completion = cmp.config.window.bordered(),
 					documentation = cmp.config.window.bordered(),
 				},
-
 				snippet = {
 					expand = function(args)
 						-- You need Neovim v0.10 to use vim.snippet
-						vim.snippet.expand(args.body)
+						-- vim.snippet.expand(args.body)
+						luasnip.lsp_expand(args.body)
 					end,
 				},
 				mapping = cmp.mapping.preset.insert({
@@ -292,17 +299,19 @@ return {
 					["<Tab>"] = cmp.mapping.select_next_item(cmp_select),
 					["<S-Tab>"] = cmp.mapping.select_prev_item(cmp_select),
 					["<CR>"] = cmp.mapping.confirm({ select = true }),
-					["<C-b>"] = cmp.mapping.scroll_docs(-4),
-					["<C-f>"] = cmp.mapping.scroll_docs(4),
 				}),
 				sources = cmp.config.sources({
+					{
+						name = "luasnip",
+						group_index = 3,
+					},
 					{
 						name = "nvim_lsp",
 						group_index = 4,
 					},
 					{
 						name = "nvim_lua",
-						group_index = 3,
+						group_index = 5,
 					},
 					{
 						name = "path",
@@ -321,8 +330,6 @@ return {
 							end,
 						},
 					},
-					-- { name = "copilot", group_index = 2 },
-					-- { name = "luasnip", group_index = 1 },
 				}),
 			})
 
