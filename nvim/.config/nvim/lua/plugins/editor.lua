@@ -526,6 +526,94 @@ return {
 		},
 		config = function()
 			require("noice").setup({
+				log = nil,
+				log_max_size = 0,
+				markdown = {
+					hover = {
+						["|(%S-)|"] = vim.cmd.help, -- vim help links
+						["%[.-%]%((%S-)%)"] = require("noice.util").open, -- markdown links
+					},
+					highlights = {
+						["|%S-|"] = "@text.reference",
+						["@%S+"] = "@parameter",
+						["^%s*(Parameters:)"] = "@text.title",
+						["^%s*(Return:)"] = "@text.title",
+						["^%s*(See also:)"] = "@text.title",
+						["{%S-}"] = "@parameter",
+					},
+				},
+				health = {
+					checker = true, -- Disable if you don't want health checks to run
+				},
+				notify = {
+					-- Noice can be used as `vim.notify` so you can route any notification like other messages
+					-- Notification messages have their level and other properties set.
+					-- event is always "notify" and kind can be any log level as a string
+					-- The default routes will forward notifications to nvim-notify
+					-- Benefit of using Noice for this is the routing and consistent history view
+					enabled = true,
+					view = "notify",
+				},
+				-- default options for require('noice').redirect
+				-- see the section on Command Redirection
+				---@type NoiceRouteConfig
+				redirect = {
+					view = "popup",
+					filter = { event = "msg_show" },
+				},
+				-- You can add any custom commands below that will be available with `:Noice command`
+				---@type table<string, NoiceCommand>
+				commands = {
+					history = {
+						filter_opts = { count = 1 },
+						-- options for the message history that you get with `:Noice`
+						view = "split",
+						opts = { enter = true, format = "details" },
+						filter = {
+							any = {
+								{ event = "notify" },
+								{ error = true },
+								{ warning = true },
+								{ event = "msg_show", kind = { "" } },
+								{ event = "lsp", kind = "message" },
+							},
+						},
+					},
+					-- :Noice last
+					last = {
+						view = "popup",
+						opts = { enter = true, format = "details" },
+						filter = {
+							any = {
+								{ event = "notify" },
+								{ error = true },
+								{ warning = true },
+								{ event = "msg_show", kind = { "" } },
+								{ event = "lsp", kind = "message" },
+							},
+						},
+						filter_opts = { count = 1 },
+					},
+					-- :Noice errors
+					errors = {
+						-- options for the message history that you get with `:Noice`
+						view = "popup",
+						opts = { enter = true, format = "details" },
+						filter = { error = true },
+						filter_opts = { reverse = true },
+					},
+					all = {
+						-- options for the message history that you get with `:Noice`
+						view = "split",
+						opts = { enter = true, format = "details" },
+						filter = {},
+						filter_opts = { count = 1 },
+					},
+				},
+				throttle = 1000 / 30, -- how frequently does Noice need to check for ui updates? This has no effect when in blocking mode.
+				views = {}, ---@see section on views
+				status = {}, --- @see section on statusline components
+				format = {}, --- @see section on formatting
 				debug = false,
 				cmdline = {
 					enabled = true, -- enables the Noice cmdline UI
