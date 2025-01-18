@@ -145,7 +145,6 @@ function M.init()
 	vim.api.nvim_create_autocmd("FileType", {
 		pattern = { "c", "cpp", "rust" },
 		callback = function()
-			vim.api.nvim_set_hl(0, "Folded", { bg = "none" })
 			vim.opt.foldtext = [[luaeval('FoldtextCoding')()]]
 		end,
 	})

@@ -1,35 +1,32 @@
-local M = {}
+local M = {
+	last_type = nil,
+}
 
--- Define a function to simplify setting highlight groups
-local function set_highlight(group, properties)
-	vim.api.nvim_set_hl(0, group, properties)
-end
-
-local function m(tb, ta)
+function M.m(tb, ta)
 	for k, v in pairs(ta) do
 		tb[k] = v
 	end
 	return tb
 end
 
-local function set_color_visual()
-	set_highlight("Visual", {
+function M.set_color_visual()
+	vim.api.nvim_set_hl(0, "Visual", {
 		bg = "#51576d",
 		fg = "none",
 	})
 end
 
-local function set_color_cursor_hl(opts)
-	set_highlight("LspReference", opts)
-	set_highlight("LspReferenceRead", opts)
-	set_highlight("LspReferenceWrite", opts)
-	set_highlight("LspReferenceText", opts)
-	set_highlight("TSDefinition", opts)
-	set_highlight("TSDefinitionUsage", opts)
+function M.set_color_cursor_hl(opts)
+	vim.api.nvim_set_hl(0, "LspReference", opts)
+	vim.api.nvim_set_hl(0, "LspReferenceRead", opts)
+	vim.api.nvim_set_hl(0, "LspReferenceWrite", opts)
+	vim.api.nvim_set_hl(0, "LspReferenceText", opts)
+	vim.api.nvim_set_hl(0, "TSDefinition", opts)
+	vim.api.nvim_set_hl(0, "TSDefinitionUsage", opts)
 end
 
-local function set_color_win_seperator()
-	set_highlight("WinSeparator", {
+function M.set_color_win_seperator()
+	vim.api.nvim_set_hl(0, "WinSeparator", {
 		bg = "none",
 		fg = "#6e6a86",
 		sp = "none",
@@ -42,91 +39,180 @@ local function set_color_win_seperator()
 	})
 end
 
-local function set_color_ts_context(opts_ts)
+function M.set_color_ts_context(opts_ts)
 	opts_ts = opts_ts or {
 		bg = "#51576d",
 		italic = true,
 	}
-	set_highlight("TreesitterContext", m(opts_ts, {}))
-	set_highlight("TreesitterContextBottom", m(opts_ts, { fg = "none" }))
-	set_highlight("TreesitterContextSeparator", m(opts_ts, { fg = "none" }))
-	set_highlight("TreesitterContextLineNumber", m(opts_ts, { fg = "white" }))
-	set_highlight("TreesitterContextLineNumberBottom", m(opts_ts, {}))
+	vim.api.nvim_set_hl(0, "TreesitterContext", M.m(opts_ts, {}))
+	vim.api.nvim_set_hl(0, "TreesitterContextBottom", M.m(opts_ts, { fg = "none" }))
+	vim.api.nvim_set_hl(0, "TreesitterContextSeparator", M.m(opts_ts, { fg = "none" }))
+	vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", M.m(opts_ts, { fg = "white" }))
+	vim.api.nvim_set_hl(0, "TreesitterContextLineNumberBottom", M.m(opts_ts, {}))
 end
 
-local function set_color_common(scheme, opts_cursor, opts_ts)
-	vim.api.nvim_command("colorscheme " .. scheme)
-
-	set_color_ts_context(opts_ts)
-	set_color_cursor_hl(opts_cursor)
-	set_color_win_seperator()
-	set_color_visual()
-
+function M.set_color_debug()
 	-- Define highlight groups for white line background
 	-- vim.cmd('highlight DapBreakpointLine guifg=#000000')
 	vim.api.nvim_set_hl(0, "DapStoppedLine", {
-	  bg = "#365d78",  -- Background color
-	  fg = "#c5cdd6",  -- Foreground color
-	  blend = 60       -- Blend level
+		bg = "#365d78", -- Background color
+		fg = "#c5cdd6", -- Foreground color
+		blend = 60, -- Blend level
 	})
 
 	-- Define the signs with the updated line highlighting
-	vim.fn.sign_define('DapBreakpoint', {
-	    text = '○', -- nerdfonts icon here
-	    texthl = 'DapBreakpointSymbol',
-	    linehl = 'DapBreakpointLine', -- Use the new highlight group
-	    numhl = 'DapBreakpoint',
+	vim.fn.sign_define("DapBreakpoint", {
+		text = "○", -- nerdfonts icon here
+		texthl = "DapBreakpointSymbol",
+		linehl = "DapBreakpointLine", -- Use the new highlight group
+		numhl = "DapBreakpoint",
 	})
 
-	vim.fn.sign_define('DapStopped', {
-	    text = '◉',
-	    texthl = 'DapStoppedSymbol',
-	    linehl = 'DapStoppedLine',
-	    numhl = 'DapBreakpoint',
+	vim.fn.sign_define("DapStopped", {
+		text = "◉",
+		texthl = "DapStoppedSymbol",
+		linehl = "DapStoppedLine",
+		numhl = "DapBreakpoint",
 	})
 end
 
-function M.SetCatppuccin()
-	set_color_common("catppuccin-frappe", {
-		bg = "#51576d",
-		fg = "",
-	})
-
-	set_highlight("NormalFloat", { link = "Normal" })
-	set_highlight("Float", { link = "Normal" })
-	set_highlight("Folded", { bg = "#51576d", fg = "#8caaee" })
+function M.set_color_bufferline()
+	-- Buffer
+	local aaa = "#4a4a4a"
+	vim.api.nvim_set_hl(0, "BufferLineFill", { bg = "none", fg = "none" })
+	vim.api.nvim_set_hl(0, "BufferLineSeparator", { bg = aaa, fg = aaa })
+	vim.api.nvim_set_hl(0, "BufferLineSeparatorSelected", { bg = aaa, fg = aaa })
+	vim.api.nvim_set_hl(0, "BufferLineModifiedSelected", { bg = aaa, fg = "none" })
+	vim.api.nvim_set_hl(0, "BufferLineBuffer", { bg = aaa, fg = "none" })
+	vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { bg = aaa, fg = "none" })
 end
 
-function M.SetKan()
-	local opts_noice = { fg = "#b1c9b8", bg = "none" }
-	local opts_noice_search = { fg = "#ffd675", bg = "none" }
-	set_color_common("kanagawa-paper", {
-		bg = "#3d3e42",
-		fg = "",
-	}, {
-		bg = "#3d3e42",
-		fg = "",
-	})
+M.colorscheme_opts = {
+	["kanagawa-paper"] = {
+		-- cursor
+		{
+			bg = "#3d3e42",
+			fg = "",
+		},
+		-- treesitter
+		{
+			bg = "#3d3e42",
+			fg = "",
+		},
+		function()
+			local opts_noice = { fg = "#b1c9b8", bg = "none" }
+			local opts_noice_search = { fg = "#ffd675", bg = "none" }
+			-- Git
+			vim.api.nvim_set_hl(0, "SignColumn", { fg = "none", bg = "none" })
+			vim.api.nvim_set_hl(0, "GitSignsAdd", { bg = "none", fg = "#76946a" })
+			vim.api.nvim_set_hl(0, "GitSignsChange", { bg = "none", fg = "#fca561" })
+			vim.api.nvim_set_hl(0, "GitSignsDelete", { bg = "none", fg = "#c34043" })
+			vim.api.nvim_set_hl(0, "LineNr", { fg = "#808080", bg = "none" })
 
-	set_highlight("SignColumn", { fg = "none", bg = "none" })
-	set_highlight("GitSignsAdd", { bg = "none", fg = "#76946a" })
-	set_highlight("GitSignsChange", { bg = "none", fg = "#fca561" })
-	set_highlight("GitSignsDelete", { bg = "none", fg = "#c34043" })
-	set_highlight("LineNr", { fg = "#808080", bg = "none" })
+			-- Noice
+			vim.api.nvim_set_hl(0, "NoiceCmdlinePopupBorderSearch", opts_noice_search)
+			vim.api.nvim_set_hl(0, "NoiceCmdlineIconSearch", opts_noice_search)
+			vim.api.nvim_set_hl(0, "NoiceCmdline", opts_noice)
+			vim.api.nvim_set_hl(0, "NoiceCmdlineIcon", opts_noice)
+			vim.api.nvim_set_hl(0, "NoiceCmdlinePopupBorder", opts_noice)
 
-	set_highlight("NoiceCmdlinePopupBorderSearch", opts_noice_search)
-	set_highlight("NoiceCmdlineIconSearch", opts_noice_search)
-	set_highlight("NoiceCmdline", opts_noice)
-	set_highlight("NoiceCmdlineIcon", opts_noice)
-	set_highlight("NoiceCmdlinePopupBorder", opts_noice)
+			-- Float
+			vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
+			vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
+		end,
+	},
+	["material-palenight"] = {
+		-- cursor
+		{
+			bg = "#51576d",
+			fg = "",
+		},
+		-- treesitter
+		{
+			bg = "#3d3e42",
+			fg = "",
+		},
+		function()
+			vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
+			vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
+			vim.api.nvim_set_hl(0, "CurSearch", { bg = "#738994", fg = "white" })
+			vim.api.nvim_set_hl(0, "IncSearch", { bg = "#738994", fg = "white" })
+			vim.api.nvim_set_hl(0, "Search", { bg = "#738994", fg = "white" })
+		end,
+	},
+	["catppuccin-macchiato"] = {
+		-- cursor
+		{
+			bg = "#51576d",
+			fg = "",
+		},
+		-- treesitter
+		{
+			bg = "#51576d",
+			fg = "",
+		},
+		function()
+			vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
+			vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
+		end,
+	},
+}
 
-	set_highlight("NormalFloat", { link = "Normal" })
-	set_highlight("Float", { link = "Normal" })
-	set_highlight("Folded", { bg = "#51576d", fg = "#808080" })
+function M.SetColorScheme(scheme)
+	vim.api.nvim_command("colorscheme " .. scheme)
+
+	local opts = M.colorscheme_opts[scheme]
+	local opts_ts = opts[1]
+	local opts_cursor = opts[2]
+	local callback = opts[3]
+
+	vim.api.nvim_set_hl(0, "Folded", { bg = "none" })
+	M.set_color_ts_context(opts_ts)
+	M.set_color_cursor_hl(opts_cursor)
+	M.set_color_bufferline()
+	M.set_color_win_seperator()
+	M.set_color_visual()
+	M.set_color_debug()
+
+	callback()
 end
 
 function M.init()
-	M.SetCatppuccin()
+	local filetypes_schemes = {
+		{ "catppuccin-macchiato", "*" },
+		{ "material-palenight", "*.c" },
+		{ "material-palenight", "*.cc" },
+		{ "material-palenight", "*.cpp" },
+		{ "material-palenight", "*.h" },
+		{ "material-palenight", "*.hpp" },
+		{ "kanagawa-paper", "*.lua" },
+	}
+
+	local blacklist = {
+		"",
+		"NvimTree",
+		"snacks_terminal",
+		"terminal",
+		"help",
+		"gitcommit",
+		"dashboard",
+	}
+
+	for i, _ in ipairs(filetypes_schemes) do
+		local scheme = filetypes_schemes[i][1]
+		local filetype = filetypes_schemes[i][2]
+		vim.api.nvim_create_autocmd("BufEnter", {
+			pattern = filetype,
+			callback = function(args)
+				if filetype ~= M.last_type then
+					if not vim.tbl_contains(blacklist, vim.bo[args.buf].filetype) then
+						M.SetColorScheme(scheme)
+						M.last_type = filetype
+					end
+				end
+			end,
+		})
+	end
 end
 
-M.init()
+return M

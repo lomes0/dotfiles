@@ -8,4 +8,4 @@ deps = [
 [flavor]
 deps = [
 	{ use = "dangooddd/kanagawa", rev = "b32f205" }
-]
+, { use = "kmlupreti/ayu-dark", rev = "8d487bc" }]

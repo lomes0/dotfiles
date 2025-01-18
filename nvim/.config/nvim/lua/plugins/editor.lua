@@ -1,4 +1,16 @@
 return {
+	-- {
+	-- 	"norcalli/nvim-colorizer.lua",
+	-- 	lazy = false,
+	-- 	config = function()
+	-- 		vim.api.nvim_command("set termguicolors")
+	-- 		require("colorizer").setup({
+	-- 			"*", -- Highlight all files, but customize some others.
+	-- 			"!vim", -- Exclude vim from highlighting.
+	-- 			-- Exclusion Only makes sense if '*' is specified!
+	-- 		})
+	-- 	end,
+	-- },
 	{
 		"kylechui/nvim-surround",
 		version = "*",
@@ -188,18 +200,18 @@ return {
 				options = {
 					mode = "tabs",
 					separator_style = "slant",
-					show_buffer_icons = true,
+					show_buffer_icons = false,
 					show_buffer_close_icons = false,
 					show_close_icon = false,
 					tab_size = 20, -- Set the fixed width of tabs
 					diagnostics = false,
 					always_show_bufferline = true,
-					show_tab_indicators = true,
-					buffer_close_icon = "", -- Icon to close buffer
-					modified_icon = "●", -- Icon for modified buffers
-					close_icon = "", -- Close all buffers icon
-					left_trunc_marker = "", -- Icon for truncated buffers on the left
-					right_trunc_marker = "", -- Icon for truncated buffers on the right
+					show_tab_indicators = false,
+					buffer_close_icon = "", -- Icon to close buffer
+					modified_icon = "", -- Icon for modified buffers
+					close_icon = "", -- Close all buffers icon
+					left_trunc_marker = "", -- Icon for truncated buffers on the left
+					right_trunc_marker = "", -- Icon for truncated buffers on the right
 					offsets = {
 						{
 							filetype = "NvimTree",
@@ -259,6 +271,8 @@ return {
 			win = {
 				enabled = true,
 				border = "rounded",
+				width = 0.9,
+				height = 0.99,
 			},
 			bigfile = {
 				enabled = true,
@@ -399,8 +413,8 @@ return {
 				function()
 					Snacks.win({
 						file = vim.api.nvim_get_runtime_file("doc/news.txt", false)[1],
-						width = 0.6,
-						height = 0.6,
+						width = 0.9,
+						height = 0.9,
 						wo = {
 							spell = false,
 							wrap = false,

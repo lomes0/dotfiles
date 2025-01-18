@@ -64,12 +64,54 @@ alias ll="eza --color=always --long --git --icons=always --no-permissions --igno
 alias cat="bat"
 alias z="~/.local/bin/zoxide"
 
+# eza colors
+export EZA_COLORS="\                                                                                                                                                                                                                   archlinux 
+di=1;38;5;109:\
+fi=38;5;250:\
+ln=1;38;5;74:\
+pi=38;5;181:\
+so=1;38;5;215:\
+bd=1;38;5;216;48;5;237:\
+cd=1;38;5;174;48;5;237:\
+ex=1;38;5;114:\
+da=38;5;110:\
+uu=38;5;131:\
+ro=38;5;131:\
+mi=38;5;139:\
+tw=38;5;132:\
+ow=1;38;5;139:\
+cl=38;5;248"
+
 export ZSH_HIGHLIGHT_STYLES[comment]='fg=gray,dimmed'
-export ZSH_HIGHLIGHT_STYLES[command]='fg=cyan,bold'
-# default,unknown-token,reserved-word,alias,builtin,function,command,hashed-command,precommand,commandseparator,autodirectory,path,globbing,history-expansion,single-hyphen-option,double-hyphen-option,back-quoted-argument,single-quoted-argument,double-quoted-argument,dollar-double-quoted-argument,back-double-quoted-argument,assign,redirection,comment,named-fd,arg0
-# bold, faint, standout, underline, blink, no-bold, no-faint, no-standout, no-underline, no-blink, reset
+export ZSH_HIGHLIGHT_STYLES[command]='fg=#a1ccbc,bold'
+export ZSH_HIGHLIGHT_STYLES[default]='fg=#ecedb9'
+export ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#deb86d,bold'
+export ZSH_HIGHLIGHT_STYLES[builtin]='fg=#deb86d,bold'
+export ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#ecedb9'
+export ZSH_HIGHLIGHT_STYLES[alias]='fg=#af99ba,bold'
+# export ZSH_HIGHLIGHT_STYLES[function]=none
+# export ZSH_HIGHLIGHT_STYLES[command]=none
+# export ZSH_HIGHLIGHT_STYLES[precommand]=none
+# export ZSH_HIGHLIGHT_STYLES[commandseparator]=none
+# export ZSH_HIGHLIGHT_STYLES[hashed-command]=none
+# export ZSH_HIGHLIGHT_STYLES[path]=none
+# export ZSH_HIGHLIGHT_STYLES[globbing]=none
+# export ZSH_HIGHLIGHT_STYLES[history-expansion]=fg=blue
+# export ZSH_HIGHLIGHT_STYLES[single-hyphen-option]=none
+# export ZSH_HIGHLIGHT_STYLES[double-hyphen-option]=none
+# export ZSH_HIGHLIGHT_STYLES[back-quoted-argument]=none
+# export ZSH_HIGHLIGHT_STYLES[single-quoted-argument]=fg=yellow
+# export ZSH_HIGHLIGHT_STYLES[double-quoted-argument]=fg=yellow
+# export ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]=fg=cyan
+# export ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]=fg=cyan
+# export ZSH_HIGHLIGHT_STYLES[assign]=none
+
+# default,unknown-token,reserved-word,alias,builtin,function,command,hashed-command,precommand,commandseparator,
+# autodirectory,path,globbing,history-expansion,single-hyphen-option,double-hyphen-option,back-quoted-argument,
+# single-quoted-argument,double-quoted-argument,dollar-double-quoted-argument,back-double-quoted-argument,assign,
+# redirection,comment,named-fd,arg0,bold,faint,standout,underline,blink,no-bold,no-faint,no-standout,no-underline,no-blink,reset
 # black, red, green, yellow, blue, magenta, cyan, white
-export LS_COLORS="$(vivid generate catppuccin-frappe)"
+export LS_COLORS="$(vivid generate nord)"
 
 if [[ $(ps --no-header -p $PPID -o comm) =~ '^alacritty$' ]]; then
 	for wid in $(xdotool search --pid $PPID); do

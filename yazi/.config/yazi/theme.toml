@@ -1,5 +1,6 @@
 [flavor]
-use = "kanagawa"
+dark = "catppuccin-frappe"
+light = "catppuccin-frappe"
 
 [status]
 separator_open  = ""
@@ -13,6 +14,19 @@ inactive = {}
 icon_file    = ""
 icon_folder  = ""
 icon_command = ""
+
+[filetype]
+rules = [
+	# Fallback
+	# { name = "*", fg = "white" },
+	{ name = "*/", fg = "#ab9cb8" },
+
+	# Empty files
+	{ mime = "inode/empty", fg = "cyan" },
+
+	# Orphan symbolic links
+	{ name = "*", is = "orphan", fg = "red" },
+]
 
 [icon]
 prepend_rules = [
