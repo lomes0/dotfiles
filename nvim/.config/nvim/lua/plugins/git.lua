@@ -28,13 +28,26 @@ return {
 						desc = "Gitsigns next change",
 					})
 
+					vim.keymap.set("n", " b", function()
+						if vim.wo.diff then
+							vim.cmd.normal({ "[c", bang = true })
+						else
+							gitsigns.nav_hunk("prev")
+						end
+					end, {
+						noremap = true,
+						silent = true,
+						buffer = bufnr,
+						desc = "Gitsigns prev change",
+					})
+
 					-- stage
-					vim.keymap.set("n", "sa", gitsigns.stage_hunk, {
+					vim.keymap.set("n", " a", gitsigns.stage_hunk, {
 						silent = true,
 						buffer = bufnr,
 						desc = "Gitsigns stage",
 					})
-					vim.keymap.set("v", "sa", function()
+					vim.keymap.set("v", " a", function()
 						gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
 					end, {
 						silent = true,
@@ -43,13 +56,13 @@ return {
 					})
 
 					-- reset
-					vim.keymap.set("n", "sR", gitsigns.reset_buffer, {
+					vim.keymap.set("n", " R", gitsigns.reset_buffer, {
 						noremap = true,
 						silent = true,
 						buffer = bufnr,
 						desc = "Gitsigns reset buffer",
 					})
-					vim.keymap.set("n", "sr", gitsigns.reset_hunk, {
+					vim.keymap.set("n", " r", gitsigns.reset_hunk, {
 						noremap = true,
 						silent = true,
 						buffer = bufnr,
@@ -57,19 +70,19 @@ return {
 					})
 
 					-- review
-					vim.keymap.set("n", "sp", gitsigns.preview_hunk, {
+					vim.keymap.set("n", " p", gitsigns.preview_hunk, {
 						noremap = true,
 						silent = true,
 						buffer = bufnr,
 						desc = "Gitsigns preview hunk",
 					})
-					vim.keymap.set("n", "st", gitsigns.toggle_current_line_blame, {
+					vim.keymap.set("n", " t", gitsigns.toggle_current_line_blame, {
 						noremap = true,
 						silent = true,
 						buffer = bufnr,
 						desc = "Gitsigns toggle blame",
 					})
-					vim.keymap.set("n", "sd", gitsigns.diffthis, {
+					vim.keymap.set("n", " d", gitsigns.diffthis, {
 						noremap = true,
 						silent = true,
 						buffer = bufnr,
@@ -77,7 +90,7 @@ return {
 					})
 
 					vim.wo.signcolumn = "yes"
-					vim.o.statuscolumn = "%!v:lua.require('statuscolumn').statuscolumn()";
+					vim.o.statuscolumn = "%!v:lua.require('statuscolumn').statuscolumn()"
 				end,
 			})
 		end,

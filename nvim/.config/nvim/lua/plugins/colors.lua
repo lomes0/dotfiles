@@ -1,5 +1,17 @@
 return {
 	{
+		"norcalli/nvim-colorizer.lua",
+		lazy = false,
+		config = function()
+			vim.api.nvim_command("set termguicolors")
+			require("colorizer").setup({
+				"*", -- Highlight all files, but customize some others.
+				"!vim", -- Exclude vim from highlighting.
+				-- Exclusion Only makes sense if '*' is specified!
+			})
+		end,
+	},
+	{
 		"marko-cerovac/material.nvim",
 		lazy = false,
 		priority = 1000,
@@ -128,12 +140,6 @@ return {
 					},
 				},
 			})
-
-			vim.api.nvim_create_autocmd("User", {
-				pattern = "VeryLazy",
-				callback = function()
-				end,
-			})
 		end,
 	},
 	{
@@ -159,9 +165,7 @@ return {
 			})
 			vim.api.nvim_create_autocmd("User", {
 				pattern = "VeryLazy",
-				callback = function()
-
-				end,
+				callback = function() end,
 			})
 		end,
 	},

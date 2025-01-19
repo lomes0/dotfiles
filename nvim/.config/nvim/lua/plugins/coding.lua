@@ -139,6 +139,14 @@ return {
 	{
 		"lomes0/nvim-bqf",
 		ft = "qf",
+		dependencies = {
+			{
+				"junegunn/fzf",
+				run = function()
+					vim.fn["fzf#install"]()
+				end,
+			},
+		},
 		init = function()
 			local function qbf_move_entry(direction)
 				local cursor_pos = vim.api.nvim_win_get_cursor(0)
@@ -153,6 +161,10 @@ return {
 				local qwinid = vim.api.nvim_get_current_win()
 				vim.api.nvim_win_set_cursor(0, next_cursor_pos)
 				qhandler.open(false, false, qwinid, next_cursor_pos[1])
+
+				vim.opt.cursorline = true
+				vim.api.nvim_set_hl(0, "CursorLine", { bg = "#4f5669", fg = "", blend = 0 })
+				vim.api.nvim_set_current_win(qwinid)
 			end
 
 			function _G.quickfix_j_key()
@@ -183,11 +195,59 @@ return {
 					)
 				end,
 			})
+
+			vim.api.nvim_create_autocmd("WinClosed", {
+				callback = function(args)
+					local winid = tonumber(args.match)
+					if vim.fn.getwininfo(winid)[1] and vim.fn.getwininfo(winid)[1].quickfix then
+						vim.opt.cursorline = false
+					end
+				end,
+			})
+		end,
+		config = function(_, opts)
+			require("bqf").setup({
+				previous_winid_ft_skip = false,
+				auto_enable = true,
+				magic_window = true,
+				auto_resize_height = false,
+				preview = {
+					auto_preview = false,
+					border = "rounded",
+					show_title = true,
+					show_scroll_bar = true,
+					delay_syntax = 50,
+					win_height = 15,
+					win_vheight = 15,
+					winblend = 0,
+					wrap = false,
+					buf_label = true,
+					should_preview_cb = function()
+						return true
+					end,
+				},
+				func_map = {
+					description = [[The table for {function = key}]],
+					default = [[see ###Function table for detail]],
+				},
+				filter = {
+					fzf = {
+						action_for = {
+							["ctrl-t"] = "tabedit",
+							["ctrl-v"] = "vsplit",
+							["ctrl-x"] = "split",
+							["ctrl-q"] = "signtoggle",
+							["ctrl-c"] = "closeall",
+						},
+						extra_opts = { "--bind", "ctrl-o:toggle-all" },
+					},
+				},
+			})
 		end,
 	},
 	{
 		"stevearc/aerial.nvim",
-		config = function()
+		config = function(_, opts)
 			require("aerial").setup({
 				-- optionally use on_attach to set keymaps when aerial has attached to a buffer
 				on_attach = function(bufnr)
@@ -253,17 +313,31 @@ return {
 					vim.keymap.set({ "i" }, "<C-K>", function()
 						luasnip.expand()
 					end, { silent = true })
-					vim.keymap.set({ "i", "s" }, "<Tab>", function()
-						luasnip.jump(1)
-					end, { silent = true })
-					vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
-						luasnip.jump(-1)
-					end, { silent = true })
 					vim.keymap.set({ "i", "s" }, "<C-E>", function()
 						if luasnip.choice_active() then
 							luasnip.change_choice(1)
 						end
 					end, { silent = true })
+
+					vim.api.nvim_create_autocmd("User", {
+						pattern = "LuasnipInsertNodeEnter",
+						callback = function()
+							vim.keymap.set({ "i", "s" }, "<Tab>", function()
+								luasnip.jump(1)
+							end, { silent = true })
+							vim.keymap.set({ "i", "s" }, "<S-Tab>", function()
+								luasnip.jump(-1)
+							end, { silent = true })
+						end,
+					})
+
+					vim.api.nvim_create_autocmd("User", {
+						pattern = "LuasnipInsertNodeLeave",
+						callback = function()
+							vim.keymap.del({ "i", "s" }, "<Tab>", { silent = true })
+							vim.keymap.del({ "i", "s" }, "<S-Tab>", { silent = true })
+						end,
+					})
 				end,
 			},
 			{
@@ -276,7 +350,7 @@ return {
 				"saadparwaiz1/cmp_luasnip",
 			},
 		},
-		config = function(_)
+		config = function(_, opts)
 			local cmp = require("cmp")
 			local cmp_select = { behavior = cmp.SelectBehavior.Select }
 			local luasnip = require("luasnip")
