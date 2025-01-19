@@ -179,7 +179,7 @@ end
 
 function M.init()
 	local filetypes_schemes = {
-		{ "catppuccin-macchiato", "*" },
+		-- { "catppuccin-macchiato", "*" },
 		{ "material-palenight", "*.c" },
 		{ "material-palenight", "*.cc" },
 		{ "material-palenight", "*.cpp" },
@@ -197,6 +197,8 @@ function M.init()
 		"gitcommit",
 		"dashboard",
 	}
+
+	M.SetColorScheme("kanagawa-paper")
 
 	for i, _ in ipairs(filetypes_schemes) do
 		local scheme = filetypes_schemes[i][1]
