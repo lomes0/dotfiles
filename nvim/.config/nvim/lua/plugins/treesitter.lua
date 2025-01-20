@@ -1,14 +1,14 @@
 return {
 	{
 		"nvim-treesitter/nvim-treesitter",
-		lazy = false,
+		event = "BufReadPost",
 		build = ":TSUpdate",
 		config = function()
 			require("nvim-treesitter.configs").setup({
 				modules = {},
 				ignore_install = {},
 				incremental_selection = {
-					enable = true,
+					enable = false,
 					keymaps = {
 						init_selection = "gnn",
 						node_incremental = "grn",
@@ -58,8 +58,17 @@ return {
 				},
 				sync_install = false,
 				auto_install = true,
-				highlight = { enable = true },
-				indent = { enable = true },
+				highlight = {
+					enable = true,
+					-- disable = function(_, buf)
+					-- 	local max_filesize = 100 * 1024 -- 100 KB
+					-- 	local stats = vim.loop.fs_stat(vim.api.nvim_buf_get_name(buf))
+					-- 	return stats and stats.size > max_filesize
+					-- end,
+				},
+				indent = {
+					enable = false,
+				},
 			})
 			vim.filetype.add({
 				extension = {
@@ -71,7 +80,7 @@ return {
 	},
 	{
 		"nvim-treesitter/nvim-treesitter-textobjects",
-		event = "VeryLazy",
+		event = "BufReadPost",
 		config = function()
 			require("nvim-treesitter.configs").setup({
 				modules = {},
@@ -149,7 +158,7 @@ return {
 	},
 	{
 		"nvim-treesitter/nvim-treesitter-context",
-		event = "VeryLazy",
+		event = "BufReadPost",
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter",
 		},

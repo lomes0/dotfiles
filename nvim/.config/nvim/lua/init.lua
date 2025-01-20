@@ -2,7 +2,13 @@ vim.opt.fillchars = { eob = " " }
 
 vim.loader.enable()
 
+vim.opt.swapfile = false
+vim.opt.backup = false
+vim.opt.writebackup = false
+vim.opt.timeoutlen = 500
+
 local opts = {
+	{ "lazyredraw", true },
 	{ "guifont", "Hack" },
 	{ "autowriteall", true },
 	{ "tabstop", 4 },
@@ -10,6 +16,7 @@ local opts = {
 	{ "shiftwidth", 4 },
 	{ "scrolloff", 8 },
 	{ "updatetime", 50 },
+	{ "timeoutlen", 300 },
 	{ "conceallevel", 2 },
 	{ "report", 999 },
 	{ "cmdheight", 0 },
