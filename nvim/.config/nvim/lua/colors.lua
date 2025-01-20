@@ -121,7 +121,7 @@ M.colorscheme_opts = {
 			vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
 		end,
 	},
-	["material-palenight"] = {
+	["tokyonight-moon"] = {
 		-- cursor
 		{
 			bg = "#51576d",
@@ -180,11 +180,11 @@ end
 function M.init()
 	local filetypes_schemes = {
 		-- { "catppuccin-macchiato", "*" },
-		{ "material-palenight", "*.c" },
-		{ "material-palenight", "*.cc" },
-		{ "material-palenight", "*.cpp" },
-		{ "material-palenight", "*.h" },
-		{ "material-palenight", "*.hpp" },
+		{ "tokyonight-moon", "*.c" },
+		{ "tokyonight-moon", "*.cc" },
+		{ "tokyonight-moon", "*.cpp" },
+		{ "tokyonight-moon", "*.h" },
+		{ "tokyonight-moon", "*.hpp" },
 		{ "kanagawa-paper", "*.lua" },
 	}
 
