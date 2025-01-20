@@ -104,7 +104,7 @@ M.colorscheme_opts = {
 			local opts_noice_search = { fg = "#ffd675", bg = "none" }
 			-- Git
 			vim.api.nvim_set_hl(0, "SignColumn", { fg = "none", bg = "none" })
-			vim.api.nvim_set_hl(0, "GitSignsAdd", { bg = "none", fg = "#76946a" })
+			vim.api.nvim_set_hl(0, "GitSignsAdd", { bg = "none", fg = "#11946a" })
 			vim.api.nvim_set_hl(0, "GitSignsChange", { bg = "none", fg = "#fca561" })
 			vim.api.nvim_set_hl(0, "GitSignsDelete", { bg = "none", fg = "#c34043" })
 			vim.api.nvim_set_hl(0, "LineNr", { fg = "#808080", bg = "none" })
@@ -134,6 +134,7 @@ M.colorscheme_opts = {
 		},
 		function()
 			vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
+			vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
 			vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
 			vim.api.nvim_set_hl(0, "CurSearch", { bg = "#738994", fg = "white" })
 			vim.api.nvim_set_hl(0, "IncSearch", { bg = "#738994", fg = "white" })
@@ -152,6 +153,7 @@ M.colorscheme_opts = {
 			fg = "",
 		},
 		function()
+			vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
 			vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
 			vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
 		end,
@@ -180,12 +182,12 @@ end
 function M.init()
 	local filetypes_schemes = {
 		-- { "catppuccin-macchiato", "*" },
-		{ "tokyonight-moon", "*.c" },
-		{ "tokyonight-moon", "*.cc" },
-		{ "tokyonight-moon", "*.cpp" },
-		{ "tokyonight-moon", "*.h" },
-		{ "tokyonight-moon", "*.hpp" },
-		{ "kanagawa-paper", "*.lua" },
+		-- { "tokyonight-moon", "*.c" },
+		-- { "tokyonight-moon", "*.cc" },
+		-- { "tokyonight-moon", "*.cpp" },
+		-- { "tokyonight-moon", "*.h" },
+		-- { "tokyonight-moon", "*.hpp" },
+		-- { "kanagawa-paper", "*.lua" },
 	}
 
 	local blacklist = {
@@ -198,7 +200,7 @@ function M.init()
 		"dashboard",
 	}
 
-	M.SetColorScheme("kanagawa-paper")
+	M.SetColorScheme("catppuccin-macchiato")
 
 	for i, _ in ipairs(filetypes_schemes) do
 		local scheme = filetypes_schemes[i][1]
