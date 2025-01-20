@@ -86,11 +86,11 @@ export ZSH_HIGHLIGHT_STYLES[comment]='fg=gray,dimmed'
 export ZSH_HIGHLIGHT_STYLES[command]='fg=#a1ccbc,bold'
 export ZSH_HIGHLIGHT_STYLES[default]='fg=#cccecf'
 export ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#eceaa9,bold'
-export ZSH_HIGHLIGHT_STYLES[builtin]='fg=#deb86d,bold'
+export ZSH_HIGHLIGHT_STYLES[builtin]='fg=#9dc1ed,bold'
 export ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#c49591'
 export ZSH_HIGHLIGHT_STYLES[alias]='fg=#af99ba,bold'
 export ZSH_HIGHLIGHT_STYLES[precommand]='fg=#a7cbcc'
-export ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#3d4254'
+export ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#a5acb8,bold'
 export ZSH_HIGHLIGHT_STYLES[path]='fg=#e9f5ef,underline'
 # export ZSH_HIGHLIGHT_STYLES[function]=none
 # export ZSH_HIGHLIGHT_STYLES[hashed-command]=none

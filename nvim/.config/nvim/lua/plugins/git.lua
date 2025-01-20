@@ -42,12 +42,12 @@ return {
 					})
 
 					-- stage
-					vim.keymap.set("n", " a", gitsigns.stage_hunk, {
+					vim.keymap.set("n", "ca", gitsigns.stage_hunk, {
 						silent = true,
 						buffer = bufnr,
 						desc = "Gitsigns stage",
 					})
-					vim.keymap.set("v", " a", function()
+					vim.keymap.set("v", "ca", function()
 						gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
 					end, {
 						silent = true,
@@ -56,33 +56,39 @@ return {
 					})
 
 					-- reset
-					vim.keymap.set("n", " R", gitsigns.reset_buffer, {
+					vim.keymap.set("n", "cR", gitsigns.reset_buffer, {
 						noremap = true,
 						silent = true,
 						buffer = bufnr,
 						desc = "Gitsigns reset buffer",
 					})
-					vim.keymap.set("n", " r", gitsigns.reset_hunk, {
+
+					-- reset
+					vim.keymap.set("n", "cr", gitsigns.reset_hunk, {
 						noremap = true,
 						silent = true,
 						buffer = bufnr,
 						desc = "Gitsigns reset hunk",
 					})
 
-					-- review
-					vim.keymap.set("n", " p", gitsigns.preview_hunk, {
+					-- preview
+					vim.keymap.set("n", "cp", gitsigns.preview_hunk, {
 						noremap = true,
 						silent = true,
 						buffer = bufnr,
 						desc = "Gitsigns preview hunk",
 					})
-					vim.keymap.set("n", " t", gitsigns.toggle_current_line_blame, {
+
+					-- blame
+					vim.keymap.set("n", "cb", gitsigns.toggle_current_line_blame, {
 						noremap = true,
 						silent = true,
 						buffer = bufnr,
 						desc = "Gitsigns toggle blame",
 					})
-					vim.keymap.set("n", " d", gitsigns.diffthis, {
+
+					-- diff
+					vim.keymap.set("n", "cd", gitsigns.diffthis, {
 						noremap = true,
 						silent = true,
 						buffer = bufnr,

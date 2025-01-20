@@ -1,5 +1,7 @@
 vim.opt.fillchars = { eob = " " }
 
+vim.loader.enable()
+
 local opts = {
 	{ "guifont", "Hack" },
 	{ "autowriteall", true },
@@ -71,15 +73,15 @@ local keymaps = {
 		noremap = true,
 		desc = "Nvim init.lua",
 	},
-	{
-		"n",
-		"cc",
-		function(_)
-			vim.api.nvim_command("cd ~/.config/nvim/lua/")
-			vim.api.nvim_command([[edit ~/.config/nvim/lua/init.lua]])
-		end,
-		desc = "Nvim init.lua",
-	},
+	-- {
+	-- 	"n",
+	-- 	"cc",
+	-- 	function(_)
+	-- 		vim.api.nvim_command("cd ~/.config/nvim/lua/")
+	-- 		vim.api.nvim_command([[edit ~/.config/nvim/lua/init.lua]])
+	-- 	end,
+	-- 	desc = "Nvim init.lua",
+	-- },
 	{
 		"n",
 		"<C-d>",
@@ -438,7 +440,6 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "WinEnter", "BufEnter", "TermOpen",
 	end,
 })
 
-vim.loader.enable()
 register_opts(opts)
 register_keymaps(keymaps, true)
 register_keymaps(keymaps_noremap, false)
