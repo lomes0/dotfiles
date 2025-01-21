@@ -4,8 +4,15 @@
 [core]
 	filemode = false
 	autocrlf = false
-	pager  = ydiff -s -p cat --wrap
+	pager  = delta --diff-so-fancy
 	editor = /bin/vim
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true  # use n and N to move between diff sections
+	light = true      # or light = true, or omit for auto-detection
+	line-numbers = true
+	true-color = always
 [diff]
 	prompt = false
 	editor = /bin/vim
@@ -14,6 +21,7 @@
 	cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
 	prompt = false
 [merge]
+	conflictstyle = zdiff3
 	prompt = false
 	tool = nvimdiff
 [mergetool]

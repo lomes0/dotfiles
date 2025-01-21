@@ -59,6 +59,7 @@ alias fzf="fzf --preview 'bat --style=numbers --color=always {}'"
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --exclude .git --exclude node_modules'
 alias nv=nvim
 
+export DELTA_FEATURES='+side-by-side my-feature'
 alias ls="eza --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt"
 alias ll="eza --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt"
 alias cat="bat"

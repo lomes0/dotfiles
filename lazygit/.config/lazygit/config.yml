@@ -21,5 +21,7 @@ promptToReturnFromSubprocess: false
 disableStartupPopups: true
 git:
   paging:
-    colorArg: never
-    pager: ydiff -s -p cat --wrap --width={{columnWidth}}
+    colorArg: always
+    pager: delta --light --paging=never --diff-so-fancy --true-color=always 
+    # pager: ydiff -s -p cat --wrap --width={{columnWidth}}
+    # pager: diff-so-fancy
