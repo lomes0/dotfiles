@@ -180,60 +180,60 @@ return {
 			require("mini.files").setup(opts)
 		end
 	},
-	{
-		"echasnovski/mini.indentscope",
-		version = "*",
-		event = { "BufReadPre", "BufNewFile" },
-		config = function(_, opts)
-			require("mini.indentscope").setup({
-				draw = {
-					delay = 100,
-				},
-				mappings = {
-					-- Textobjects
-					object_scope = "ii",
-					object_scope_with_border = "ai",
-
-					-- Motions (jump to respective border line; if not present - body line)
-					goto_top = "[i",
-					goto_bottom = "]i",
-				},
-				options = {
-					border = "both",
-					indent_at_cursor = true,
-					try_as_border = false,
-				},
-				symbol = "╎",
-			})
-
-			-- Disable for certain filetypes
-			vim.api.nvim_create_autocmd({ "FileType" }, {
-				desc = "Disable indentscope for certain filetypes",
-				callback = function()
-					local ignore_filetypes = {
-						"Avante",
-						"aerial",
-						"dashboard",
-						"help",
-						"lazy",
-						"leetcode.nvim",
-						"mason",
-						"neo-tree",
-						"NvimTree",
-						"neogitstatus",
-						"notify",
-						"startify",
-						"toggleterm",
-						"Trouble",
-						"markdown",
-					}
-					if vim.tbl_contains(ignore_filetypes, vim.bo.filetype) then
-						vim.b.miniindentscope_disable = true
-					end
-				end,
-			})
-		end,
-	},
+	-- {
+	-- 	"echasnovski/mini.indentscope",
+	-- 	version = "*",
+	-- 	event = { "BufReadPre", "BufNewFile" },
+	-- 	config = function(_, opts)
+	-- 		require("mini.indentscope").setup({
+	-- 			draw = {
+	-- 				delay = 100,
+	-- 			},
+	-- 			mappings = {
+	-- 				-- Textobjects
+	-- 				object_scope = "ii",
+	-- 				object_scope_with_border = "ai",
+	--
+	-- 				-- Motions (jump to respective border line; if not present - body line)
+	-- 				goto_top = "[i",
+	-- 				goto_bottom = "]i",
+	-- 			},
+	-- 			options = {
+	-- 				border = "both",
+	-- 				indent_at_cursor = true,
+	-- 				try_as_border = false,
+	-- 			},
+	-- 			symbol = "╎",
+	-- 		})
+	--
+	-- 		-- Disable for certain filetypes
+	-- 		vim.api.nvim_create_autocmd({ "FileType" }, {
+	-- 			desc = "Disable indentscope for certain filetypes",
+	-- 			callback = function()
+	-- 				local ignore_filetypes = {
+	-- 					"Avante",
+	-- 					"aerial",
+	-- 					"dashboard",
+	-- 					"help",
+	-- 					"lazy",
+	-- 					"leetcode.nvim",
+	-- 					"mason",
+	-- 					"neo-tree",
+	-- 					"NvimTree",
+	-- 					"neogitstatus",
+	-- 					"notify",
+	-- 					"startify",
+	-- 					"toggleterm",
+	-- 					"Trouble",
+	-- 					"markdown",
+	-- 				}
+	-- 				if vim.tbl_contains(ignore_filetypes, vim.bo.filetype) then
+	-- 					vim.b.miniindentscope_disable = true
+	-- 				end
+	-- 			end,
+	-- 		})
+	-- 	end,
+	-- },
 	{
 		"echasnovski/mini.pairs",
 		event = "InsertEnter",

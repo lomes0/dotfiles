@@ -8,7 +8,7 @@ vim.opt.writebackup = false
 vim.opt.timeoutlen = 500
 
 local opts = {
-	{ "lazyredraw", true },
+	-- { "lazyredraw", true },
 	{ "guifont", "Hack" },
 	{ "autowriteall", true },
 	{ "tabstop", 4 },
