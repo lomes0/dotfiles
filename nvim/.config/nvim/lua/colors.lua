@@ -17,12 +17,7 @@ function M.set_color_visual()
 end
 
 function M.set_color_cursor_hl(opts)
-	vim.api.nvim_set_hl(0, "LspReference", opts)
-	vim.api.nvim_set_hl(0, "LspReferenceRead", opts)
-	vim.api.nvim_set_hl(0, "LspReferenceWrite", opts)
 	vim.api.nvim_set_hl(0, "LspReferenceText", opts)
-	vim.api.nvim_set_hl(0, "TSDefinition", opts)
-	vim.api.nvim_set_hl(0, "TSDefinitionUsage", opts)
 end
 
 function M.set_color_win_seperator()
@@ -104,8 +99,8 @@ M.colorscheme_opts = {
 			local opts_noice_search = { fg = "#ffd675", bg = "none" }
 			-- Git
 			vim.api.nvim_set_hl(0, "SignColumn", { fg = "none", bg = "none" })
-			vim.api.nvim_set_hl(0, "GitSignsAdd", { bg = "none", fg = "#11946a" })
-			vim.api.nvim_set_hl(0, "GitSignsChange", { bg = "none", fg = "#fca561" })
+			vim.api.nvim_set_hl(0, "GitSignsAdd", { bg = "none", fg = "#8bb38e" })
+			vim.api.nvim_set_hl(0, "GitSignsChange", { bg = "none", fg = "#fce2bb" })
 			vim.api.nvim_set_hl(0, "GitSignsDelete", { bg = "none", fg = "#c34043" })
 			vim.api.nvim_set_hl(0, "LineNr", { fg = "#808080", bg = "none" })
 
@@ -119,6 +114,33 @@ M.colorscheme_opts = {
 			-- Float
 			vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
 			vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
+
+			-- Lsp
+			vim.api.nvim_set_hl(0, "@type.builtin.c", { fg = "#e6b791" })
+			vim.api.nvim_set_hl(0, "@type.builtin.cpp", { fg = "#e6b791" })
+			vim.api.nvim_set_hl(0, "@lsp.type.class.c", { fg = "#e6b791" })
+			vim.api.nvim_set_hl(0, "@lsp.mod.defaultLibrary.c", { fg = "#e6b791" })
+
+			-- vim.api.nvim_set_hl(0, "@variable.parameter", { fg = "#b6cfcb" })
+			vim.api.nvim_set_hl(0, "@variable.parameter", { fg = "#e6e3be" })
+			vim.api.nvim_set_hl(0, "@lsp.type.variable.c", { fg = "#e6e3be" })
+
+			vim.api.nvim_set_hl(0, "@lsp.type.function.c", { fg = "#abd1c8" })
+			vim.api.nvim_set_hl(0, "@variable.c", { fg = "#dedac5" })
+
+			vim.api.nvim_set_hl(0, "@function.call", { fg = "#82abc4", bg = "none", bold = true })
+			vim.api.nvim_set_hl(0, "@keyword.modifier", { fg = "#937ba8", bg = "none", bold = false })
+
+			vim.api.nvim_set_hl(0, "@keyword.directive", { fg = "#c2a9d9", bg = "none", bold = false })
+			vim.api.nvim_set_hl(0, "@keyword.directive.cpp", { fg = "#c2a9d9", bg = "none", bold = false })
+			vim.api.nvim_set_hl(0, "@keyword.repeat", { fg = "#c2a9d9", bg = "none", bold = false })
+			vim.api.nvim_set_hl(0, "@keyword.repeat.c", { fg = "#c2a9d9", bg = "none", bold = false })
+			vim.api.nvim_set_hl(0, "@keyword.conditional", { fg = "#c2a9d9", bg = "none", bold = false })
+			vim.api.nvim_set_hl(0, "@keyword.function", { fg = "#c2a9d9", bg = "none", bold = false })
+			vim.api.nvim_set_hl(0, "@keyword.function.rust", { fg = "#c2a9d9", bg = "none", bold = false })
+			vim.api.nvim_set_hl(0, "@keyword.modifier.rust", { fg = "#c2a9d9", bg = "none", bold = false })
+			vim.api.nvim_set_hl(0, "@keyword.rust", { fg = "#c2a9d9", bg = "none", bold = false })
+			vim.api.nvim_set_hl(0, "@_parent", { fg = "#f2eca7", bg = "none", bold = false })
 		end,
 	},
 	["tokyonight-moon"] = {
@@ -156,6 +178,8 @@ M.colorscheme_opts = {
 			vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
 			vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
 			vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
+			vim.api.nvim_set_hl(0, "@type.builtin.c", { fg = "#abd4d6" })
+			vim.api.nvim_set_hl(0, "@type.builtin.cpp", { fg = "#abd4d6" })
 		end,
 	},
 }
@@ -200,7 +224,7 @@ function M.init()
 		"dashboard",
 	}
 
-	M.SetColorScheme("catppuccin-macchiato")
+	M.SetColorScheme("kanagawa-paper")
 
 	for i, _ in ipairs(filetypes_schemes) do
 		local scheme = filetypes_schemes[i][1]

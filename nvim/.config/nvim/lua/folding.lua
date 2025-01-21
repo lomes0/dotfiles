@@ -66,24 +66,24 @@ function FoldtextCoding()
 		end
 
 		-- pointers are recursive nodes, skip pointer subtree root
-		if node:type() == "pointer_declarator" then
+		if node:type() == "pointer_declarator" or node:type() == "field_expression" then
 			goto continue
 		end
 
 		if start_col > prev_col then
-			table.insert(result, { " ", "Folded" })
+			table.insert(result, { " ", "Folded.folded" })
 		end
 		prev_col = end_col
 
 		if start_row > prev_row then
-			table.insert(result, { " ", "Folded" })
+			table.insert(result, { " ", "Folded.folded" })
 		end
 		prev_row = end_row
 
 		if processed_nodes[node:id()] then
-			result[#result] = { text, "@" .. name }
+			result[#result] = { text, "@" .. name .. ".folded" }
 		else
-			table.insert(result, { text, "@" .. name })
+			table.insert(result, { text, "@" .. name .. ".folded" })
 			processed_nodes[node:id()] = true
 		end
 
@@ -133,6 +133,40 @@ function FoldtextDefault()
 	return result
 end
 
+function M.CreateFoldGroups(groups)
+	-- Helper function to get highlight group details
+	local function get_highlight(group)
+		local id = vim.api.nvim_get_hl_id_by_name(group)
+		local hl = vim.api.nvim_get_hl(0, { id = id })
+
+		if hl ~= nil and hl.link ~= nil and hl.link ~= group then
+			return get_highlight(hl.link)
+		end
+
+		return hl
+	end
+
+	-- Create folded highlight groups
+	for _, group in ipairs(groups) do
+		local hl = get_highlight(group)
+		if hl then
+			-- vim.api.nvim_set_hl(0, group .. ".folded", { fg = hl.fg, bg = hl.bg, underline = true })
+			vim.api.nvim_set_hl(0, group .. ".folded", { fg = hl.fg, bg = "#51576d", underline = false })
+		else
+			vim.notify("Highlight group not found: " .. group, vim.log.levels.WARN)
+		end
+	end
+end
+
+-- Function to get all highlight groups
+local function get_all_highlight_groups()
+	local groups = {}
+	for _, group in ipairs(vim.fn.getcompletion("", "highlight")) do
+		table.insert(groups, group)
+	end
+	return groups
+end
+
 function M.init()
 	vim.opt.foldlevel = 99
 	vim.opt.foldenable = false
@@ -142,12 +176,34 @@ function M.init()
 
 	vim.opt.fillchars:append({ fold = " " })
 
-	vim.api.nvim_create_autocmd("FileType", {
+	-- Create an autocommand group for better management
+	local group = vim.api.nvim_create_augroup("CppPostInit", { clear = true })
+
+	-- Define an autocommand for when color scheme and Tree-sitter are ready
+	vim.api.nvim_create_autocmd({ "FileType" }, {
+		group = group,
 		pattern = { "c", "cpp", "rust" },
 		callback = function()
-			vim.opt.foldtext = [[luaeval('FoldtextCoding')()]]
+			-- Ensure Tree-sitter and color scheme are ready
+			vim.schedule(function()
+				if vim.treesitter.language.get_lang("cpp") then
+					local highlight_groups = get_all_highlight_groups()
+					M.CreateFoldGroups(highlight_groups)
+					vim.opt.foldtext = [[luaeval('FoldtextCoding')()]]
+				end
+			end)
 		end,
+		desc = "Run custom logic for C++ files after color scheme and Tree-sitter initialization",
 	})
+
+	-- vim.api.nvim_create_autocmd("FileType", {
+	-- 	pattern = { "c", "cpp", "rust" },
+	-- 	callback = function()
+	-- 		local highlight_groups = get_all_highlight_groups()
+	-- 		M.CreateFoldGroups(highlight_groups)
+	-- 		vim.opt.foldtext = [[luaeval('FoldtextCoding')()]]
+	-- 	end,
+	-- })
 end
 
 M.init()
