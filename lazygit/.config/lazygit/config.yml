@@ -1,19 +1,27 @@
 gui:
   editor: "nvr --remote-wait-silent"
   showIcons: false
-  sidePanelWidth: 0.2
+  panelSizes:
+    main: 40    # Main panel (commits/files)
+    secondary: 60 # Secondary panel (commit diff/log)
+    extra: 10    # Extra panel (staging, etc.)
   theme:
+    textColor:
+      - '#959696'
     unstagedChangesColor:
-      - '#d5e2f7'
+      - '#d6746b'
+    stagedFileColor:
+      - '#c7d6d6'
     defaultFgColor:
       - '#b9e1eb'
+    selectedLineBgColor:
+      - '#66737d'
+    activeBorderColor:
+      - '#bee8c8'
+      - bold
+    inactiveBorderColor:
+      - '#889599'
   showFileTree: true # for rendering changes files in a tree format
-os:
-  # editCommand: "nvim"
-  # editCommandTemplate: "{{editor}} {{filename}}"
-  # editPreset: 'nvim-remote'
-  # edit: "nvr --remote-send '<C-space>:q<CR><Esc>:lua vim.cmd(\"e \" .. {{filename}})<CR>'"
-  # editAtLine: "nvr --remote-send '<C-space>:q<CR><Esc>:lua vim.cmd(\"e \" .. {{filename}})<CR>{{line}}G'"
 keybinding:
   universal:
     quit: "q"
