@@ -60,38 +60,16 @@ return {
 		"Tyler-Barham/floating-help.nvim",
 		event = "VeryLazy",
 		config = function()
-			local fh = require("floating-help")
-			fh.setup({
+			require("floating-help").setup({
 				-- Defaults
-				width = 80, -- Whole numbers are columns/rows
+				width = 0.5, -- Whole numbers are columns/rows
 				height = 0.9, -- Decimals are a percentage of the editor
 				position = "E", -- NW,N,NW,W,C,E,SW,S,SE (C==center)
 				border = "rounded", -- rounded,double,single
-				-- onload = function()
-				-- 	vim.api.nvim_set_option_value("scrolloff", 5, {})
-				-- end,
+				onload = function(_)
+					vim.cmd("normal! zz")
+				end,
 			})
-			-- vim.keymap.set("n", "<F1>", fh.toggle, {
-			-- 	noremap = true,
-			-- 	silent = true,
-			-- 	desc = "Help nvim",
-			-- })
-
-			-- vim.keymap.set("n", "<F3>", function()
-			-- 	fh.open("t=cppman", vim.fn.expand("<cword>"))
-			-- end, {
-			-- 	noremap = true,
-			-- 	silent = true,
-			-- 	desc = "Help cpp",
-			-- })
-
-			-- vim.keymap.set("n", "<F4>", function()
-			-- 	fh.open("t=man", vim.fn.expand("<cword>"))
-			-- end, {
-			-- 	noremap = true,
-			-- 	silent = true,
-			-- 	desc = "Help unix",
-			-- })
 
 			local function cmd_abbrev(abbrev, expansion)
 				local cmd = "cabbr "
