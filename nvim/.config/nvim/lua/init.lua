@@ -2,13 +2,10 @@ vim.opt.fillchars = { eob = " " }
 
 vim.loader.enable()
 
-vim.opt.swapfile = false
-vim.opt.backup = false
-vim.opt.writebackup = false
-vim.opt.timeoutlen = 500
-
 local opts = {
-	-- { "lazyredraw", true },
+	{ "backup", true },
+	{ "writebackup", false },
+	{ "swapfile", false },
 	{ "guifont", "Hack" },
 	{ "autowriteall", true },
 	{ "tabstop", 4 },
@@ -47,6 +44,12 @@ local opts = {
 }
 
 local keymaps_noremap = {
+	{
+		{ "n", "v", "x" },
+		"W",
+		"3w",
+		desc = "3xw",
+	},
 	{
 		{ "n", "v" },
 		"x",

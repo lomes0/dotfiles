@@ -1,8 +1,7 @@
 [plugin]
 deps = [
 	{ use = "yazi-rs/plugins:full-border", rev = "a882e38" },
-	{ use = "Reledia/hexyl", rev = "f845ea5" },
-	{ use = "Reledia/glow", rev = "388e847" },
+	{ use = "Reledia/hexyl", rev = "f845ea5" }, { use = "Reledia/glow", rev = "5ce76dc" },
 ]
 
 [flavor]

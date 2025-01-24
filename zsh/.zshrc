@@ -60,8 +60,8 @@ export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix --hidden --follow --e
 alias nv=nvim
 
 export DELTA_FEATURES='+side-by-side my-feature'
-alias ls="eza --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt"
-alias ll="eza --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt"
+alias ls="eza --sort=type --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt"
+alias ll="eza --sort=type --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt"
 alias cat="bat"
 alias z="~/.local/bin/zoxide"
 
@@ -88,7 +88,7 @@ export ZSH_HIGHLIGHT_STYLES[command]='fg=#a1ccbc,bold'
 export ZSH_HIGHLIGHT_STYLES[default]='fg=#cccecf'
 export ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#eceaa9,bold'
 export ZSH_HIGHLIGHT_STYLES[builtin]='fg=#9dc1ed,bold'
-export ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#c49591'
+export ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#e0e0de'
 export ZSH_HIGHLIGHT_STYLES[alias]='fg=#af99ba,bold'
 export ZSH_HIGHLIGHT_STYLES[precommand]='fg=#a7cbcc'
 export ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#a5acb8,bold'

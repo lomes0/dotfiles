@@ -199,21 +199,8 @@ return {
 		end,
 	},
 	{
-		"smoka7/multicursors.nvim",
+		"mg979/vim-visual-multi",
 		event = "VeryLazy",
-		dependencies = {
-			"nvimtools/hydra.nvim",
-		},
-		opts = {},
-		cmd = { "MCstart", "MCvisual", "MCclear", "MCpattern", "MCvisualPattern", "MCunderCursor" },
-		keys = {
-			{
-				mode = { "v", "n" },
-				"<Leader>m",
-				"<cmd>MCstart<cr>",
-				desc = "Create a selection for selected text or word under the cursor",
-			},
-		},
 	},
 	{
 		"folke/snacks.nvim",
@@ -247,8 +234,29 @@ return {
 			},
 			zen = {
 				enabled = true,
+				enter = true,
 				toggles = {
 					dim = false,
+				},
+				fixbuf = true,
+				minimal = true,
+				width = 120,
+				height = 0,
+				backdrop = { transparent = true, blend = 40 },
+				keys = { q = false },
+				zindex = 40,
+				wo = {
+					winhighlight = "NormalFloat:Normal",
+				},
+				zoom_indicator = {
+					text = "▍ zoom  󰊓  ",
+					minimal = true,
+					enter = true,
+					focusable = true,
+					height = 1,
+					row = 0,
+					col = -1,
+					backdrop = true,
 				},
 			},
 			styles = {
@@ -404,6 +412,7 @@ return {
 						.option("background", { off = "light", on = "dark", name = "Dark Background" })
 						:map("<lt>ub")
 					Snacks.toggle.inlay_hints({ name = "Snacks Inlay Hints" }):map("<lt>uh")
+					Snacks.toggle.zen({ name = "Snacks Zen" }):map("<lt>z")
 				end,
 			})
 		end,
@@ -488,6 +497,7 @@ return {
 		event = "VeryLazy",
 		dependencies = {
 			"MunifTanjim/nui.nvim",
+			"rcarriga/nvim-notify",
 		},
 		config = function()
 			require("noice").setup({
@@ -890,279 +900,3 @@ return {
 		end,
 	},
 }
-
--- {
--- 	"zbirenbaum/copilot.lua",
--- 	cmd = "Copilot",
--- 	event = "InsertEnter",
--- 	config = function()
--- 		require("copilot").setup({
--- 			panel = {
--- 				enabled = true,
--- 				auto_refresh = false,
--- 				keymap = {
--- 					jump_prev = "[[",
--- 					jump_next = "]]",
--- 					accept = "<CR>",
--- 					refresh = "gr",
--- 					open = "<M-CR>",
--- 				},
--- 				layout = {
--- 					position = "bottom", -- | top | left | right
--- 					ratio = 0.4,
--- 				},
--- 			},
--- 			suggestion = {
--- 				enabled = true,
--- 				auto_trigger = false,
--- 				hide_during_completion = true,
--- 				debounce = 75,
--- 				keymap = {
--- 					accept = "<M-l>",
--- 					accept_word = false,
--- 					accept_line = false,
--- 					next = "<M-]>",
--- 					prev = "<M-[>",
--- 					dismiss = "<C-]>",
--- 				},
--- 			},
--- 			filetypes = {
--- 				yaml = false,
--- 				markdown = false,
--- 				help = false,
--- 				gitcommit = false,
--- 				gitrebase = false,
--- 				hgcommit = false,
--- 				svn = false,
--- 				cvs = false,
--- 				["."] = false,
--- 			},
--- 			copilot_node_command = "node", -- Node.js version must be > 18.x
--- 			server_opts_overrides = {},
--- 		})
--- 	end,
--- },
--- {
--- 	"yetone/avante.nvim",
--- 	event = "VeryLazy",
--- 	lazy = false,
--- 	version = false, -- set this if you want to always pull the latest change
--- 	opts = {
--- 		---@alias Provider "claude" | "openai" | "azure" | "gemini" | "cohere" | "copilot" | string
--- 		provider = "ollama", -- Recommend using Claude
--- 		auto_suggestions_provider = "ollama", -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
--- 		vendors = {
--- 			ollama = {
--- 				["local"] = true,
--- 				endpoint = "127.0.0.1:11434/v1",
--- 				model = "llama3",
--- 				parse_curl_args = function(opts, code_opts)
--- 					return {
--- 						url = opts.endpoint .. "/chat/completions",
--- 						headers = {
--- 							["Accept"] = "application/json",
--- 							["Content-Type"] = "application/json",
--- 						},
--- 						body = {
--- 							model = opts.model,
--- 							messages = require("avante.providers").copilot.parse_message(code_opts), -- you can make your own message, but this is very advanced
--- 							max_tokens = 2048,
--- 							stream = true,
--- 						},
--- 					}
--- 				end,
--- 				parse_response_data = function(data_stream, event_state, opts)
--- 					require("avante.providers").openai.parse_response(data_stream, event_state, opts)
--- 				end,
--- 			},
--- 		},
--- 		claude = {
--- 			endpoint = "https://api.anthropic.com",
--- 			model = "claude-3-5-sonnet-20240620",
--- 			temperature = 0,
--- 			max_tokens = 4096,
--- 		},
--- 		behaviour = {
--- 			auto_suggestions = false, -- Experimental stage
--- 			auto_set_highlight_group = true,
--- 			auto_set_keymaps = true,
--- 			auto_apply_diff_after_generation = false,
--- 			support_paste_from_clipboard = false,
--- 		},
--- 		mappings = {
--- 			--- @class AvanteConflictMappings
--- 			diff = {
--- 				ours = "co",
--- 				theirs = "ct",
--- 				all_theirs = "ca",
--- 				both = "cb",
--- 				cursor = "cc",
--- 				next = "]x",
--- 				prev = "[x",
--- 			},
--- 			suggestion = {
--- 				accept = "<M-l>",
--- 				next = "<M-]>",
--- 				prev = "<M-[>",
--- 				dismiss = "<C-]>",
--- 			},
--- 			jump = {
--- 				next = "]]",
--- 				prev = "[[",
--- 			},
--- 			submit = {
--- 				normal = "<CR>",
--- 				insert = "<C-s>",
--- 			},
--- 			sidebar = {
--- 				switch_windows = "<Tab>",
--- 				reverse_switch_windows = "<S-Tab>",
--- 			},
--- 		},
--- 		hints = { enabled = true },
--- 		windows = {
--- 			---@type "right" | "left" | "top" | "bottom"
--- 			position = "right", -- the position of the sidebar
--- 			wrap = true, -- similar to vim.o.wrap
--- 			width = 45, -- default % based on available width
--- 			sidebar_header = {
--- 				align = "center", -- left, center, right for title
--- 				rounded = true,
--- 			},
--- 		},
--- 		highlights = {
--- 			diff = {
--- 				current = "DiffText",
--- 				incoming = "DiffAdd",
--- 			},
--- 		},
--- 		--- @class AvanteConflictUserConfig
--- 		diff = {
--- 			autojump = true,
--- 			---@type string | fun(): any
--- 			list_opener = "copen",
--- 		},
--- 	},
--- 	-- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
--- 	build = "make",
--- 	-- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
--- 	dependencies = {
--- 		"nvim-treesitter/nvim-treesitter",
--- 		"stevearc/dressing.nvim",
--- 		"nvim-lua/plenary.nvim",
--- 		"MunifTanjim/nui.nvim",
--- 		--- The below dependencies are optional,
--- 		"nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
--- 		"zbirenbaum/copilot.lua", -- for providers='copilot'
--- 		{
--- 			-- support for image pasting
--- 			"HakonHarnes/img-clip.nvim",
--- 			event = "VeryLazy",
--- 			opts = {
--- 				-- recommended settings
--- 				default = {
--- 					embed_image_as_base64 = false,
--- 					prompt_for_file_name = false,
--- 					drag_and_drop = {
--- 						insert_mode = true,
--- 					},
--- 					-- required for Windows users
--- 					use_absolute_path = true,
--- 				},
--- 			},
--- 		},
--- 		{
--- 			-- Make sure to set this up properly if you have lazy=true
--- 			"MeanderingProgrammer/render-markdown.nvim",
--- 			dependencies = {
--- 				"nvim-treesitter/nvim-treesitter",
--- 				"echasnovski/mini.nvim",
--- 			},
--- 			opts = {
--- 				file_types = { "markdown", "Avante" },
--- 				anti_conceal = { enabled = false },
--- 				win_options = {
--- 					concealcursor = {
--- 						default = vim.api.nvim_get_option_value("concealcursor", {}),
--- 						rendered = "nc",
--- 					},
--- 				},
--- 			},
--- 			ft = { "markdown", "Avante" },
--- 		},
--- 	},
--- },
--- {
--- 	"rmagatti/goto-preview",
--- 	lazy = false,
--- 	dependencies = {
--- 		"nvim-telescope/telescope.nvim",
--- 	},
--- 	config = function()
--- 		local refs_opts = {
--- 			layout_strategy = "horizontal",
--- 			sorting_strategy = "descending",
--- 			layout_config = {
--- 				height = math.ceil(vim.o.lines * 0.8), -- maximally available lines
--- 				width = math.ceil(vim.o.columns * 0.85), -- maximally available columns
--- 				prompt_position = "bottom",
--- 			},
--- 			hide_preview = false,
--- 			mappings = {
--- 				n = {
--- 					["<S-t>"] = require("telescope.actions").select_tab,
--- 					["<S-h>"] = require("telescope.actions").select_vertical,
--- 					["<S-k>"] = require("telescope.actions").select_horizontal,
--- 				},
--- 				i = {
--- 					["<esc>"] = require("telescope.actions").close,
--- 					["<S-t>"] = require("telescope.actions").select_tab,
--- 					["<S-h>"] = require("telescope.actions").select_vertical,
--- 					["<S-k>"] = require("telescope.actions").select_horizontal,
--- 				},
--- 			},
--- 		}
---
--- 		require("goto-preview").setup({
--- 			width = 120, -- Width of the floating window
--- 			height = 15, -- Height of the floating window
--- 			border = { "↖", "─", "┐", "│", "┘", "─", "└", "│" }, -- Border characters of the floating window
--- 			default_mappings = false, -- Bind default mappings
--- 			debug = false, -- Print debug information
--- 			opacity = nil, -- 0-100 opacity level of the floating window where 100 is fully transparent.
--- 			resizing_mappings = false, -- Binds arrow keys to resizing the floating window.
--- 			post_open_hook = nil,
--- 			post_close_hook = nil,
--- 			references = { -- Configure the telescope UI for slowing the references cycling window.
--- 				telescope = require("telescope.themes").get_dropdown(refs_opts),
--- 			},
--- 			-- These two configs can also be passed down to the goto-preview definition and implementation calls for one off "peak" functionality.
--- 			focus_on_open = true, -- Focus the floating window when opening it.
--- 			dismiss_on_move = false, -- Dismiss the floating window when moving the cursor.
--- 			force_close = true, -- passed into vim.api.nvim_win_close's second argument. See :h nvim_win_close
--- 			bufhidden = "wipe", -- the bufhidden option to set on the floating window. See :h bufhidden
--- 			stack_floating_preview_windows = true, -- Whether to nest floating windows
--- 			preview_window_title = { enable = true, position = "left" }, -- Whether to set the preview window title as the filename
--- 			same_file_float_preview = true,
--- 		})
--- 		vim.keymap.set("n", "gpr", require("goto-preview").goto_preview_references, {
--- 			noremap = true,
--- 			silent = true,
--- 		})
---
--- 		vim.keymap.set("n", "gpt", require("goto-preview").goto_preview_type_definition, {
--- 			noremap = true,
--- 			silent = true,
--- 		})
---
--- 		vim.keymap.set("n", "gpi", require("goto-preview").goto_preview_implementation, {
--- 			noremap = true,
--- 			silent = true,
--- 		})
---
--- 		vim.keymap.set("n", "gpd", require("goto-preview").goto_preview_declaration, {
--- 			noremap = true,
--- 			silent = true,
--- 		})
--- 	end,
--- },
