@@ -12,12 +12,8 @@ return {
 			require("nvim-dap-virtual-text").setup({})
 
 			dap.adapters.codelldb = {
-				type = "server",
-				port = "${port}",
-				executable = {
-					command = "~/.local/share/nvim/mason/bin/codelldb",
-					args = { "--port", "${port}" },
-				},
+				type = "executable",
+				command = "/home/eransa/.local/share/nvim/mason/bin/codelldb",
 			}
 
 
@@ -27,7 +23,8 @@ return {
 					type = "codelldb",
 					request = "launch",
 					program = function()
-						return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+						return "~/code/rust/rust_compile_commands/target/debug/rust_compile_commands"
+						-- return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
 					end,
 					cwd = "${workspaceFolder}",
 					stopOnEntry = false,
@@ -54,7 +51,7 @@ return {
 			-- 	}
 			-- ]]
 
-			vim.keymap.set("n", "<lt>u", require("dapui").toggle, {
+			vim.keymap.set("n", "<lt>dt", require("dapui").toggle, {
 				silent = true,
 				noremap = true,
 				desc = "Dapui toggle",
@@ -63,25 +60,13 @@ return {
 	},
 	{
 		"rcarriga/nvim-dap-ui",
-		lazy = true,
+		lazy = false,
 		dependencies = {
 			"mfussenegger/nvim-dap",
 			"nvim-neotest/nvim-nio",
 		},
 		config = function()
 			require("dapui").setup()
-		end,
-	},
-	{
-		"julianolf/nvim-dap-lldb",
-		lazy = true,
-		dependencies = {
-			"mfussenegger/nvim-dap",
-		},
-		config = function()
-			require("nvim-dap-lldb").setup({
-				codelldb_path = "~/.local/share/nvim/mason/bin/codelldb",
-			})
 		end,
 	},
 }
