@@ -413,6 +413,10 @@ return {
 						:map("<lt>ub")
 					Snacks.toggle.inlay_hints({ name = "Snacks Inlay Hints" }):map("<lt>uh")
 					Snacks.toggle.zen({ name = "Snacks Zen" }):map("<lt>z")
+
+					vim.api.nvim_create_user_command("ClearMsgs", function ()
+						require("notify").dismiss({silent = true, pending = true})
+					end, {})
 				end,
 			})
 		end,
