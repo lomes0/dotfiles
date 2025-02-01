@@ -73,6 +73,13 @@ return {
 						require("avante.providers").openai.parse_response(data_stream, event_state, opts)
 					end,
 				},
+				deepseek = {
+					__inherited_from = "openai",
+					api_key_name = "",
+					endpoint = "127.0.0.1:11434/v1",
+					-- model = "deepseek-r1:7b",
+					model = "deepseek-coder",
+				},
 			},
 			behaviour = {
 				auto_suggestions = false, -- Experimental stage
