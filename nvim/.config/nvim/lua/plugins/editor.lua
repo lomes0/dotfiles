@@ -322,13 +322,13 @@ return {
 				end,
 				desc = "Snacks Lazygit Current File History",
 			},
-			{
-				"<lt>gg",
-				function()
-					Snacks.lazygit()
-				end,
-				desc = "Snacks Lazygit",
-			},
+			-- {
+			-- 	"<lt>gg",
+			-- 	function()
+			-- 		Snacks.lazygit()
+			-- 	end,
+			-- 	desc = "Snacks Lazygit",
+			-- },
 			{
 				"<lt>gl",
 				function()

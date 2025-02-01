@@ -1,10 +1,7 @@
 gui:
   editor: "nvr --remote-wait-silent"
   showIcons: false
-  panelSizes:
-    main: 40    # Main panel (commits/files)
-    secondary: 60 # Secondary panel (commit diff/log)
-    extra: 10    # Extra panel (staging, etc.)
+  sidePanelWidth: 0.2
   theme:
     textColor:
       - '#959696'

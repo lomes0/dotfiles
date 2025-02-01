@@ -456,6 +456,20 @@ register_keymaps(keymaps_noremap, false)
 
 set_cwd()
 
+vim.keymap.set({ "n", "x" }, "<lt>gg", function()
+	local term_buf = vim.api.nvim_create_buf(false, true)
+	local term_win = vim.api.nvim_get_current_win()
+	vim.api.nvim_win_set_buf(term_win, term_buf)
+	vim.fn.termopen("lazygit", {
+		on_exit = function()
+			-- First ensure the buffer is still valid, then delete it.
+			if vim.api.nvim_buf_is_valid(term_buf) then
+				vim.api.nvim_buf_delete(term_buf, { force = true })
+			end
+		end,
+	})
+end)
+
 -- require("tutor").setup({
 -- 	annotations = {
 -- 		{

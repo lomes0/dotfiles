@@ -48,8 +48,12 @@ return {
 			},
 		},
 		opts = {
-			provider = "ollama",
-			auto_suggestions_provider = "ollama",
+			-- provider = "ollama",
+			-- auto_suggestions_provider = "ollama",
+			provider = "deepseek",
+			auto_suggestions_provider = "deepseek",
+			-- provider = "openai",
+			-- auto_suggestions_provider = "openai", -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
 			vendors = {
 				ollama = {
 					endpoint = "127.0.0.1:11434/v1",
