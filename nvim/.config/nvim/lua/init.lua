@@ -47,7 +47,7 @@ local keymaps_noremap = {
 	{
 		{ "n", "v", "x" },
 		"W",
-		"3w",
+		"4w",
 		desc = "3xw",
 	},
 	{
