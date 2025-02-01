@@ -217,7 +217,7 @@ return {
 				size = 1.5 * 1024 * 1024, -- 1.5MB
 			},
 			dashboard = {
-				enabled = true,
+				enabled = false,
 			},
 			notifier = {
 				enabled = true,
