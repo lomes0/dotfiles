@@ -470,6 +470,13 @@ vim.keymap.set({ "n", "x" }, "<lt>gg", function()
 	})
 end)
 
+vim.keymap.set({ "n", "x" }, "-", function()
+	-- try Snacks
+	Snacks.notifier.hide()
+	-- try notify
+	require("notify").dismiss({ silent = true, pending = true })
+end)
+
 -- require("tutor").setup({
 -- 	annotations = {
 -- 		{
