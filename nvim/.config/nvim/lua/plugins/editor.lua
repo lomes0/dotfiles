@@ -414,8 +414,8 @@ return {
 					Snacks.toggle.inlay_hints({ name = "Snacks Inlay Hints" }):map("<lt>uh")
 					Snacks.toggle.zen({ name = "Snacks Zen" }):map("<lt>z")
 
-					vim.api.nvim_create_user_command("ClearMsgs", function ()
-						require("notify").dismiss({silent = true, pending = true})
+					vim.api.nvim_create_user_command("ClearMsgs", function()
+						require("notify").dismiss({ silent = true, pending = true })
 					end, {})
 				end,
 			})
@@ -753,7 +753,10 @@ return {
 					lualine_a = { "mode" },
 					lualine_b = { "branch", "diff", "diagnostics" },
 					lualine_c = {
-						"filename",
+						{
+							"filename",
+							path = 2,
+						},
 						{
 							"_G.clipboard_icon",
 						},
