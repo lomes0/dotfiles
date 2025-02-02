@@ -136,7 +136,7 @@ local keymaps = {
 	},
 	{
 		"n",
-		"-",
+		"_",
 		function()
 			if vim.opt.clipboard:get()[1] == "unnamedplus" then
 				vim.opt.clipboard = ""
