@@ -264,8 +264,221 @@ return {
 					wo = { wrap = true }, -- Wrap notifications
 				},
 			},
+			picker = {
+				enabled = true,
+			},
 		},
 		keys = {
+			{
+				"<lt><space>",
+				function()
+					Snacks.picker.smart()
+				end,
+				desc = "Snacks Picker Smart Find Files",
+			},
+			{
+				"<lt>/",
+				function()
+					Snacks.picker.grep()
+				end,
+				desc = "Snacks Picker Grep",
+			},
+			{
+				"<lt>n",
+				function()
+					Snacks.picker.notifications()
+				end,
+				desc = "Snacks Picker Notification History",
+			},
+			{
+				"<lt>e",
+				function()
+					Snacks.explorer()
+				end,
+				desc = "Snacks Picker File Explorer",
+			},
+			-- find
+			{
+				"<lt>fb",
+				function()
+					Snacks.picker.buffers()
+				end,
+				desc = "Snacks Picker Buffers",
+			},
+			{
+				"<lt>ff",
+				function()
+					Snacks.picker.files()
+				end,
+				desc = "Snacks Picker Find Files",
+			},
+			{
+				"<lt>fg",
+				function()
+					Snacks.picker.git_files()
+				end,
+				desc = "Snacks Picker Find Git Files",
+			},
+			-- {
+			-- 	"<lt>fp",
+			-- 	function()
+			-- 		Snacks.picker.projects()
+			-- 	end,
+			-- 	desc = "Snacks Picker Projects",
+			-- },
+			-- {
+			-- 	"<lt>fr",
+			-- 	function()
+			-- 		Snacks.picker.recent()
+			-- 	end,
+			-- 	desc = "Snacks Picker Recent",
+			-- },
+			-- -- git
+			{
+				"<lt>gl",
+				function()
+					Snacks.picker.git_log()
+				end,
+				desc = "Snacks Picker Git Log",
+			},
+			{
+				"<lt>gL",
+				function()
+					Snacks.picker.git_log_line()
+				end,
+				desc = "Snacks Picker Git Log Line",
+			},
+			{
+				"<lt>gs",
+				function()
+					Snacks.picker.git_status()
+				end,
+				desc = "Snacks Picker Git Status",
+			},
+			{
+				"<lt>gd",
+				function()
+					Snacks.picker.git_diff()
+				end,
+				desc = "Snacks Picker Git Diff (Hunks)",
+			},
+			{
+				"<lt>gf",
+				function()
+					Snacks.picker.git_log_file()
+				end,
+				desc = "Snacks Picker Git Log File",
+			},
+			-- Grep
+			{
+				"<lt>sb",
+				function()
+					Snacks.picker.lines()
+				end,
+				desc = "Snacks Picker Buffer Lines",
+			},
+			{
+				"<lt>sB",
+				function()
+					Snacks.picker.grep_buffers()
+				end,
+				desc = "Snacks Picker Grep Open Buffers",
+			},
+			{
+				"<lt>sg",
+				function()
+					Snacks.picker.grep()
+				end,
+				desc = "Snacks Picker Grep",
+			},
+			{
+				"<lt>sw",
+				function()
+					Snacks.picker.grep_word()
+				end,
+				desc = "Snacks Picker Visual selection or word",
+				mode = { "n", "x" },
+			},
+			-- search
+			{
+				"<lt>sd",
+				function()
+					Snacks.picker.diagnostics()
+				end,
+				desc = "Snacks Picker Diagnostics",
+			},
+			{
+				"<lt>sh",
+				function()
+					Snacks.picker.help()
+				end,
+				desc = "Snacks Picker Help Pages",
+			},
+			{
+				"<lt>sk",
+				function()
+					Snacks.picker.keymaps()
+				end,
+				desc = "Snacks Picker Keymaps",
+			},
+			{
+				"<lt>sl",
+				function()
+					Snacks.picker.loclist()
+				end,
+				desc = "Snacks Picker Location List",
+			},
+			{
+				"<lt>sm",
+				function()
+					Snacks.picker.marks()
+				end,
+				desc = "Snacks Picker Marks",
+			},
+			{
+				"<lt>sM",
+				function()
+					Snacks.picker.man()
+				end,
+				desc = "Snacks Picker Man Pages",
+			},
+			{
+				"<lt>sq",
+				function()
+					Snacks.picker.qflist()
+				end,
+				desc = "Snacks Picker Quickfix List",
+			},
+			-- LSP
+			-- {
+			-- 	"gd",
+			-- 	function()
+			-- 		Snacks.picker.lsp_definitions()
+			-- 	end,
+			-- 	desc = "Snacks Picker Goto Definition",
+			-- },
+			-- {
+			-- 	"gD",
+			-- 	function()
+			-- 		Snacks.picker.lsp_declarations()
+			-- 	end,
+			-- 	desc = "Snacks Picker Goto Declaration",
+			-- },
+			{
+				"<lt>gr",
+				function()
+					Snacks.picker.lsp_references()
+				end,
+				nowait = true,
+				desc = "Snacks Picker References",
+			},
+			{
+				"<lt>w",
+				function()
+					Snacks.picker.lsp_workspace_symbols()
+				end,
+				desc = "Snacks Picker LSP Workspace Symbols",
+			},
 			{
 				"<lt>.",
 				function()
@@ -322,13 +535,6 @@ return {
 				end,
 				desc = "Snacks Lazygit Current File History",
 			},
-			-- {
-			-- 	"<lt>gg",
-			-- 	function()
-			-- 		Snacks.lazygit()
-			-- 	end,
-			-- 	desc = "Snacks Lazygit",
-			-- },
 			{
 				"<lt>gl",
 				function()
@@ -857,47 +1063,21 @@ return {
 				},
 			})
 
-			vim.keymap.set("n", "<lt>qg", function()
-				require("telescope.builtin").live_grep({
-					cwd = Snacks.git.get_root(),
-				})
-			end, {
-				noremap = true,
-				silent = true,
-				desc = "Telescope grep git root dir",
-			})
-
-			vim.keymap.set("n", "<lt>qf", function()
-				require("telescope.builtin").live_grep({
-					cwd = vim.api.nvim_buf_get_name(0):match("(.*/)"),
-				})
-			end, {
-				noremap = true,
-				silent = true,
-				desc = "Telescope grep buffer dir",
-			})
-
-			vim.keymap.set("n", "<lt>f", function()
-				require("telescope.builtin").find_files({
-					cwd = Snacks.git.get_root(),
-				})
-			end, {
-				noremap = true,
-				silent = true,
-				desc = "Telescope find files",
-			})
-
-			vim.keymap.set("n", "<lt>t", require("telescope.builtin").treesitter, {
-				noremap = true,
-				silent = true,
-				desc = "Telescope treesitter",
-			})
-
-			vim.keymap.set("n", "<lt>k", require("telescope.builtin").keymaps, {
-				noremap = true,
-				silent = true,
-				desc = "Telescope keymaps",
-			})
+			-- vim.keymap.set("n", "<lt>f", function()
+			-- 	require("telescope.builtin").find_files({
+			-- 		cwd = Snacks.git.get_root(),
+			-- 	})
+			-- end, {
+			-- 	noremap = true,
+			-- 	silent = true,
+			-- 	desc = "Telescope find files",
+			-- })
+			--
+			-- vim.keymap.set("n", "<lt>k", require("telescope.builtin").keymaps, {
+			-- 	noremap = true,
+			-- 	silent = true,
+			-- 	desc = "Telescope keymaps",
+			-- })
 
 			require("telescope").load_extension("fzf")
 
