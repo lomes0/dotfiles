@@ -272,9 +272,7 @@ return {
 			{
 				"<lt>/",
 				function()
-					-- TODO :: Set Global for find files
-					local dir = vim.fn.input("Enter directory path: ")
-					Snacks.picker.grep()
+					Snacks.picker.grep({ cwd = _G.snacks_dir })
 				end,
 				desc = "Snacks Picker Grep",
 			},
@@ -296,8 +294,14 @@ return {
 			{
 				"<lt>ff",
 				function()
-					local dir = vim.fn.input("Enter directory path: ")
-					Snacks.picker.files({ cwd = dir })
+					Snacks.picker.files({ cwd = _G.snacks_dir })
+				end,
+				desc = "Snacks Picker Find Files",
+			},
+			{
+				"<lt>fg",
+				function()
+					Snacks.picker.git_files()
 				end,
 				desc = "Snacks Picker Find Git Files",
 			},
@@ -453,9 +457,10 @@ return {
 					Snacks.toggle.inlay_hints({ name = "Snacks Inlay Hints" }):map("<lt>uh")
 					Snacks.toggle.zen({ name = "Snacks Zen" }):map("<lt>z")
 
-					vim.api.nvim_create_user_command("ClearMsgs", function()
-						require("notify").dismiss({ silent = true, pending = true })
-					end, {})
+					_G.snacks_dir = vim.api.nvim_buf_get_name(0):match("(.*/)")
+					vim.keymap.set("n", "<lt>dp", function()
+						_G.snacks_dir = vim.fn.input("Enter directory path: ")
+					end, { noremap = true, silent = true })
 				end,
 			})
 		end,
