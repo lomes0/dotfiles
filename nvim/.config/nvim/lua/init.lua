@@ -83,15 +83,6 @@ local keymaps = {
 		noremap = true,
 		desc = "Nvim init.lua",
 	},
-	-- {
-	-- 	"n",
-	-- 	"cc",
-	-- 	function(_)
-	-- 		vim.api.nvim_command("cd ~/.config/nvim/lua/")
-	-- 		vim.api.nvim_command([[edit ~/.config/nvim/lua/init.lua]])
-	-- 	end,
-	-- 	desc = "Nvim init.lua",
-	-- },
 	{
 		"n",
 		"<C-d>",
@@ -365,60 +356,6 @@ local function register_keymaps(maps_array, noremap)
 	end
 end
 
--- local function buffer_remove(bufnr)
--- 	bufnr = bufnr or vim.api.nvim_get_current_buf()
--- 	local startwin = vim.api.nvim_get_current_win()
---
--- 	if not vim.api.nvim_buf_is_valid(bufnr) then
--- 		print("buffer does not exists")
--- 		return
--- 	end
---
--- 	local window = vim.fn.win_findbuf(bufnr)
---
--- 	for _, win in ipairs(window) do
--- 		vim.api.nvim_set_current_win(win)
--- 		vim.cmd("bnext")
--- 		if vim.api.nvim_get_current_buf() == bufnr then
--- 			vim.cmd("enew")
--- 		end
--- 	end
---
--- 	vim.cmd("bdelete " .. bufnr)
--- 	vim.api.nvim_set_current_win(startwin)
--- end
-
--- function Window_remove_active_buffer()
--- 	local bufnr = vim.api.nvim_get_current_buf()
--- 	local bufwin = vim.api.nvim_get_current_win()
--- 	local buftype = vim.api.nvim_get_option_value("buftype", { buf = bufnr })
---
--- 	if buftype == "terminal" then
--- 		vim.cmd("enew")
--- 		vim.cmd("bdelete! " .. bufnr)
--- 		return
--- 	end
---
--- 	local window = vim.fn.win_findbuf(bufnr)
--- 	local can_remove = true
---
--- 	for _, win in ipairs(window) do
--- 		vim.api.nvim_set_current_win(win)
--- 		-- buf is present in other window
--- 		if (bufwin ~= win) and (bufnr == vim.api.nvim_get_current_buf()) then
--- 			can_remove = false
--- 			break
--- 		end
--- 	end
---
--- 	if can_remove then
--- 		buffer_remove(bufnr)
--- 	else
--- 		vim.api.nvim_set_current_win(bufwin)
--- 		vim.cmd("enew")
--- 	end
--- end
-
 function Move_floating_window(win_id, a, b)
 	local config = vim.api.nvim_win_get_config(win_id)
 	config.row = config.row + a
@@ -457,12 +394,15 @@ register_keymaps(keymaps_noremap, false)
 set_cwd()
 
 vim.keymap.set({ "n", "x" }, "<lt>gg", function()
-	local term_buf = vim.api.nvim_create_buf(false, true)
 	local term_win = vim.api.nvim_get_current_win()
+	local prev_buf = vim.api.nvim_get_current_buf()
+	local term_buf = vim.api.nvim_create_buf(false, true)
+
 	vim.api.nvim_win_set_buf(term_win, term_buf)
 	vim.fn.termopen("lazygit", {
 		on_exit = function()
 			-- First ensure the buffer is still valid, then delete it.
+			vim.api.nvim_win_set_buf(term_win, prev_buf)
 			if vim.api.nvim_buf_is_valid(term_buf) then
 				vim.api.nvim_buf_delete(term_buf, { force = true })
 			end
@@ -471,35 +411,6 @@ vim.keymap.set({ "n", "x" }, "<lt>gg", function()
 end)
 
 vim.keymap.set({ "n", "x" }, "-", function()
-	-- try Snacks
 	Snacks.notifier.hide()
-	-- try notify
 	require("notify").dismiss({ silent = true, pending = true })
 end)
-
--- require("tutor").setup({
--- 	annotations = {
--- 		{
--- 			file = "main.c",
--- 			line = 15,
--- 			column = 5,
--- 			message = [[
---       - This function initializes the main loop.
---       - This function initializes the main loop.
---       - This function initializes the main loop.
---       - This function initializes the main loop.
---       ```c
---       void main_loop() {
---           // ...
---       }
---       ```
---       ]],
--- 		},
--- 		-- {
--- 		--   file = "utils.py",
--- 		--   line = 23,
--- 		--   column = 1,
--- 		--   message = "This helper function optimizes array processing.",
--- 		-- },
--- 	},
--- })

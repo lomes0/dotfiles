@@ -270,15 +270,10 @@ return {
 		},
 		keys = {
 			{
-				"<lt><space>",
-				function()
-					Snacks.picker.smart()
-				end,
-				desc = "Snacks Picker Smart Find Files",
-			},
-			{
 				"<lt>/",
 				function()
+					-- TODO :: Set Global for find files
+					local dir = vim.fn.input("Enter directory path: ")
 					Snacks.picker.grep()
 				end,
 				desc = "Snacks Picker Grep",
@@ -299,41 +294,14 @@ return {
 			},
 			-- find
 			{
-				"<lt>fb",
-				function()
-					Snacks.picker.buffers()
-				end,
-				desc = "Snacks Picker Buffers",
-			},
-			{
 				"<lt>ff",
 				function()
-					Snacks.picker.files()
-				end,
-				desc = "Snacks Picker Find Files",
-			},
-			{
-				"<lt>fg",
-				function()
-					Snacks.picker.git_files()
+					local dir = vim.fn.input("Enter directory path: ")
+					Snacks.picker.files({ cwd = dir })
 				end,
 				desc = "Snacks Picker Find Git Files",
 			},
-			-- {
-			-- 	"<lt>fp",
-			-- 	function()
-			-- 		Snacks.picker.projects()
-			-- 	end,
-			-- 	desc = "Snacks Picker Projects",
-			-- },
-			-- {
-			-- 	"<lt>fr",
-			-- 	function()
-			-- 		Snacks.picker.recent()
-			-- 	end,
-			-- 	desc = "Snacks Picker Recent",
-			-- },
-			-- -- git
+			-- git
 			{
 				"<lt>gl",
 				function()
@@ -349,70 +317,11 @@ return {
 				desc = "Snacks Picker Git Log Line",
 			},
 			{
-				"<lt>gs",
-				function()
-					Snacks.picker.git_status()
-				end,
-				desc = "Snacks Picker Git Status",
-			},
-			{
-				"<lt>gd",
-				function()
-					Snacks.picker.git_diff()
-				end,
-				desc = "Snacks Picker Git Diff (Hunks)",
-			},
-			{
 				"<lt>gf",
 				function()
 					Snacks.picker.git_log_file()
 				end,
 				desc = "Snacks Picker Git Log File",
-			},
-			-- Grep
-			{
-				"<lt>sb",
-				function()
-					Snacks.picker.lines()
-				end,
-				desc = "Snacks Picker Buffer Lines",
-			},
-			{
-				"<lt>sB",
-				function()
-					Snacks.picker.grep_buffers()
-				end,
-				desc = "Snacks Picker Grep Open Buffers",
-			},
-			{
-				"<lt>sg",
-				function()
-					Snacks.picker.grep()
-				end,
-				desc = "Snacks Picker Grep",
-			},
-			{
-				"<lt>sw",
-				function()
-					Snacks.picker.grep_word()
-				end,
-				desc = "Snacks Picker Visual selection or word",
-				mode = { "n", "x" },
-			},
-			-- search
-			{
-				"<lt>sd",
-				function()
-					Snacks.picker.diagnostics()
-				end,
-				desc = "Snacks Picker Diagnostics",
-			},
-			{
-				"<lt>sh",
-				function()
-					Snacks.picker.help()
-				end,
-				desc = "Snacks Picker Help Pages",
 			},
 			{
 				"<lt>sk",
@@ -420,57 +329,6 @@ return {
 					Snacks.picker.keymaps()
 				end,
 				desc = "Snacks Picker Keymaps",
-			},
-			{
-				"<lt>sl",
-				function()
-					Snacks.picker.loclist()
-				end,
-				desc = "Snacks Picker Location List",
-			},
-			{
-				"<lt>sm",
-				function()
-					Snacks.picker.marks()
-				end,
-				desc = "Snacks Picker Marks",
-			},
-			{
-				"<lt>sM",
-				function()
-					Snacks.picker.man()
-				end,
-				desc = "Snacks Picker Man Pages",
-			},
-			{
-				"<lt>sq",
-				function()
-					Snacks.picker.qflist()
-				end,
-				desc = "Snacks Picker Quickfix List",
-			},
-			-- LSP
-			-- {
-			-- 	"gd",
-			-- 	function()
-			-- 		Snacks.picker.lsp_definitions()
-			-- 	end,
-			-- 	desc = "Snacks Picker Goto Definition",
-			-- },
-			-- {
-			-- 	"gD",
-			-- 	function()
-			-- 		Snacks.picker.lsp_declarations()
-			-- 	end,
-			-- 	desc = "Snacks Picker Goto Declaration",
-			-- },
-			{
-				"<lt>gr",
-				function()
-					Snacks.picker.lsp_references()
-				end,
-				nowait = true,
-				desc = "Snacks Picker References",
 			},
 			{
 				"<lt>w",
@@ -543,13 +401,6 @@ return {
 				desc = "Snacks Lazygit Log (cwd)",
 			},
 			{
-				"<lt>un",
-				function()
-					Snacks.notifier.hide()
-				end,
-				desc = "Snacks Dismiss All Notifications",
-			},
-			{
 				"<c-\\>",
 				function()
 					Snacks.terminal()
@@ -571,24 +422,6 @@ return {
 				end,
 				desc = "Snacks Prev Reference",
 				mode = { "n", "t" },
-			},
-			{
-				"<lt>N",
-				desc = "Snacks Neovim News",
-				function()
-					Snacks.win({
-						file = vim.api.nvim_get_runtime_file("doc/news.txt", false)[1],
-						width = 0.9,
-						height = 0.9,
-						wo = {
-							spell = false,
-							wrap = false,
-							signcolumn = "yes",
-							statuscolumn = " ",
-							conceallevel = 3,
-						},
-					})
-				end,
 			},
 		},
 		init = function()
