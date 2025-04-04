@@ -1,48 +1,14 @@
+// If you'd like to override the default keybindings completely, be sure to change "keybinds" to "keybinds clear-defaults=true"
 keybinds clear-defaults=true {
-    shared_except "locked" {
-        bind "Ctrl h" {
-            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
-                name "move_focus_or_tab";
-                payload "left";
-
-                // Plugin Configuration
-                move_mod "ctrl"; // Optional, should be added on every command if you want to use it
-                resize_mod "alt"; // Optional, should be added on every command if you want to use it
-            };
-        }
-
-        bind "Ctrl j" {
-            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
-                name "move_focus";
-                payload "down";
-
-                move_mod "ctrl";
-                resize_mod "alt";
-            };
-        }
-
-        bind "Ctrl k" {
-            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
-                name "move_focus";
-                payload "up";
-
-                move_mod "ctrl";
-                resize_mod "alt";
-            };
-        }
-
-        bind "Ctrl l" {
-            MessagePlugin "https://github.com/hiasr/vim-zellij-navigator/releases/download/0.2.1/vim-zellij-navigator.wasm" {
-                name "move_focus_or_tab";
-                payload "right";
-
-                move_mod "ctrl";
-                resize_mod "alt";
-            };
-        }
-    }
+	unbind "Ctrl o"
 
     normal {
+	    bind "Shift right" {
+            GoToNextTab;
+        }
+		bind "Shift left" {
+			GoToPreviousTab
+		}
         // uncomment this and adjust key if using copy_on_select=false
         // bind "Alt c" { Copy; }
     }
@@ -50,7 +16,7 @@ keybinds clear-defaults=true {
         bind "Ctrl g" { SwitchToMode "Normal"; }
     }
     resize {
-        bind "Ctrl u" { SwitchToMode "Normal"; }
+        bind "Ctrl n" { SwitchToMode "Normal"; }
         bind "h" "Left" { Resize "Increase Left"; }
         bind "j" "Down" { Resize "Increase Down"; }
         bind "k" "Up" { Resize "Increase Up"; }
@@ -64,8 +30,8 @@ keybinds clear-defaults=true {
     }
     pane {
         bind "Ctrl p" { SwitchToMode "Normal"; }
-        //bind "h" "Left" { MoveFocus "Left"; }
-        //bind "l" "Right" { MoveFocus "Right"; }
+        bind "h" "Left" { MoveFocus "Left"; }
+        bind "l" "Right" { MoveFocus "Right"; }
         bind "j" "Down" { MoveFocus "Down"; }
         bind "k" "Up" { MoveFocus "Up"; }
         bind "p" { SwitchFocus; }
@@ -80,13 +46,13 @@ keybinds clear-defaults=true {
         bind "c" { SwitchToMode "RenamePane"; PaneNameInput 0;}
     }
     move {
-        //bind "Ctrl h" { SwitchToMode "Normal"; }
+        bind "Ctrl b" { SwitchToMode "Normal"; }
         bind "n" "Tab" { MovePane; }
         bind "p" { MovePaneBackwards; }
-        //bind "h" "Left" { MovePane "Left"; }
+        bind "h" "Left" { MovePane "Left"; }
         bind "j" "Down" { MovePane "Down"; }
         bind "k" "Up" { MovePane "Up"; }
-        //bind "l" "Right" { MovePane "Right"; }
+        bind "l" "Right" { MovePane "Right"; }
     }
     tab {
         bind "Ctrl t" { SwitchToMode "Normal"; }
@@ -152,11 +118,25 @@ keybinds clear-defaults=true {
         bind "Esc" { UndoRenamePane; SwitchToMode "Pane"; }
     }
     session {
-        bind "Alt s" { SwitchToMode "Normal"; }
+        bind "Ctrl m" { SwitchToMode "Normal"; }
         bind "Ctrl s" { SwitchToMode "Scroll"; }
         bind "d" { Detach; }
         bind "w" {
             LaunchOrFocusPlugin "session-manager" {
+                floating true
+                move_to_focused_tab true
+            };
+            SwitchToMode "Normal"
+        }
+        bind "c" {
+            LaunchOrFocusPlugin "configuration" {
+                floating true
+                move_to_focused_tab true
+            };
+            SwitchToMode "Normal"
+        }
+        bind "p" {
+            LaunchOrFocusPlugin "plugin-manager" {
                 floating true
                 move_to_focused_tab true
             };
@@ -188,14 +168,15 @@ keybinds clear-defaults=true {
     }
     shared_except "locked" {
         bind "Ctrl g" { SwitchToMode "Locked"; }
-        // bind "Ctrl q" { Quit; }
+        bind "Ctrl q" { Quit; }
+        bind "Alt f" { ToggleFloatingPanes; }
         bind "Alt n" { NewPane; }
         bind "Alt i" { MoveTab "Left"; }
         bind "Alt o" { MoveTab "Right"; }
-        bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
-        bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
-        bind "Alt j" "Alt Down" { MoveFocus "Down"; }
-        bind "Alt k" "Alt Up" { MoveFocus "Up"; }
+        bind "Ctrl h" "Alt Left" { MoveFocusOrTab "Left"; }
+        bind "Ctrl l" "Alt Right" { MoveFocusOrTab "Right"; }
+        bind "Ctrl j" "Alt Down" { MoveFocus "Down"; }
+        bind "Ctrl k" "Alt Up" { MoveFocus "Up"; }
         bind "Alt =" "Alt +" { Resize "Increase"; }
         bind "Alt -" { Resize "Decrease"; }
         bind "Alt [" { PreviousSwapLayout; }
@@ -208,25 +189,27 @@ keybinds clear-defaults=true {
         bind "Ctrl p" { SwitchToMode "Pane"; }
     }
     shared_except "resize" "locked" {
-        bind "Ctrl u" { SwitchToMode "Resize"; }
+        bind "Ctrl n" { SwitchToMode "Resize"; }
     }
     shared_except "scroll" "locked" {
-        bind "Alt v" { SwitchToMode "Scroll"; }
+        bind "Ctrl s" { SwitchToMode "Scroll"; }
     }
     shared_except "session" "locked" {
-        bind "Alt s" { SwitchToMode "Session"; }
+        bind "Ctrl m" { SwitchToMode "Session"; }
     }
     shared_except "tab" "locked" {
         bind "Ctrl t" { SwitchToMode "Tab"; }
     }
     shared_except "move" "locked" {
-        //bind "Ctrl h" { SwitchToMode "Move"; }
+        bind "Ctrl b" { SwitchToMode "Move"; }
     }
     shared_except "tmux" "locked" {
         bind "Ctrl b" { SwitchToMode "Tmux"; }
     }
 }
 
+// Plugin aliases - can be used to change the implementation of Zellij
+// changing these requires a restart to take effect
 plugins {
     tab-bar location="zellij:tab-bar"
     status-bar location="zellij:status-bar"
@@ -239,10 +222,19 @@ plugins {
     filepicker location="zellij:strider" {
         cwd "/"
     }
+    configuration location="zellij:configuration"
+    plugin-manager location="zellij:plugin-manager"
+}
+
+// Plugins to load in the background when a new session starts
+load_plugins {
+  // "file:/path/to/my-plugin.wasm"
+  // "https://example.com/my-plugin.wasm"
 }
 
 // Choose what to do when zellij receives SIGTERM, SIGINT, SIGQUIT or SIGHUP
 // eg. when terminal window with an active zellij session is closed
+// (Requires restart)
 // Options:
 //   - detach (Default)
 //   - quit
@@ -254,7 +246,7 @@ plugins {
 //    - true
 //    - false (Default)
 //
-simplified_ui true
+// simplified_ui true
 
 // Choose the path to the default shell that zellij will use for opening new panes
 // Default: $SHELL
@@ -271,31 +263,35 @@ default_shell "zsh"
 //   - false
 //
 pane_frames false
-hide_session_name true
+hide_session_name false
 
 // Toggle between having Zellij lay out panes according to a predefined set of layouts whenever possible
 // Options:
 //   - true (default)
 //   - false
 //
-auto_layout false
+// auto_layout true
 
 // Whether sessions should be serialized to the cache folder (including their tabs/panes, cwds and running commands) so that they can later be resurrected
+// (Requires restart)
 // Options:
 //   - true (default)
 //   - false
 //
-// session_serialization false
+session_serialization true
 
 // Whether pane viewports are serialized along with the session, default is false
+// (Requires restart)
 // Options:
 //   - true
 //   - false (default)
+//
 // serialize_pane_viewport true
 
 // Scrollback lines to serialize along with the pane viewport when serializing sessions, 0
 // defaults to the scrollback size. If this number is higher than the scrollback size, it will
 // also default to the scrollback size. This does nothing if `serialize_pane_viewport` is not true.
+// (Requires restart)
 //
 // scrollback_lines_to_serialize 10000
 
@@ -326,6 +322,7 @@ theme "nord"
 
 // The name of the default layout to load on startup
 // Default: "default"
+// (Requires restart)
 //
 default_layout "compact"
 
@@ -337,15 +334,17 @@ default_layout "compact"
 // Toggle enabling the mouse mode.
 // On certain configurations, or terminals this could
 // potentially interfere with copying text.
+// (Requires restart)
 // Options:
 //   - true (default)
 //   - false
 //
-mouse_mode false
+mouse_mode true
 
 // Configure the scroll back buffer size
 // This is the number of lines zellij stores for each pane in the scroll back
 // buffer. Excess number of lines are discarded in a FIFO fashion.
+// (Requires restart)
 // Valid values: positive integers
 // Default value: 10000
 //
@@ -357,6 +356,7 @@ scroll_buffer_size 10000
 // that will be used by default if this option is not set.
 // Examples:
 //
+// copy_command "xclip -selection clipboard" // x11
 // copy_command "wl-copy"                    // wayland
 // copy_command "pbcopy"                     // osx
 copy_command "xclip -selection clipboard" // x11
@@ -383,26 +383,37 @@ scrollback_editor "/usr/bin/vim"
 // When attaching to an existing session with other users,
 // should the session be mirrored (true)
 // or should each user have their own cursor (false)
+// (Requires restart)
 // Default: false
 //
 // mirror_session true
 
 // The folder in which Zellij will look for layouts
+// (Requires restart)
 //
 // layout_dir "/path/to/my/layout_dir"
 
 // The folder in which Zellij will look for themes
+// (Requires restart)
 //
 // theme_dir "/path/to/my/theme_dir"
 
 // Enable or disable the rendering of styled and colored underlines (undercurl).
 // May need to be disabled for certain unsupported terminals
+// (Requires restart)
 // Default: true
 //
 // styled_underlines false
 
 // Enable or disable writing of session metadata to disk (if disabled, other sessions might not know
 // metadata info on this session)
+// (Requires restart)
 // Default: false
 //
-disable_session_metadata true
+disable_session_metadata false
+
+// Enable or disable support for the enhanced Kitty Keyboard Protocol (the host terminal must also support it)
+// (Requires restart)
+// Default: true (if the host terminal supports it)
+//
+// support_kitty_keyboard_protocol false
