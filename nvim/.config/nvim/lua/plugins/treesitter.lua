@@ -17,6 +17,15 @@ return {
 					},
 				},
 				textobjects = {
+					swap = {
+						enable = true,
+						swap_next = {
+							["L"] = "@parameter.inner",
+						},
+						swap_previous = {
+							["H"] = "@parameter.inner",
+						},
+					},
 					select = {
 						enable = true,
 						lookahead = true,
