@@ -39,16 +39,26 @@ return {
 			require("conform").setup({
 				formatters_by_ft = {
 					lua = { "stylua" },
-					javascript = { "prettierd", "prettier" },
 					rust = { "rustfmt" },
 					c = { "clang-format" },
 					cpp = { "clang-format" },
 					python = { "isort", "black" },
 					json = { "jq" },
+					javascript = { "deno_fmt" },
+					typescript = { "deno_fmt" },
+					javascriptreact = { "deno_fmt" },
+					typescriptreact = { "deno_fmt" },
+					json = { "deno_fmt" },
+					markdown = { "deno_fmt" },
 				},
 				formatters = {
 					["clang-format"] = {
 						prepend_args = { "-style", "file" },
+					},
+					["deno_fmt"] = {
+						command = "deno",
+						args = { "fmt", "-" }, -- format from stdin
+						stdin = true,
 					},
 				},
 				log_level = vim.log.levels.ERROR,
@@ -211,6 +221,11 @@ return {
 	{
 		"mg979/vim-visual-multi",
 		event = "VeryLazy",
+		init = function()
+			vim.g.VM_maps = {
+				["Find Under"] = "<c-y>",
+			}
+		end,
 	},
 	{
 		"nvim-neo-tree/neo-tree.nvim",
@@ -1148,4 +1163,3 @@ return {
 -- 		end, { desc = "Open harpoon window" })
 -- 	end,
 -- },
-

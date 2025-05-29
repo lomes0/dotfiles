@@ -1,5 +1,7 @@
 vim.opt.fillchars = { eob = " " }
 
+vim.opt.completeopt = { "noinsert", "noselect" }
+
 vim.loader.enable()
 
 local opts = {
@@ -574,7 +576,7 @@ vim.keymap.set("n", "<leader>e", function()
 	end
 end, { desc = "Go to end of current block" })
 
-vim.lsp.enable({ "clangd" })
+vim.lsp.enable({ "clangd", "pyright", "tsserver" })
 
 vim.api.nvim_create_autocmd("LspAttach", {
 	desc = "LSP actions",
