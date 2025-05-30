@@ -1,4 +1,6 @@
-source /u/eransa/cpt_new/env/zsh/zshrc
+# Add deno completions to search path
+if [[ ":$FPATH:" != *":/home/eransa/.zsh/completions:"* ]]; then export FPATH="/home/eransa/.zsh/completions:$FPATH"; fi
+# zmodload zsh/zprof
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
@@ -19,12 +21,11 @@ export ZSH="$HOME/.oh-my-zsh"
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 CASE_SENSITIVE="true"
-ENABLE_CORRECTION="true"
+# ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
-plugins=(git zsh-syntax-highlighting)
-# source $ZSH/oh-my-zsh.sh
-# source <(fzf --zsh)
+plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
+source $ZSH/oh-my-zsh.sh
 
 #
 # User configuration
@@ -36,15 +37,8 @@ export PATH=$PATH:$HOME/.local/bin
 
 export PATH=$PATH:$HOME/.cargo/bin
 
-# golang
-export PATH=$PATH:/usr/local/go/bin
-
 # diff-so-fancy
 export PATH=$PATH:$HOME/var/diff-so-fancy
-
-# for tmux utf-8 support
-# export LC_ALL=en_IN.UTF-8
-# export LANG=en_IN.UTF-8
 
 function yz() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
@@ -97,18 +91,6 @@ export ZSH_HIGHLIGHT_STYLES[alias]='fg=#af99ba,bold'
 export ZSH_HIGHLIGHT_STYLES[precommand]='fg=#a7cbcc'
 export ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#a5acb8,bold'
 export ZSH_HIGHLIGHT_STYLES[path]='fg=#e9f5ef,underline'
-# export ZSH_HIGHLIGHT_STYLES[function]=none
-# export ZSH_HIGHLIGHT_STYLES[hashed-command]=none
-# export ZSH_HIGHLIGHT_STYLES[globbing]=none
-# export ZSH_HIGHLIGHT_STYLES[history-expansion]=fg=blue
-# export ZSH_HIGHLIGHT_STYLES[single-hyphen-option]=none
-# export ZSH_HIGHLIGHT_STYLES[double-hyphen-option]=none
-# export ZSH_HIGHLIGHT_STYLES[back-quoted-argument]=none
-# export ZSH_HIGHLIGHT_STYLES[single-quoted-argument]=fg=yellow
-# export ZSH_HIGHLIGHT_STYLES[double-quoted-argument]=fg=yellow
-# export ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]=fg=cyan
-# export ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]=fg=cyan
-# export ZSH_HIGHLIGHT_STYLES[assign]=none
 # default,unknown-token,reserved-word,alias,builtin,function,command,hashed-command,precommand,commandseparator,
 # autodirectory,path,globbing,history-expansion,single-hyphen-option,double-hyphen-option,back-quoted-argument,
 # single-quoted-argument,double-quoted-argument,dollar-double-quoted-argument,back-double-quoted-argument,assign,
@@ -127,12 +109,16 @@ export LANGUAGE=en_IN.UTF-8
 
 eval "$(starship init zsh)"
 
-fpath=(~/.zsh/completions $fpath)
-autoload -U compinit
-compinit
+# fpath=(~/.zsh/completions $fpath)
+# autoload -U compinit
+# compinit
 
-export RUSTUP_HOME=~/rust-offline/rustup
-export CARGO_HOME=~/rust-offline/cargo
 export PATH=$CARGO_HOME/bin:$PATH
 
-export PATH=${PATH}:${HOME}/code/cx2/target/release
+# zprof
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+. "/home/eransa/.deno/env"
