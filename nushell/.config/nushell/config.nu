@@ -183,11 +183,6 @@ $env.config = {
         use_ls_colors: true # set this to true to enable file/path/directory completions using LS_COLORS
     }
 
-    filesize: {
-        metric: false # true => KB, MB, GB (ISO standard), false => KiB, MiB, GiB (Windows standard)
-        format: "auto" # b, kb, kib, mb, mib, gb, gib, tb, tib, pb, pib, eb, eib, auto
-    }
-
     cursor_shape: {
         emacs: underscore # block, underscore, line, blink_block, blink_underscore, blink_line, inherit to skip setting cursor shape (line is the default)
         vi_insert: block # block, underscore, line, blink_block, blink_underscore, blink_line, inherit to skip setting cursor shape (block is the default)
@@ -369,20 +364,6 @@ $env.config = {
     ]
 
     keybindings: [
-	    {
-		name: change_dir_with_fzf
-		modifier: control
-		keycode: char_l
-            	mode: [emacs, vi_normal, vi_insert]
-		    event:[
-      		    { edit: Clear }
-      		    { edit: InsertString,
-      		      value: "cd (ls | where type == dir | each { |it| $it.name} | str join (char nl) | fzf --height=25% | decode utf-8 | str trim)"
-      		    }
-                { send: menunext }
-      		    { send: Enter }
-      		  ]
-		}
         {
             name: completion_menu
             modifier: none
@@ -1001,4 +982,8 @@ def start_zellij [] {
   }
 }
 
-#start_zellij
+# in ~/.config/nushell/config.nu
+export extern "nvim" [
+  ...paths: path
+]
+
