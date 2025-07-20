@@ -5,6 +5,24 @@ local ts = vim.treesitter
 
 local spaces_for_tabs = string.rep(" ", vim.o.tabstop)
 
+-- Performance cache for expensive computations
+local folding_cache = {
+	parsers = {}, -- Cache parsers
+	queries = {}, -- Cache queries
+	fold_text = {}, -- Cache fold text results
+	highlight_groups = {}, -- Cache highlight groups
+}
+
+-- Cache cleanup on buffer changes
+vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
+	callback = function(event)
+		local bufnr = event.buf
+		-- Clean up buffer-specific cache
+		folding_cache.parsers[bufnr] = nil
+		folding_cache.fold_text[bufnr] = nil
+	end,
+})
+
 local M = {}
 
 function T(node)
@@ -27,9 +45,34 @@ local function get_last_node_at_line(root, line)
 end
 
 function FoldtextCoding()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local foldstart = vim.v.foldstart
+	local cache_key = bufnr .. ":" .. foldstart
+	
+	-- Check cache first
+	if folding_cache.fold_text[cache_key] then
+		return folding_cache.fold_text[cache_key]
+	end
+	
 	local lang = ts.language.get_lang(vim.bo.filetype)
-	local parser = ts.get_parser(0, lang)
-	local query = ts.query.get(parser:lang(), "highlights")
+	
+	-- Use cached parser or create new one
+	if not folding_cache.parsers[bufnr] then
+		folding_cache.parsers[bufnr] = {}
+	end
+	
+	local parser = folding_cache.parsers[bufnr][lang]
+	if not parser then
+		parser = ts.get_parser(bufnr, lang)
+		folding_cache.parsers[bufnr][lang] = parser
+	end
+	
+	-- Use cached query or create new one
+	if not folding_cache.queries[lang] then
+		folding_cache.queries[lang] = ts.query.get(parser:lang(), "highlights")
+	end
+	local query = folding_cache.queries[lang]
+	
 	if query == nil then
 		return vim.fn.foldtext()
 	end
@@ -40,11 +83,10 @@ function FoldtextCoding()
 
 	local processed_nodes = {}
 	local prev_col = #prefix
-	local prev_row = vim.v.foldstart
-	local foldstart = vim.v.foldstart
+	local prev_row = foldstart
 
 	local tree = parser:parse({ foldstart - 1, foldstart })[1]
-	local start_node = get_last_node_at_line(tree:root(), vim.v.foldstart)
+	local start_node = get_last_node_at_line(tree:root(), foldstart)
 
 	if start_node:type() == "comment" then
 		local first_line = vim.api.nvim_buf_get_lines(0, vim.v.foldstart - 1, vim.v.foldstart, false)[1]
@@ -100,7 +142,10 @@ function FoldtextCoding()
 
 		::continue::
 	end
-
+	
+	-- Cache the result for future use
+	folding_cache.fold_text[cache_key] = result
+	
 	return result
 end
 
@@ -145,27 +190,44 @@ function FoldtextDefault()
 end
 
 function M.CreateFoldGroups(groups)
-	-- Helper function to get highlight group details
-	local function get_highlight(group)
-		local id = vim.api.nvim_get_hl_id_by_name(group)
-		local hl = vim.api.nvim_get_hl(0, { id = id })
+	-- Schedule highlight group creation to avoid blocking
+	vim.schedule(function()
+		-- Helper function to get highlight group details
+		local function get_highlight(group)
+			local id = vim.api.nvim_get_hl_id_by_name(group)
+			local hl = vim.api.nvim_get_hl(0, { id = id })
 
-		if hl ~= nil and hl.link ~= nil and hl.link ~= group then
-			return get_highlight(hl.link)
+			if hl ~= nil and hl.link ~= nil and hl.link ~= group then
+				return get_highlight(hl.link)
+			end
+
+			return hl
 		end
 
-		return hl
-	end
-
-	-- Create folded highlight groups
-	for _, group in ipairs(groups) do
-		local hl = get_highlight(group)
-		if hl then
-			vim.api.nvim_set_hl(0, group .. ".folded", { fg = hl.fg, bg = "#51576d", underline = false })
-		else
-			vim.notify("Highlight group not found: " .. group, vim.log.levels.WARN)
+		-- Batch highlight group creation for better performance
+		local highlight_batch = {}
+		
+		for _, group in ipairs(groups) do
+			-- Use cached highlight if available
+			if not folding_cache.highlight_groups[group] then
+				folding_cache.highlight_groups[group] = get_highlight(group)
+			end
+			
+			local hl = folding_cache.highlight_groups[group]
+			if hl then
+				highlight_batch[group .. ".folded"] = { 
+					fg = hl.fg, 
+					bg = "#51576d", 
+					underline = false 
+				}
+			end
 		end
-	end
+		
+		-- Apply all highlights in a batch
+		for group_name, opts in pairs(highlight_batch) do
+			vim.api.nvim_set_hl(0, group_name, opts)
+		end
+	end)
 end
 
 -- Function to get all highlight groups
@@ -381,7 +443,7 @@ function M.init()
 	-- })
 
 	-- Create an autocommand group for better management
-	-- local group = vim.api.nvim_create_augroup("CppPostInit", { clear = true })
+	local group = vim.api.nvim_create_augroup("CppPostInit", { clear = true })
 
 	-- Define an autocommand for when color scheme and Tree-sitter are ready
 	vim.api.nvim_create_autocmd({ "FileType" }, {
