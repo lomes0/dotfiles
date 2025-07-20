@@ -364,24 +364,26 @@ local function register_keymaps(maps_array, noremap)
 	end
 end
 
-function Move_floating_window(win_id, a, b)
+local M = {}
+
+function M.move_floating_window(win_id, a, b)
 	local config = vim.api.nvim_win_get_config(win_id)
 	config.row = config.row + a
 	config.col = config.col + b
 	vim.api.nvim_win_set_config(win_id, config)
 end
 
-function bufdir()
+function M.bufdir()
 	return vim.api.nvim_buf_get_name(0):match("(.*/)")
 end
 
-function gitroot(dir)
+function M.gitroot(dir)
 	if dir == nil then
 		return nil
 	end
 
 	while dir and dir ~= "/" do
-		if vim.loop.fs_stat(dir .. "/.git") ~= nil then
+		if vim.uv.fs_stat(dir .. "/.git") ~= nil then
 			return dir
 		end
 		dir = vim.fn.fnamemodify(dir, ":h") -- Move up one directory
@@ -394,8 +396,8 @@ local function thisdir()
 end
 
 local function set_cwd()
-	local dir = bufdir() or vim.fn.getcwd(-1, -1)
-	vim.api.nvim_command("cd " .. (gitroot(dir) or bufdir() or thisdir()))
+	local dir = M.bufdir() or vim.fn.getcwd(-1, -1)
+	vim.cmd("cd " .. (M.gitroot(dir) or M.bufdir() or thisdir()))
 end
 
 vim.api.nvim_create_autocmd("TermOpen", {
@@ -421,7 +423,7 @@ register_keymaps(keymaps_noremap, false)
 set_cwd()
 
 vim.keymap.set({ "n", "x" }, "<lt>gg", function()
-	local gitdir = gitroot(bufdir())
+	local gitdir = M.gitroot(M.bufdir())
 	if gitdir == nil then
 		print("Not a git repo")
 		return
@@ -673,7 +675,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		end
 
 		if client:supports_method("textDocument/completion") then
-			vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+			-- Enable native completion for Neovim 0.11+
+			local ok, completion = pcall(function()
+				return vim.lsp.completion
+			end)
+			if ok and completion and completion.enable then
+				completion.enable(true, client.id, args.buf, { autotrigger = true })
+			else
+				-- Fallback: enable omnifunc for older API
+				vim.bo[args.buf].omnifunc = "v:lua.vim.lsp.omnifunc"
+			end
 		end
 
 		-- vim.diagnostic.config({ virtual_text = { current_line = true } })
