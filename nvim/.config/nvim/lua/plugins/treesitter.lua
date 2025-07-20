@@ -1,20 +1,26 @@
 return {
 	{
 		"nvim-treesitter/nvim-treesitter",
-		event = "BufReadPost",
+		event = { "BufReadPost", "BufNewFile" },
 		build = ":TSUpdate",
 		config = function()
+			-- Cache parsers to avoid repeated creation
+			local parser_cache = {}
+
+			-- Lazy parser loading function
+			local function get_cached_parser(bufnr, lang)
+				local key = bufnr .. ":" .. lang
+				if not parser_cache[key] then
+					parser_cache[key] = vim.treesitter.get_parser(bufnr, lang)
+				end
+				return parser_cache[key]
+			end
+
 			require("nvim-treesitter.configs").setup({
 				modules = {},
 				ignore_install = {},
 				incremental_selection = {
 					enable = false,
-					keymaps = {
-						init_selection = "gnn",
-						node_incremental = "grn",
-						scope_incremental = "grc",
-						node_decremental = "grm",
-					},
 				},
 				textobjects = {
 					swap = {
@@ -55,31 +61,41 @@ return {
 						},
 					},
 				},
+				-- Only install essential parsers initially
 				ensure_installed = {
-					"make",
-					"cmake",
-					"css",
-					"scss",
-					"kdl",
-					"markdown",
-					"toml",
-					"cpp",
-					"lua",
+					"lua", -- Always needed for config
+					"vim", -- Always needed for config
+					"vimdoc", -- Always needed for help
 				},
 				sync_install = false,
-				auto_install = true,
+				auto_install = true, -- Install parsers on demand
 				highlight = {
 					enable = true,
 					disable = { "text" },
-					-- disable = function(_, buf)
-					-- 	local max_filesize = 100 * 1024 -- 100 KB
-					-- 	local stats = vim.loop.fs_stat(vim.api.nvim_buf_get_name(buf))
-					-- 	return stats and stats.size > max_filesize
-					-- end,
+					-- Performance optimization: disable for large files
+					disable = function(_, buf)
+						local max_filesize = 1024 * 1024 -- 1 MB
+						local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
+						return ok and stats and stats.size > max_filesize
+					end,
 				},
 				indent = {
-					enable = false,
+					enable = false, -- Disabled for better performance
 				},
+			})
+
+			-- Store parser getter in global for other modules
+			_G.get_cached_parser = get_cached_parser
+
+			-- Clear parser cache when buffer is deleted
+			vim.api.nvim_create_autocmd("BufDelete", {
+				callback = function(event)
+					for key, _ in pairs(parser_cache) do
+						if key:match("^" .. event.buf .. ":") then
+							parser_cache[key] = nil
+						end
+					end
+				end,
 			})
 			vim.filetype.add({
 				extension = {
