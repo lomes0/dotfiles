@@ -29,15 +29,47 @@ statuscolumn.foldMark = function(foldlevel)
 end
 
 statuscolumn.folds = function()
-	local foldlevel = vim.fn.foldlevel(vim.v.lnum)
-	local foldclosed = vim.fn.foldclosed(vim.v.lnum)
-
-	if (foldlevel > 0) and (foldclosed ~= -1) and (foldclosed == vim.v.lnum) then
-		-- line is a closed fold
-		return statuscolumn.foldMark(foldlevel)
+	-- Initialize cache if not exists
+	if not statuscolumn.cache then
+		statuscolumn.cache = {
+			foldlevel = {},
+			foldclosed = {},
+			last_lnum = -1,
+			last_result = "",
+		}
 	end
 
-	return " "
+	local lnum = vim.v.lnum
+
+	-- Use cache if line hasn't changed
+	if statuscolumn.cache.last_lnum == lnum and statuscolumn.cache.last_result ~= "" then
+		return statuscolumn.cache.last_result
+	end
+
+	-- Cache foldlevel and foldclosed calls
+	local foldlevel = statuscolumn.cache.foldlevel[lnum]
+	if not foldlevel then
+		foldlevel = vim.fn.foldlevel(lnum)
+		statuscolumn.cache.foldlevel[lnum] = foldlevel
+	end
+
+	local foldclosed = statuscolumn.cache.foldclosed[lnum]
+	if not foldclosed then
+		foldclosed = vim.fn.foldclosed(lnum)
+		statuscolumn.cache.foldclosed[lnum] = foldclosed
+	end
+
+	local result = " "
+	if (foldlevel > 0) and (foldclosed ~= -1) and (foldclosed == lnum) then
+		-- line is a closed fold
+		result = statuscolumn.foldMark(foldlevel)
+	end
+
+	-- Cache the result
+	statuscolumn.cache.last_lnum = lnum
+	statuscolumn.cache.last_result = result
+
+	return result
 end
 
 statuscolumn.statuscolumn = function()
@@ -55,23 +87,38 @@ statuscolumn.statuscolumn = function()
 end
 
 local function statuscolumn_update()
-	vim.api.nvim_command("redraw!")
-	local zvals = ""
-	for i = 1, statuscolumn.max_level do
-		if statuscolumn.levels[i] then
-			zvals = zvals .. tostring(i) .. " " .. statuscolumn.fold .. "\n"
-		else
-			zvals = zvals .. tostring(i) .. " " .. "\n"
+	-- Schedule UI updates to avoid blocking
+	vim.schedule(function()
+		-- Clear cache when updating
+		if statuscolumn.cache then
+			statuscolumn.cache.foldlevel = {}
+			statuscolumn.cache.foldclosed = {}
+			statuscolumn.cache.last_lnum = -1
+			statuscolumn.cache.last_result = ""
 		end
-	end
-	if statuscolumn.complement then
-		zvals = zvals .. "n " .. statuscolumn.fold
-	else
-		zvals = zvals .. "n "
-	end
 
-	vim.api.nvim_command("Noice dismiss")
-	Snacks.notify.info(zvals)
+		vim.cmd("redraw!")
+
+		local zvals = ""
+		for i = 1, statuscolumn.max_level do
+			if statuscolumn.levels[i] then
+				zvals = zvals .. tostring(i) .. " " .. statuscolumn.fold .. "\n"
+			else
+				zvals = zvals .. tostring(i) .. " " .. "\n"
+			end
+		end
+		if statuscolumn.complement then
+			zvals = zvals .. "n " .. statuscolumn.fold
+		else
+			zvals = zvals .. "n "
+		end
+
+		-- Schedule notification separately
+		vim.schedule(function()
+			vim.cmd("Noice dismiss")
+			Snacks.notify.info(zvals)
+		end)
+	end)
 end
 
 local function zi_update(i)
