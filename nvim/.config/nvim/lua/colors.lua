@@ -95,52 +95,58 @@ M.colorscheme_opts = {
 			fg = "",
 		},
 		function()
-			local opts_noice = { fg = "#b1c9b8", bg = "none" }
-			local opts_noice_search = { fg = "#ffd675", bg = "none" }
-			-- Git
-			vim.api.nvim_set_hl(0, "SignColumn", { fg = "none", bg = "none" })
-			vim.api.nvim_set_hl(0, "GitSignsAdd", { bg = "none", fg = "#8bb38e" })
-			vim.api.nvim_set_hl(0, "GitSignsChange", { bg = "none", fg = "#fce2bb" })
-			vim.api.nvim_set_hl(0, "GitSignsDelete", { bg = "none", fg = "#c34043" })
-			vim.api.nvim_set_hl(0, "LineNr", { fg = "#808080", bg = "none" })
+			-- Batch highlight setting for performance
+			local highlights = {
+				-- Git highlights
+				SignColumn = { fg = "none", bg = "none" },
+				GitSignsAdd = { bg = "none", fg = "#8bb38e" },
+				GitSignsChange = { bg = "none", fg = "#fce2bb" },
+				GitSignsDelete = { bg = "none", fg = "#c34043" },
+				LineNr = { fg = "#808080", bg = "none" },
 
-			-- Noice
-			vim.api.nvim_set_hl(0, "NoiceCmdlinePopupBorderSearch", opts_noice_search)
-			vim.api.nvim_set_hl(0, "NoiceCmdlineIconSearch", opts_noice_search)
-			vim.api.nvim_set_hl(0, "NoiceCmdline", opts_noice)
-			vim.api.nvim_set_hl(0, "NoiceCmdlineIcon", opts_noice)
-			vim.api.nvim_set_hl(0, "NoiceCmdlinePopupBorder", opts_noice)
+				-- Noice highlights
+				NoiceCmdlinePopupBorderSearch = { fg = "#ffd675", bg = "none" },
+				NoiceCmdlineIconSearch = { fg = "#ffd675", bg = "none" },
+				NoiceCmdline = { fg = "#b1c9b8", bg = "none" },
+				NoiceCmdlineIcon = { fg = "#b1c9b8", bg = "none" },
+				NoiceCmdlinePopupBorder = { fg = "#b1c9b8", bg = "none" },
 
-			-- Float
-			vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
-			vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
+				-- Float highlights
+				NormalFloat = { link = "Normal" },
+				Float = { link = "Normal" },
 
-			-- Lsp
-			vim.api.nvim_set_hl(0, "@type.builtin.c", { fg = "#e6b791" })
-			vim.api.nvim_set_hl(0, "@type.builtin.cpp", { fg = "#e6b791" })
-			vim.api.nvim_set_hl(0, "@lsp.type.class.c", { fg = "#e6b791" })
-			vim.api.nvim_set_hl(0, "@lsp.mod.defaultLibrary.c", { fg = "#e6b791" })
+				-- LSP and Treesitter highlights (grouped by color)
+				["@type.builtin.c"] = { fg = "#e6b791" },
+				["@type.builtin.cpp"] = { fg = "#e6b791" },
+				["@lsp.type.class.c"] = { fg = "#e6b791" },
+				["@lsp.mod.defaultLibrary.c"] = { fg = "#e6b791" },
 
-			-- vim.api.nvim_set_hl(0, "@variable.parameter", { fg = "#b6cfcb" })
-			vim.api.nvim_set_hl(0, "@variable.parameter", { fg = "#e6e3be" })
-			vim.api.nvim_set_hl(0, "@lsp.type.variable.c", { fg = "#e6e3be" })
+				["@variable.parameter"] = { fg = "#e6e3be" },
+				["@lsp.type.variable.c"] = { fg = "#e6e3be" },
 
-			vim.api.nvim_set_hl(0, "@lsp.type.function.c", { fg = "#abd1c8" })
-			vim.api.nvim_set_hl(0, "@variable.c", { fg = "#dedac5" })
+				["@lsp.type.function.c"] = { fg = "#abd1c8" },
+				["@variable.c"] = { fg = "#dedac5" },
+				["@function.call"] = { fg = "#82abc4", bg = "none", bold = true },
+				["@keyword.modifier"] = { fg = "#937ba8", bg = "none" },
 
-			vim.api.nvim_set_hl(0, "@function.call", { fg = "#82abc4", bg = "none", bold = true })
-			vim.api.nvim_set_hl(0, "@keyword.modifier", { fg = "#937ba8", bg = "none", bold = false })
+				-- Keyword highlights (all using same color)
+				["@keyword.directive"] = { fg = "#c2a9d9", bg = "none" },
+				["@keyword.directive.cpp"] = { fg = "#c2a9d9", bg = "none" },
+				["@keyword.repeat"] = { fg = "#c2a9d9", bg = "none" },
+				["@keyword.repeat.c"] = { fg = "#c2a9d9", bg = "none" },
+				["@keyword.conditional"] = { fg = "#c2a9d9", bg = "none" },
+				["@keyword.function"] = { fg = "#c2a9d9", bg = "none" },
+				["@keyword.function.rust"] = { fg = "#c2a9d9", bg = "none" },
+				["@keyword.modifier.rust"] = { fg = "#c2a9d9", bg = "none" },
+				["@keyword.rust"] = { fg = "#c2a9d9", bg = "none" },
 
-			vim.api.nvim_set_hl(0, "@keyword.directive", { fg = "#c2a9d9", bg = "none", bold = false })
-			vim.api.nvim_set_hl(0, "@keyword.directive.cpp", { fg = "#c2a9d9", bg = "none", bold = false })
-			vim.api.nvim_set_hl(0, "@keyword.repeat", { fg = "#c2a9d9", bg = "none", bold = false })
-			vim.api.nvim_set_hl(0, "@keyword.repeat.c", { fg = "#c2a9d9", bg = "none", bold = false })
-			vim.api.nvim_set_hl(0, "@keyword.conditional", { fg = "#c2a9d9", bg = "none", bold = false })
-			vim.api.nvim_set_hl(0, "@keyword.function", { fg = "#c2a9d9", bg = "none", bold = false })
-			vim.api.nvim_set_hl(0, "@keyword.function.rust", { fg = "#c2a9d9", bg = "none", bold = false })
-			vim.api.nvim_set_hl(0, "@keyword.modifier.rust", { fg = "#c2a9d9", bg = "none", bold = false })
-			vim.api.nvim_set_hl(0, "@keyword.rust", { fg = "#c2a9d9", bg = "none", bold = false })
-			vim.api.nvim_set_hl(0, "@_parent", { fg = "#f2eca7", bg = "none", bold = false })
+				["@_parent"] = { fg = "#f2eca7", bg = "none" },
+			}
+
+			-- Batch apply all highlights
+			for group, opts in pairs(highlights) do
+				vim.api.nvim_set_hl(0, group, opts)
+			end
 		end,
 	},
 	["tokyonight-moon"] = {
@@ -155,12 +161,17 @@ M.colorscheme_opts = {
 			fg = "",
 		},
 		function()
-			vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
-			vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
-			vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
-			vim.api.nvim_set_hl(0, "CurSearch", { bg = "#738994", fg = "white" })
-			vim.api.nvim_set_hl(0, "IncSearch", { bg = "#738994", fg = "white" })
-			vim.api.nvim_set_hl(0, "Search", { bg = "#738994", fg = "white" })
+			local highlights = {
+				NormalFloat = { link = "Normal" },
+				FloatBorder = { link = "Normal" },
+				Float = { link = "Normal" },
+				CurSearch = { bg = "#738994", fg = "white" },
+				IncSearch = { bg = "#738994", fg = "white" },
+				Search = { bg = "#738994", fg = "white" },
+			}
+			for group, opts in pairs(highlights) do
+				vim.api.nvim_set_hl(0, group, opts)
+			end
 		end,
 	},
 	["catppuccin-macchiato"] = {
@@ -175,32 +186,40 @@ M.colorscheme_opts = {
 			fg = "",
 		},
 		function()
-			vim.api.nvim_set_hl(0, "FloatBorder", { link = "Normal" })
-			vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal" })
-			vim.api.nvim_set_hl(0, "Float", { link = "Normal" })
-			vim.api.nvim_set_hl(0, "@type.builtin.c", { fg = "#abd4d6" })
-			vim.api.nvim_set_hl(0, "@type.builtin.cpp", { fg = "#abd4d6" })
+			local highlights = {
+				FloatBorder = { link = "Normal" },
+				NormalFloat = { link = "Normal" },
+				Float = { link = "Normal" },
+				["@type.builtin.c"] = { fg = "#abd4d6" },
+				["@type.builtin.cpp"] = { fg = "#abd4d6" },
+			}
+			for group, opts in pairs(highlights) do
+				vim.api.nvim_set_hl(0, group, opts)
+			end
 		end,
 	},
 }
 
 function M.SetColorScheme(scheme)
-	vim.api.nvim_command("colorscheme " .. scheme)
+	vim.cmd("colorscheme " .. scheme)
 
 	local opts = M.colorscheme_opts[scheme]
 	local opts_ts = opts[1]
 	local opts_cursor = opts[2]
 	local callback = opts[3]
 
-	vim.api.nvim_set_hl(0, "Folded", { bg = "none" })
-	M.set_color_ts_context(opts_ts)
-	-- M.set_color_cursor_hl(opts_cursor)
-	M.set_color_bufferline()
-	M.set_color_win_seperator()
-	M.set_color_visual()
-	M.set_color_debug()
+	-- Schedule UI updates to avoid blocking
+	vim.schedule(function()
+		vim.api.nvim_set_hl(0, "Folded", { bg = "none" })
+		M.set_color_ts_context(opts_ts)
+		M.set_color_bufferline()
+		M.set_color_win_seperator()
+		M.set_color_visual()
+		M.set_color_debug()
 
-	callback()
+		-- Schedule callback separately to prevent nested scheduling issues
+		vim.schedule(callback)
+	end)
 end
 
 function M.init()
