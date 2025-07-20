@@ -7,3 +7,5 @@ More:
  - termshark
  - ~/.local/share/applications
  - opt installations
+ - nushell fuzzy finnder
+   - plugins=(git zsh-syntax-highlighting zsh-autosuggestions zsh-completions)

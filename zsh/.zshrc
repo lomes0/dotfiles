@@ -1,3 +1,8 @@
+autoload -Uz compinit
+compinit
+autoload -Uz bashcompinit
+bashcompinit
+
 # Add deno completions to search path
 if [[ ":$FPATH:" != *":/home/eransa/.zsh/completions:"* ]]; then export FPATH="/home/eransa/.zsh/completions:$FPATH"; fi
 # zmodload zsh/zprof
@@ -24,7 +29,7 @@ CASE_SENSITIVE="true"
 # ENABLE_CORRECTION="true"
 COMPLETION_WAITING_DOTS="true"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
-plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
+plugins=(git zsh-syntax-highlighting zsh-autosuggestions zsh-completions)
 source $ZSH/oh-my-zsh.sh
 
 #
@@ -109,9 +114,7 @@ export LANGUAGE=en_IN.UTF-8
 
 eval "$(starship init zsh)"
 
-# fpath=(~/.zsh/completions $fpath)
-# autoload -U compinit
-# compinit
+fpath=(~/.zsh/completions $fpath)
 
 export PATH=$CARGO_HOME/bin:$PATH
 
@@ -124,3 +127,7 @@ export PATH=$CARGO_HOME/bin:$PATH
 . "/home/eransa/.deno/env"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# eval "$(tv init zsh)"
+#
+# source $HOME/.config/television/shell/integration.zsh
