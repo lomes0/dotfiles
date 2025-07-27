@@ -22,47 +22,6 @@ return {
 				incremental_selection = {
 					enable = true,
 				},
-				textobjects = {
-					swap = {
-						enable = true,
-						swap_next = {
-							["L"] = "@parameter.inner",
-						},
-						swap_previous = {
-							["H"] = "@parameter.inner",
-						},
-					},
-					select = {
-						enable = true,
-						lookahead = true,
-						keymaps = {
-							["af"] = "@function.outer",
-							["if"] = "@function.inner",
-							["ac"] = "@conditional.outer",
-							["ic"] = "@conditional.inner",
-							["ap"] = "@parameter.outer",
-							["ip"] = "@parameter.inner",
-						},
-					},
-					move = {
-						enable = true,
-						set_jumps = true,
-						goto_next_start = {
-							["]m"] = "@function.outer",
-							["]d"] = "@conditional.outer",
-						},
-						goto_next_end = {
-							["]M"] = "@function.outer",
-							["]D"] = "@conditional.outer",
-						},
-						goto_previous_start = {
-							["[m"] = "@function.outer",
-						},
-						goto_previous_end = {
-							["[M"] = "@function.outer",
-						},
-					},
-				},
 				-- Only install essential parsers initially
 				ensure_installed = {
 					"lua", -- Always needed for config
@@ -73,12 +32,15 @@ return {
 				auto_install = true, -- Install parsers on demand
 				highlight = {
 					enable = true,
-					disable = { "text" },
-					-- Performance optimization: disable for large files
+					-- Performance optimization: disable for large files and text files
 					disable = function(_, buf)
 						local max_filesize = 1024 * 1024 -- 1 MB
 						local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(buf))
-						return ok and stats and stats.size > max_filesize
+						if ok and stats and stats.size > max_filesize then
+							return true
+						end
+						-- Also disable for text files
+						return vim.bo[buf].filetype == "text"
 					end,
 				},
 				indent = {
@@ -118,6 +80,15 @@ return {
 				sync_install = false,
 				auto_install = false,
 				textobjects = {
+					swap = {
+						enable = true,
+						swap_next = {
+							["L"] = "@parameter.inner",
+						},
+						swap_previous = {
+							["H"] = "@parameter.inner",
+						},
+					},
 					move = {
 						enable = true,
 						set_jumps = true, -- whether to set jumps in the jumplist
@@ -127,10 +98,6 @@ return {
 							["]p"] = "@parameter.outer",
 							["]a"] = "@assignment.outer",
 							["]o"] = "@loop.*",
-							-- ["]b"] = "@block.outer",
-							-- ["]s"] = "@statement.outer",
-							-- ["]s"] = { query = "@scope", query_group = "locals", desc = "Next scope" },
-							-- ["]z"] = { query = "@fold", query_group = "folds", desc = "Next fold" },
 						},
 						goto_next_end = {
 							["]F"] = "@function.outer",
@@ -138,8 +105,6 @@ return {
 							["]P"] = "@parameter.outer",
 							["]A"] = "@assignment.outer",
 							["]O"] = "@loop.*",
-							-- ["]B"] = "@block.outer",
-							-- ["]S"] = "@statement.outer",
 						},
 						goto_previous_start = {
 							["[f"] = "@function.outer",
@@ -147,8 +112,6 @@ return {
 							["[p"] = "@parameter.outer",
 							["[a"] = "@assignment.outer",
 							["[o"] = "@loop.*",
-							-- ["[b"] = "@block.outer",
-							-- ["[s"] = "@statement.outer",
 						},
 						goto_previous_end = {
 							["[F"] = "@function.outer",
@@ -156,8 +119,6 @@ return {
 							["[P"] = "@parameter.outer",
 							["[A"] = "@assignment.outer",
 							["[O"] = "@loop.*",
-							-- ["[B"] = "@block.outer",
-							-- ["[S"] = "@statement.outer",
 						},
 					},
 					select = {
@@ -166,6 +127,10 @@ return {
 						keymaps = {
 							["af"] = "@function.outer",
 							["if"] = "@function.inner",
+							["ac"] = "@conditional.outer",
+							["ic"] = "@conditional.inner",
+							["ap"] = "@parameter.outer",
+							["ip"] = "@parameter.inner",
 							["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
 						},
 						selection_modes = {
@@ -211,7 +176,6 @@ return {
 			vim.keymap.set("n", "[]", function()
 				treesitter_ctx.toggle()
 			end, { noremap = true, silent = true, desc = "Treesitter toggle context" })
-			treesitter_ctx.disable()
 		end,
 	},
 }
