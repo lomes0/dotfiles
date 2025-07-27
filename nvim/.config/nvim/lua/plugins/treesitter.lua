@@ -20,7 +20,7 @@ return {
 				modules = {},
 				ignore_install = {},
 				incremental_selection = {
-					enable = false,
+					enable = true,
 				},
 				textobjects = {
 					swap = {
@@ -40,6 +40,8 @@ return {
 							["if"] = "@function.inner",
 							["ac"] = "@class.outer",
 							["ic"] = "@class.inner",
+							["ap"] = "@parameter.outer",
+							["ip"] = "@parameter.inner",
 						},
 					},
 					move = {
