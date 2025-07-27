@@ -35,11 +35,11 @@ let light_theme = {
     shape_closure: green_bold
     shape_custom: green
     shape_datetime: cyan_bold
-    shape_directory: cyan
+    shape_directory: { fg: cyan attr: u }  # underline directories like zsh
     shape_external: cyan
     shape_externalarg: green_bold
     shape_external_resolved: light_purple_bold
-    shape_filepath: cyan
+    shape_filepath: { fg: cyan attr: u }  # underline valid file paths like zsh
     shape_flag: blue_bold
     shape_float: purple_bold
     # shapes are used to change the cli syntax highlighting
@@ -68,20 +68,36 @@ let light_theme = {
     shape_raw_string: light_purple
 }
 
-# External completer example
-let carapace_completer = {|spans|
-    carapace $spans.0 nushell ...$spans | from json
-}
-
+# Enhanced external completers
 let carapace_completer = {|spans| 
     carapace-bridge _carapace nushell '' zsh ...$spans | from json
 }
 
-let ls_completer = {
-	paths | each { |path| $path | path basename }
+# Custom completers for better experience
+let ls_completer = {|spans|
+    let path = if ($spans | length) > 1 { $spans.1 } else { "." }
+    ls $path | each { |it| { value: $it.name, description: $it.type } }
 }
 
- # This completer will use carapace by default
+let git_completer = {|spans|
+    # Use carapace for git but with enhanced error handling
+    try {
+        carapace-bridge _carapace nushell '' zsh ...$spans | from json
+    } catch {
+        # Fallback to basic git branch completion for git switch/checkout
+        if ($spans | length) >= 2 and ($spans.1 in ["switch", "checkout"]) {
+            git branch --format="%(refname:short)" 
+            | lines 
+            | each { |branch| { value: $branch, description: "branch" } }
+        } else { [] }
+    }
+}
+
+let docker_completer = {|spans|
+    carapace-bridge _carapace nushell '' zsh ...$spans | from json
+}
+
+# This completer will use carapace by default with custom overrides
 let external_completer = {|spans|
     let expanded_alias = scope aliases
     | where name == $spans.0
@@ -96,15 +112,11 @@ let external_completer = {|spans|
     }
 
     match $spans.0 {
-        # carapace completions are incorrect for nu
-        # nu => $fish_completer
-        # fish completes commits and branch names in a nicer way
-        # git => $fish_completer
-        # carapace doesn't have completions for asdf
-        # asdf => $fish_completer
-        # use zoxide completions for zoxide commands
-        # __zoxide_z | __zoxide_zi => $zoxide_completer
-        ls => $ls_completer
+        # Custom completers for better experience
+        ls | eza | exa => $ls_completer
+        git => $git_completer
+        docker => $docker_completer
+        # Use carapace for everything else
         _ => $carapace_completer
     } | do $in $spans
 }
@@ -174,13 +186,14 @@ $env.config = {
         case_sensitive: false # set to true to enable case-sensitive completions
         quick: true    # set this to false to prevent auto-selecting completions when only one remains
         partial: true    # set this to false to prevent partial filling of the prompt
-        algorithm: "prefix"    # prefix or fuzzy
+        algorithm: "fuzzy"    # prefix or fuzzy - fuzzy is more like zsh with fzf
         external: {
             enable: true # set to false to prevent nushell looking into $env.PATH to find more suggestions, `false` recommended for WSL users as this look up may be very slow
             max_results: 100 # setting it lower can improve completion performance at the cost of omitting some options
             completer: $external_completer # check 'carapace_completer' above as an example
         }
         use_ls_colors: true # set this to true to enable file/path/directory completions using LS_COLORS
+        sort: "alphabetical" # "alphabetical" or "smart" - smart sorts by type (directories first)
     }
 
     cursor_shape: {
@@ -226,7 +239,7 @@ $env.config = {
     }
     render_right_prompt_on_last_line: false # true or false to enable or disable right prompt to be rendered on last line of the prompt.
     use_kitty_protocol: false # enables keyboard enhancement protocol implemented by kitty console, only if your terminal support this.
-    highlight_resolved_externals: false # true enables highlighting of external commands in the repl resolved by which.
+    highlight_resolved_externals: true # true enables highlighting of external commands in the repl resolved by which - helps with path validation
     recursion_limit: 50 # the maximum number of times nushell allows recursion before stopping it
 
     plugins: {} # Per-plugin configuration. See https://www.nushell.sh/contributor-book/plugins.html#configuration.
@@ -877,12 +890,23 @@ use ~/.cache/starship/init.nu
 
 use ./nu_scripts/themes/nu-themes/catppuccin-mocha.nu
 
-$env.config = ($env.config | merge {color_config: (catppuccin-mocha)})
+# Enhanced theme with zsh-like path highlighting
+let enhanced_theme = (catppuccin-mocha | merge {
+    shape_filepath: { fg: "#e9f5ef" attr: u }      # light green with underline for valid file paths
+    shape_directory: { fg: "#e9f5ef" attr: u }     # light green with underline for directories  
+    shape_external_resolved: { fg: "#a6e3a1" attr: u }  # green with underline for resolved externals
+})
+
+$env.config = ($env.config | merge {color_config: $enhanced_theme})
 
 alias ll = eza --color=always --long --git --no-filesize --icons=always --no-time --no-user --no-permissions
 alias zl = zellij
 alias lz = lazygit --ucd ~/.config/lazygit
 alias cat = bat
+
+# FZF-style aliases for quick access
+alias cdf = fcd  # fuzzy cd
+alias vif = ff | xargs nvim  # fuzzy file finder + edit
 
 ## Zoxide
 #source ~/.zoxide.nu
@@ -902,39 +926,18 @@ alias pull = git pull
 alias push = git push
 alias switch = git switch
 
-## git switch using fuzzy finding
+## git switch using fuzzy finding (enhanced)
 def gbs [] {
-  let branch = (
-    git branch |
-    split row "\n" |
-    str trim |
-    where ($it !~ '\*') |
-    where ($it != '') |
-    str join (char nl) |
-    fzf --no-multi
-  )
-  if $branch != '' {
-    git switch $branch
-  }
-}
-
-## git branch delete using fuzzy finding
-def gbd [] {
-  let branches = (
-    git branch |
-    split row "\n" |
-    str trim |
-    where ($it !~ '\*') |
-    where ($it != '') |
-    str join (char nl) |
-    fzf --multi |
-    split row "\n" |
-    where ($it != '')
-  )
-  if ($branches | length) > 0 {
-    $branches | each { |branch| git branch -d $branch }
-    ""
-  }
+    let branches = (git branch --format="%(refname:short)" | where $it != (git branch --show-current))
+    if ($branches | length) == 0 {
+        print "No other branches available"
+        return
+    }
+    
+    let branch = ($branches | fzf --preview "git log --oneline {1} | head -10")
+    if $branch != '' {
+        git switch $branch
+    }
 }
 
 ## Adds to the gitignore file using gitignore.io
