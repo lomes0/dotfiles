@@ -38,8 +38,8 @@ return {
 						keymaps = {
 							["af"] = "@function.outer",
 							["if"] = "@function.inner",
-							["ac"] = "@class.outer",
-							["ic"] = "@class.inner",
+							["ac"] = "@conditional.outer",
+							["ic"] = "@conditional.inner",
 							["ap"] = "@parameter.outer",
 							["ip"] = "@parameter.inner",
 						},
