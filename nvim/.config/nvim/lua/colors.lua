@@ -16,11 +16,7 @@ function M.set_color_visual()
 	})
 end
 
--- function M.set_color_cursor_hl(opts)
--- 	vim.api.nvim_set_hl(0, "LspReferenceText", opts)
--- end
-
-function M.set_color_win_seperator()
+function M.set_color_win_separator()
 	vim.api.nvim_set_hl(0, "WinSeparator", {
 		bg = "none",
 		fg = "#6e6a86",
@@ -47,8 +43,6 @@ function M.set_color_ts_context(opts_ts)
 end
 
 function M.set_color_debug()
-	-- Define highlight groups for white line background
-	-- vim.cmd('highlight DapBreakpointLine guifg=#000000')
 	vim.api.nvim_set_hl(0, "DapStoppedLine", {
 		bg = "#365d78", -- Background color
 		fg = "#c5cdd6", -- Foreground color
@@ -72,29 +66,22 @@ function M.set_color_debug()
 end
 
 function M.set_color_bufferline()
-	-- Buffer
-	local aaa = "#4a4a4a"
+	local buffer_bg = "#4a4a4a"
 	vim.api.nvim_set_hl(0, "BufferLineFill", { bg = "none", fg = "none" })
-	vim.api.nvim_set_hl(0, "BufferLineSeparator", { bg = aaa, fg = aaa })
-	vim.api.nvim_set_hl(0, "BufferLineSeparatorSelected", { bg = aaa, fg = aaa })
-	vim.api.nvim_set_hl(0, "BufferLineModifiedSelected", { bg = aaa, fg = "none" })
-	vim.api.nvim_set_hl(0, "BufferLineBuffer", { bg = aaa, fg = "none" })
-	vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { bg = aaa, fg = "none" })
+	vim.api.nvim_set_hl(0, "BufferLineSeparator", { bg = buffer_bg, fg = buffer_bg })
+	vim.api.nvim_set_hl(0, "BufferLineSeparatorSelected", { bg = buffer_bg, fg = buffer_bg })
+	vim.api.nvim_set_hl(0, "BufferLineModifiedSelected", { bg = buffer_bg, fg = "none" })
+	vim.api.nvim_set_hl(0, "BufferLineBuffer", { bg = buffer_bg, fg = "none" })
+	vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { bg = buffer_bg, fg = "none" })
 end
 
 M.colorscheme_opts = {
 	["kanagawa"] = {
-		-- cursor
-		{
+		treesitter_context = {
 			bg = "#3d3e42",
-			fg = "",
+			italic = true,
 		},
-		-- treesitter
-		{
-			bg = "#3d3e42",
-			fg = "",
-		},
-		function()
+		custom_highlights = function()
 			-- Batch highlight setting for performance
 			local highlights = {
 				-- Git highlights
@@ -150,17 +137,11 @@ M.colorscheme_opts = {
 		end,
 	},
 	["tokyonight-moon"] = {
-		-- cursor
-		{
-			bg = "#51576d",
-			fg = "",
-		},
-		-- treesitter
-		{
+		treesitter_context = {
 			bg = "#3d3e42",
-			fg = "",
+			italic = true,
 		},
-		function()
+		custom_highlights = function()
 			local highlights = {
 				NormalFloat = { link = "Normal" },
 				FloatBorder = { link = "Normal" },
@@ -175,17 +156,11 @@ M.colorscheme_opts = {
 		end,
 	},
 	["catppuccin-macchiato"] = {
-		-- cursor
-		{
+		treesitter_context = {
 			bg = "#51576d",
-			fg = "",
+			italic = true,
 		},
-		-- treesitter
-		{
-			bg = "#51576d",
-			fg = "",
-		},
-		function()
+		custom_highlights = function()
 			local highlights = {
 				FloatBorder = { link = "Normal" },
 				NormalFloat = { link = "Normal" },
@@ -201,24 +176,30 @@ M.colorscheme_opts = {
 }
 
 function M.SetColorScheme(scheme)
+	if not M.colorscheme_opts[scheme] then
+		vim.notify("Unknown colorscheme: " .. scheme, vim.log.levels.WARN)
+		return
+	end
+
 	vim.cmd("colorscheme " .. scheme)
 
 	local opts = M.colorscheme_opts[scheme]
-	local opts_ts = opts[1]
-	local opts_cursor = opts[2]
-	local callback = opts[3]
+	local ts_context_opts = opts.treesitter_context
+	local custom_highlights = opts.custom_highlights
 
 	-- Schedule UI updates to avoid blocking
 	vim.schedule(function()
 		vim.api.nvim_set_hl(0, "Folded", { bg = "none" })
-		M.set_color_ts_context(opts_ts)
+		M.set_color_ts_context(ts_context_opts)
 		M.set_color_bufferline()
-		M.set_color_win_seperator()
+		M.set_color_win_separator()
 		M.set_color_visual()
 		M.set_color_debug()
 
-		-- Schedule callback separately to prevent nested scheduling issues
-		vim.schedule(callback)
+		-- Apply custom highlights if they exist
+		if custom_highlights then
+			vim.schedule(custom_highlights)
+		end
 	end)
 end
 
