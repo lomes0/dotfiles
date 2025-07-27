@@ -98,7 +98,68 @@ return {
 			cmd_abbrev("helpclose", "FloatingHelpClose")
 		end,
 	},
-	-- Removed nvim-tree in favor of neo-tree for consistency
+	{
+		"nvim-tree/nvim-tree.lua",
+		version = "*",
+		lazy = false,
+		dependencies = {
+			"nvim-tree/nvim-web-devicons",
+		},
+		config = function()
+			require("nvim-tree").setup({
+				view = {
+					number = false,
+					relativenumber = false,
+				},
+				on_attach = function(bufnr)
+					local api = require("nvim-tree.api")
+
+					local function opts(desc)
+						return {
+							desc = "nvim-tree: " .. desc,
+							buffer = bufnr,
+							noremap = true,
+							silent = true,
+							nowait = true,
+						}
+					end
+
+					-- default mappings
+					api.config.mappings.default_on_attach(bufnr)
+					-- custom mappings
+					vim.keymap.set("n", "<c-y>", api.tree.change_root_to_parent, opts("NvimTree Up"))
+				end,
+			})
+
+			local nt_api = require("nvim-tree.api")
+			local tree_open = false
+			local function tab_enter()
+				if tree_open then
+					nt_api.tree.open()
+					vim.api.nvim_command("wincmd p")
+				else
+					nt_api.tree.close()
+				end
+			end
+			nt_api.events.subscribe(nt_api.events.Event.TreeOpen, function()
+				tree_open = true
+			end)
+			nt_api.events.subscribe(nt_api.events.Event.TreeClose, function()
+				tree_open = false
+			end)
+			vim.api.nvim_create_autocmd({ "TabEnter" }, { callback = tab_enter })
+
+			vim.keymap.set("n", "`", function()
+				require("nvim-tree.api").tree.toggle({ focus = false })
+			end, { noremap = true, silent = true, desc = "NvimTree Toggle" })
+
+			local function open_nvim_tree()
+				require("nvim-tree.api").tree.toggle({ focus = false })
+			end
+
+			-- vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
+		end,
+	},
 	{
 		"nvim-lua/plenary.nvim",
 		lazy = false,
@@ -335,7 +396,7 @@ return {
 				desc = "Snacks Picker LSP Workspace Symbols", -- Fixed description
 			},
 			{
-				"<lt>nh", -- Changed to avoid conflict
+				"<lt>n", -- Changed to avoid conflict
 				function()
 					Snacks.picker.notifications()
 				end,
@@ -391,7 +452,7 @@ return {
 				desc = "Snacks Select Scratch Buffer",
 			},
 			{
-				"<lt>ns", -- Changed to avoid conflict
+				"<lt>hs", -- Changed to avoid conflict
 				function()
 					Snacks.notifier.show_history()
 				end,
