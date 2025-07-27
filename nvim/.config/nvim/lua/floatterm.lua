@@ -2,7 +2,7 @@ local M = {}
 
 M.Terminals = {}
 
-Floatterm = {}
+local Floatterm = {}
 Floatterm.__index = Floatterm
 
 function Floatterm:new()
@@ -10,6 +10,7 @@ function Floatterm:new()
 		loaded = nil,
 		buf = nil,
 		win = nil,
+		job_id = nil,
 	}
 
 	setmetatable(term, Floatterm)
@@ -24,61 +25,86 @@ function Floatterm:toggle()
 			self.buf = vim.api.nvim_create_buf(false, true)
 			vim.api.nvim_set_option_value("bufhidden", "hide", { buf = self.buf })
 			vim.api.nvim_set_option_value("filetype", "terminal", { buf = self.buf })
+
+			-- Start terminal job in the buffer
+			vim.api.nvim_buf_call(self.buf, function()
+				self.job_id = vim.fn.termopen(vim.o.shell)
+			end)
 		end
+
+		-- Calculate centered window position
+		local win_height = math.ceil(vim.o.lines * 0.8)
+		local win_width = math.ceil(vim.o.columns * 0.75)
+		local row = math.ceil((vim.o.lines - win_height) / 2)
+		local col = math.ceil((vim.o.columns - win_width) / 2)
 
 		-- Create a window
 		self.win = vim.api.nvim_open_win(self.buf, true, {
 			border = "rounded",
 			relative = "editor",
 			style = "minimal",
-			height = math.ceil(vim.o.lines * 0.92),
-			width = math.ceil(vim.o.columns * 0.75),
-			row = 10, --> Top of the window
-			col = math.ceil(vim.o.columns * 1.0), --> Far right; should add up to 1 with win_width
+			height = win_height,
+			width = win_width,
+			row = row,
+			col = col,
 			focusable = true,
 		})
 
-		vim.api.nvim_set_option_value("winblend", 0, { win = self.win }) --> Semi transparent buffer
+		vim.api.nvim_set_option_value("winblend", 0, { win = self.win })
+
 		-- Buffer-local Keymaps
 		local keymaps_opts = { silent = true, buffer = self.buf }
+		vim.keymap.set("t", "<ESC>", function()
+			Launch_floatterm(1)
+		end, keymaps_opts)
 		vim.keymap.set("n", "<ESC>", function()
 			Launch_floatterm(1)
 		end, keymaps_opts)
 		vim.keymap.set("n", "q", function()
 			Launch_floatterm(1)
 		end, keymaps_opts)
+
+		self.loaded = true
+
+		-- Enter terminal mode automatically
+		vim.cmd("startinsert")
 	else
-		vim.api.nvim_win_hide(self.win)
+		vim.api.nvim_win_close(self.win, true)
+		self.win = nil
+		self.loaded = false
 	end
-	self.loaded = not self.loaded
 end
 
 function Launch_floatterm(idx)
-	M.Terminals[idx]:toggle()
-end
-
--- function Embad_floatterm()
--- 	local win = vim.api.nvim_get_current_win()
--- 	local buf = vim.api.nvim_win_get_buf(win)
--- 	local cursor = vim.api.nvim_win_get_cursor(win)
---
--- 	vim.api.nvim_win_close(win, true)
--- 	vim.api.nvim_set_current_buf(buf)
--- 	vim.api.nvim_win_set_cursor(vim.api.nvim_get_current_win(), cursor)
--- end
-
-function Focus_floatterm()
-	vim.api.nvim_set_current_win(M.Terminals[1].win)
+	if M.Terminals[idx] then
+		M.Terminals[idx]:toggle()
+	else
+		vim.notify("Terminal " .. idx .. " not found", vim.log.levels.ERROR)
+	end
 end
 
 function M.init()
+	-- Create the first terminal instance
 	table.insert(M.Terminals, Floatterm:new())
+
+	-- Set up keymaps
 	vim.keymap.set({ "n", "t" }, "<F12>", function()
 		Launch_floatterm(1)
-	end, { desc = "Toggle floatterm" })
-
-	-- vim.keymap.set("n", "<lt>ef", Embad_floatterm, { noremap = true, silent = true })
-	-- vim.keymap.set("n", "<Tab>", Focus_floatterm, { noremap = true, silent = true })
+	end, { desc = "Toggle floating terminal" })
 end
 
+-- Add method to create additional terminals
+function M.new_terminal()
+	table.insert(M.Terminals, Floatterm:new())
+	return #M.Terminals
+end
+
+-- Add method to get terminal count
+function M.count()
+	return #M.Terminals
+end
+
+-- Initialize the module
 M.init()
+
+return M
