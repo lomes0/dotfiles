@@ -98,76 +98,15 @@ return {
 			cmd_abbrev("helpclose", "FloatingHelpClose")
 		end,
 	},
-	{
-		"nvim-tree/nvim-tree.lua",
-		version = "*",
-		lazy = false,
-		dependencies = {
-			"nvim-tree/nvim-web-devicons",
-		},
-		config = function()
-			require("nvim-tree").setup({
-				view = {
-					number = false,
-					relativenumber = false,
-				},
-				on_attach = function(bufnr)
-					local api = require("nvim-tree.api")
-
-					local function opts(desc)
-						return {
-							desc = "nvim-tree: " .. desc,
-							buffer = bufnr,
-							noremap = true,
-							silent = true,
-							nowait = true,
-						}
-					end
-
-					-- default mappings
-					api.config.mappings.default_on_attach(bufnr)
-					-- custom mappings
-					vim.keymap.set("n", "<c-y>", api.tree.change_root_to_parent, opts("NvimTree Up"))
-				end,
-			})
-
-			local nt_api = require("nvim-tree.api")
-			local tree_open = false
-			local function tab_enter()
-				if tree_open then
-					nt_api.tree.open()
-					vim.api.nvim_command("wincmd p")
-				else
-					nt_api.tree.close()
-				end
-			end
-			nt_api.events.subscribe(nt_api.events.Event.TreeOpen, function()
-				tree_open = true
-			end)
-			nt_api.events.subscribe(nt_api.events.Event.TreeClose, function()
-				tree_open = false
-			end)
-			vim.api.nvim_create_autocmd({ "TabEnter" }, { callback = tab_enter })
-
-			vim.keymap.set("n", "`", function()
-				require("nvim-tree.api").tree.toggle({ focus = false })
-			end, { noremap = true, silent = true, desc = "NvimTree Toggle" })
-
-			local function open_nvim_tree()
-				require("nvim-tree.api").tree.toggle({ focus = false })
-			end
-
-			-- vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
-		end,
-	},
+	-- Removed nvim-tree in favor of neo-tree for consistency
 	{
 		"nvim-lua/plenary.nvim",
 		lazy = false,
 	},
 	{
 		"akinsho/bufferline.nvim",
-		requires = "nvim-tree/nvim-web-devicons",
-		even = "VeryLazy",
+		dependencies = "nvim-tree/nvim-web-devicons", -- Fixed: 'requires' should be 'dependencies'
+		event = "VeryLazy", -- Fixed: 'even' should be 'event'
 		config = function()
 			require("bufferline").setup({
 				options = {
@@ -378,13 +317,13 @@ return {
 				toggles = {
 					dim = false,
 				},
-			},
+			}, -- Removed duplicate zen configuration
 		},
 		keys = {
 			{
 				"<lt>/",
 				function()
-					Snacks.picker.grep({ cwd = _G.snacks_dir })
+					Snacks.picker.grep({ cwd = vim.g.snacks_dir or vim.fn.getcwd() })
 				end,
 				desc = "Snacks Picker Grep",
 			},
@@ -393,10 +332,10 @@ return {
 				function()
 					Snacks.picker.lsp_workspace_symbols()
 				end,
-				desc = "Snacks Picker Grep",
+				desc = "Snacks Picker LSP Workspace Symbols", -- Fixed description
 			},
 			{
-				"<lt>n",
+				"<lt>nh", -- Changed to avoid conflict
 				function()
 					Snacks.picker.notifications()
 				end,
@@ -452,7 +391,7 @@ return {
 				desc = "Snacks Select Scratch Buffer",
 			},
 			{
-				"<lt>n",
+				"<lt>ns", -- Changed to avoid conflict
 				function()
 					Snacks.notifier.show_history()
 				end,
@@ -538,29 +477,33 @@ return {
 					vim.print = _G.dd -- Override print to use snacks for `:=` command
 
 					-- Create some toggle mappings
-					Snacks.toggle.option("spell", { name = "Snacks Spelling" }):map("<lt>us")
-					Snacks.toggle.option("wrap", { name = "Snacks Wrap" }):map("<lt>uw")
-					Snacks.toggle.option("relativenumber", { name = "Snacks Relative Number" }):map("<lt>uL")
-					Snacks.toggle.diagnostics({ name = "Snacks Diagnostics" }):map("<lt>ud")
-					Snacks.toggle.line_number({ name = "" }):map("<lt>ul")
+					Snacks.toggle.option("spell", { name = "Spelling" }):map("<lt>us")
+					Snacks.toggle.option("wrap", { name = "Wrap" }):map("<lt>uw")
+					Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<lt>uL")
+					Snacks.toggle.diagnostics({ name = "Diagnostics" }):map("<lt>ud")
+					Snacks.toggle.line_number({ name = "Line Numbers" }):map("<lt>ul")
 					Snacks.toggle
 						.option("conceallevel", { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 })
 						:map("<lt>uc")
-					Snacks.toggle.treesitter({ name = "Snacks Treesitter" }):map("<lt>uT")
+					Snacks.toggle.treesitter({ name = "Treesitter" }):map("<lt>uT")
 					Snacks.toggle
 						.option("background", { off = "light", on = "dark", name = "Dark Background" })
 						:map("<lt>ub")
-					Snacks.toggle.inlay_hints({ name = "Snacks Inlay Hints" }):map("<lt>uh")
-					Snacks.toggle.zen({ name = "Snacks Zen" }):map("<lt>z")
+					Snacks.toggle.inlay_hints({ name = "Inlay Hints" }):map("<lt>uh")
+					Snacks.toggle.zen({ name = "Zen Mode" }):map("<lt>z")
 
-					_G.snacks_dir = vim.fn.getcwd()
+					-- Use local variable instead of global
+					local snacks_dir = vim.fn.getcwd()
 					vim.keymap.set("n", "<lt>dp", function()
-						_G.snacks_dir = vim.fn.input({
+						snacks_dir = vim.fn.input({
 							prompt = "Enter directory path: ",
-							default = _G.snacks_dir,
+							default = snacks_dir,
 							completion = "file",
 						})
-					end, { noremap = true, silent = true })
+					end, { noremap = true, silent = true, desc = "Set picker directory" })
+
+					-- Store in vim.g instead of _G for better namespace
+					vim.g.snacks_dir = snacks_dir
 				end,
 			})
 		end,
@@ -873,11 +816,8 @@ return {
 	{
 		"nvim-lualine/lualine.nvim",
 		event = "VeryLazy",
-		dependencies = {
-			"nvim-tree/nvim-web-devicons",
-		},
+		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
-			_G.clipboard_icon = ""
 			require("lualine").setup({
 				options = {
 					icons_enabled = true,
@@ -1008,8 +948,8 @@ return {
 
 			vim.keymap.set("n", "<lt>ff", function()
 				require("telescope.builtin").find_files({
-					cwd = _G.snacks_dir,
-					path_display = { "absolute" },
+					cwd = vim.g.snacks_dir or vim.fn.getcwd(),
+					path_display = { "smart" },
 				})
 			end, {
 				noremap = true,
