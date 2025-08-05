@@ -1,6 +1,6 @@
-format = """$username$custom$directory$git_branch$character"""
+format = """$directory$git_branch$character"""
 palette = "catppuccin_frappe"
-right_format = """$all"""
+right_format = """$all$custom"""
 add_newline = false
 
 [directory]
@@ -30,15 +30,7 @@ format = '[$branch ]($style)'
 style = 'yellow'
 
 [git_status]
-format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)"
-style = "cyan"
-conflicted = "​"
-untracked = "​"
-modified = "​"
-staged = "​"
-renamed = "​"
-deleted = "​"
-stashed = "≡"
+disabled = true
 
 [git_state]
 format = '\([$state( $progress_current/$progress_total)]($style)\) '
@@ -46,19 +38,13 @@ cherry_pick = '[◯  PICKING](bold red)'
 style = "bright-yellow"
 
 [os]
-disabled = true
+disabled = false
 format = "[($name )]($style)"
 style = "bold blue"
 
 [hostname]
-disabled = true
-
-[custom.hostname]
 style = "bold lavender"
-disabled = false
-command = 'case "$(hostname)" in lnx80bcccmp_jess_docker_*) echo "lnx80bcccmp_container";; usr-doc-comp) echo "usr-doc-comp";; *) hostname;; esac'
-when = "true"
-description = "Show custom hostname alias"
+format = "[$output](bold lavender) "
 
 [cmd_duration]
 format = "[$duration]($style) "
