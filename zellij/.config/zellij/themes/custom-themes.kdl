@@ -1,0 +1,43 @@
+themes {
+  enhanced-dark {
+    bg "#1e1e2e" // Darker background
+    fg "#cdd6f4" // Light text
+    red "#f38ba8" // Soft red
+    green "#a6e3a1" // Vibrant green
+    blue "#89b4fa" // Bright blue
+    yellow "#f9e2af" // Warm yellow
+    magenta "#cba6f7" // Purple
+    orange "#fab387" // Orange
+    cyan "#94e2d5" // Cyan
+    black "#181825" // Very dark
+    white "#f5f5f5" // Pure white
+  }
+
+  minimal-light {
+    bg "#fafafa" // Clean white
+    fg "#383a42" // Dark text
+    red "#e45649" // Red
+    green "#50a14f" // Green
+    blue "#4078f2" // Blue
+    yellow "#c18401" // Yellow
+    magenta "#a626a4" // Magenta
+    orange "#da8548" // Orange
+    cyan "#0184bc" // Cyan
+    black "#fafafa" // Light
+    white "#383a42" // Dark text
+  }
+
+  neon-cyber {
+    bg "#0d1117" // GitHub dark
+    fg "#58a6ff" // Bright blue
+    red "#ff6b6b" // Neon red
+    green "#51cf66" // Neon green
+    blue "#339af0" // Electric blue
+    yellow "#ffd43b" // Electric yellow
+    magenta "#d0bfff" // Electric purple
+    orange "#ff922b" // Electric orange
+    cyan "#3bc9db" // Electric cyan
+    black "#21262d" // Dark gray
+    white "#f0f6fc" // Bright white
+  }
+}

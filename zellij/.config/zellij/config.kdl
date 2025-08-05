@@ -260,11 +260,12 @@ load_plugins {
 //   - true
 //   - false (Default)
 // 
-// simplified_ui true
+simplified_ui true
  
 // Choose the theme that is specified in the themes section.
 // Default: default
-// 
+// Available options: "catppuccin-mocha", "catppuccin-macchiato", "catppuccin-frappe", "catppuccin-latte", 
+//                   "rose-pine", "enhanced-dark", "minimal-light", "neon-cyber", "nord"
 theme "nord"
  
 // Choose the base input mode of zellij.
@@ -283,18 +284,18 @@ default_shell "zsh"
  
 // The name of the default layout to load on startup
 // Default: "default"
-// 
-default_layout "compact"
+// Available options: "compact", "enhanced", "full-bar", "compact-enhanced", "top-tabs"
+default_layout "compact-enhanced"
  
 // The folder in which Zellij will look for layouts
 // (Requires restart)
 // 
-// layout_dir "/tmp"
+layout_dir "/home/eransa/dotfiles/zellij/.config/zellij/layouts"
  
 // The folder in which Zellij will look for themes
 // (Requires restart)
 // 
-// theme_dir "/tmp"
+theme_dir "/home/eransa/dotfiles/zellij/.config/zellij/themes"
  
 // Toggle enabling the mouse mode.
 // On certain configurations, or terminals this could

@@ -1,0 +1,43 @@
+themes {
+  modern-tabs {
+    bg "#1a1b26" // Dark background
+    fg "#c0caf5" // Light text
+    red "#f7768e" // Soft red
+    green "#9ece6a" // Green
+    blue "#7aa2f7" // Blue
+    yellow "#e0af68" // Yellow
+    magenta "#bb9af7" // Purple
+    orange "#ff9e64" // Orange
+    cyan "#7dcfff" // Cyan
+    black "#15161e" // Very dark
+    white "#c0caf5" // Light
+  }
+
+  clean-minimal {
+    bg "#f8f8f2" // Light background
+    fg "#272822" // Dark text
+    red "#f92672" // Pink/red
+    green "#a6e22e" // Bright green
+    blue "#66d9ef" // Cyan blue
+    yellow "#e6db74" // Yellow
+    magenta "#ae81ff" // Purple
+    orange "#fd971f" // Orange
+    cyan "#66d9ef" // Cyan
+    black "#272822" // Dark
+    white "#f8f8f2" // Light
+  }
+
+  box-style {
+    bg "#282a36" // Dracula background
+    fg "#f8f8f2" // Dracula foreground
+    red "#ff5555" // Red
+    green "#50fa7b" // Green
+    blue "#8be9fd" // Cyan
+    yellow "#f1fa8c" // Yellow
+    magenta "#ff79c6" // Pink
+    orange "#ffb86c" // Orange
+    cyan "#8be9fd" // Cyan
+    black "#21222c" // Dark
+    white "#f8f8f2" // White
+  }
+}
