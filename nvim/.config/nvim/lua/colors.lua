@@ -136,6 +136,25 @@ M.colorscheme_opts = {
 			end
 		end,
 	},
+	["nightfox"] = {
+		treesitter_context = {
+			bg = "#3d3e42",
+			italic = true,
+		},
+		custom_highlights = function()
+			local highlights = {
+				NormalFloat = { link = "Normal" },
+				FloatBorder = { link = "Normal" },
+				Float = { link = "Normal" },
+				CurSearch = { bg = "#738994", fg = "white" },
+				IncSearch = { bg = "#738994", fg = "white" },
+				Search = { bg = "#738994", fg = "white" },
+			}
+			for group, opts in pairs(highlights) do
+				vim.api.nvim_set_hl(0, group, opts)
+			end
+		end,
+	},
 	["tokyonight-moon"] = {
 		treesitter_context = {
 			bg = "#3d3e42",
@@ -204,7 +223,7 @@ function M.SetColorScheme(scheme)
 end
 
 function M.init()
-	M.SetColorScheme("kanagawa")
+	M.SetColorScheme("nightfox")
 	-- M.SetColorScheme("catppuccin-macchiato")
 	-- M.SetColorScheme("tokyonight-moon")
 end
