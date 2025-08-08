@@ -8,6 +8,7 @@ local statuscolumn = {
 
 statuscolumn.setHl = function()
 	vim.api.nvim_set_hl(0, "FoldSign", { fg = "#ffffff" })
+	vim.api.nvim_set_hl(0, "CurrentLineNr", { fg = "#d9a46c", bold = true })
 end
 
 statuscolumn.foldsMarkCond = function(foldlevel)
@@ -72,12 +73,24 @@ statuscolumn.folds = function()
 	return result
 end
 
+statuscolumn.line_number = function()
+	local is_current_line = vim.v.relnum == 0
+	local number = is_current_line and vim.v.lnum or vim.v.relnum
+
+	if is_current_line then
+		return string.format("%%#CurrentLineNr#%d%%*", number)
+	else
+		return tostring(number)
+	end
+end
+
 statuscolumn.statuscolumn = function()
 	local text = ""
 	statuscolumn.setHl()
 
 	text = table.concat({
-		"%s%=%{v:relnum?v:relnum:v:lnum}",
+		"%s%=",
+		statuscolumn.line_number(),
 		" ",
 		statuscolumn.folds(),
 		" ",
