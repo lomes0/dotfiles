@@ -115,6 +115,20 @@ return {
 				view = {
 					number = false,
 					relativenumber = false,
+					side = "left",
+					preserve_window_proportions = true,
+				},
+				hijack_cursor = false,
+				update_focused_file = {
+					enable = true,
+					update_root = false,
+				},
+				actions = {
+					open_file = {
+						window_picker = {
+							enable = false,
+						},
+					},
 				},
 				on_attach = function(bufnr)
 					local api = require("nvim-tree.api")
@@ -269,43 +283,61 @@ return {
 				-- },
 			},
 			left = {
-				-- Neo-tree filesystem always takes half the screen height
+				-- NvimTree - constant sidebar that won't be interfered with
 				{
-					title = "Neo-Tree",
-					ft = "neo-tree",
-					filter = function(buf)
-						return vim.b[buf].neo_tree_source == "filesystem"
-					end,
+					title = "NvimTree",
+					ft = "NvimTree",
 					pinned = true,
-					size = { height = 0.5 },
-					open = "Neotree position=left",
-				},
-				{
-					title = "Neo-Tree Git",
-					ft = "neo-tree",
-					filter = function(buf)
-						return vim.b[buf].neo_tree_source == "git_status"
+					collapsed = false,
+					open = function()
+						require("nvim-tree.api").tree.open()
 					end,
-					pinned = true,
-					collapsed = false, -- show window as closed/collapsed on start
-					open = "Neotree position=left git_status",
+					size = { width = 35 },
 				},
-				{
-					title = "Neo-Tree Buffers",
-					ft = "neo-tree",
-					filter = function(buf)
-						return vim.b[buf].neo_tree_source == "buffers"
-					end,
-					pinned = true,
-					collapsed = false, -- show window as closed/collapsed on start
-					open = "Neotree position=left buffers",
-				},
+				-- -- Neo-tree filesystem always takes half the screen height
+				-- {
+				-- 	title = "Neo-Tree",
+				-- 	ft = "neo-tree",
+				-- 	filter = function(buf)
+				-- 		return vim.b[buf].neo_tree_source == "filesystem"
+				-- 	end,
+				-- 	pinned = true,
+				-- 	size = { height = 0.5 },
+				-- 	open = "Neotree position=left",
+				-- },
+				-- {
+				-- 	title = "Neo-Tree Git",
+				-- 	ft = "neo-tree",
+				-- 	filter = function(buf)
+				-- 		return vim.b[buf].neo_tree_source == "git_status"
+				-- 	end,
+				-- 	pinned = true,
+				-- 	collapsed = false, -- show window as closed/collapsed on start
+				-- 	open = "Neotree position=left git_status",
+				-- },
+				-- {
+				-- 	title = "Neo-Tree Buffers",
+				-- 	ft = "neo-tree",
+				-- 	filter = function(buf)
+				-- 		return vim.b[buf].neo_tree_source == "buffers"
+				-- 	end,
+				-- 	pinned = true,
+				-- 	collapsed = false, -- show window as closed/collapsed on start
+				-- 	open = "Neotree position=left buffers",
+				-- },
 			},
 			options = {
 				left = { size = 35 },
 				right = { size = 35 },
 				bottom = { size = 8 },
 				top = { size = 8 },
+			},
+			-- Prevent external events from interfering with layout
+			fix_win_height = true,
+			wo = {
+				winhl = "",
+				winfixwidth = true,
+				winfixheight = true,
 			},
 		},
 		fix_win_height = true,
