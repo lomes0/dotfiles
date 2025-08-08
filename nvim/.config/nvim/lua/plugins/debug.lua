@@ -34,8 +34,45 @@ return {
 					},
 				},
 			}
+
 			dap.configurations.c = dap.configurations.cpp
 			dap.configurations.rust = dap.configurations.cpp
+
+			vim.keymap.set("n", "<F5>", function()
+				require("dap").continue()
+			end, { silent = true, noremap = true, desc = "Dap continue" })
+
+			vim.keymap.set("n", "<M-l>", function()
+				require("dap").step_over()
+			end, { silent = true, noremap = true, desc = "Dap step over" })
+
+			vim.keymap.set("n", "<M-k>", function()
+				require("dap").step_into()
+			end, { silent = true, noremap = true, desc = "Dap step into" })
+
+			vim.keymap.set("n", "<M-j>", function()
+				require("dap").step_out()
+			end, { silent = true, noremap = true, desc = "Dap step out" })
+
+			vim.keymap.set("n", "<F9>", function()
+				require("dap").toggle_breakpoint()
+			end, { silent = true, noremap = true, desc = "Dap toggle breakpoint" })
+
+			vim.keymap.set("n", "<F8>", function()
+				require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
+			end, { silent = true, noremap = true, desc = "Dap set breakpoint with msg" })
+
+			vim.keymap.set("n", "<Leader>dr", function()
+				require("dap").repl.open()
+			end, { silent = true, noremap = true, desc = "Dap repl open" })
+
+			vim.keymap.set("n", "<F6>", function()
+				require("dap").run_last()
+			end, { silent = true, noremap = true, desc = "Dap run last" })
+
+			vim.keymap.set({ "n", "v" }, "<F8>", function()
+				require("dap.ui.widgets").preview()
+			end, { silent = true, noremap = true, desc = "Dap ui widgets preview" })
 
 			-------
 			-- Now use .vscode/launch.json:
