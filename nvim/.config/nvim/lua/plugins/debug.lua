@@ -29,6 +29,9 @@ return {
 					stopOnEntry = false,
 					args = {},
 					runInTerminal = false,
+					autoReload = {
+						enabled = true,
+					},
 				},
 			}
 			dap.configurations.c = dap.configurations.cpp
@@ -163,7 +166,7 @@ return {
 				height = 0.75,
 				position = "right",
 				terminal = {
-					width = 0.55,
+					width = 0.4,
 					position = "below",
 					-- List of debug adapters for which the terminal should be ALWAYS hidden
 					hide = {},
