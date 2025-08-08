@@ -95,7 +95,7 @@ return {
 						goto_next_start = {
 							["]f"] = "@function.outer",
 							["]r"] = "@return.outer",
-							["]p"] = "@parameter.outer",
+							["]p"] = "@parameter.inner",
 							["]a"] = "@assignment.outer",
 							["]o"] = "@loop.*",
 						},
@@ -109,7 +109,7 @@ return {
 						goto_previous_start = {
 							["[f"] = "@function.outer",
 							["[r"] = "@return.outer",
-							["[p"] = "@parameter.outer",
+							["[p"] = "@parameter.inner",
 							["[a"] = "@assignment.outer",
 							["[o"] = "@loop.*",
 						},
@@ -170,10 +170,10 @@ return {
 				on_attach = nil,
 			})
 			local treesitter_ctx = require("treesitter-context")
-			vim.keymap.set("n", "[[", function()
+			vim.keymap.set({ "n", "x" }, "[[", function()
 				treesitter_ctx.go_to_context()
 			end, { noremap = true, silent = true, desc = "Treesitter prev context" })
-			vim.keymap.set("n", "[]", function()
+			vim.keymap.set({ "n", "x" }, "[]", function()
 				treesitter_ctx.toggle()
 			end, { noremap = true, silent = true, desc = "Treesitter toggle context" })
 		end,
