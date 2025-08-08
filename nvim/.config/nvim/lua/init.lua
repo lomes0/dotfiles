@@ -578,7 +578,7 @@ vim.keymap.set("n", "<leader>e", function()
 	end
 end, { desc = "Go to end of current block" })
 
-vim.lsp.enable({ "clangd", "pyright", "tsserver", "rust-analyzer" })
+vim.lsp.enable({ "clangd", "pylsp", "tsserver", "rust-analyzer" })
 
 vim.api.nvim_create_autocmd("LspAttach", {
 	desc = "LSP actions",
