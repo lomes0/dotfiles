@@ -101,7 +101,7 @@ function FoldtextCoding()
 		local start_row, start_col, end_row, end_col = node:range()
 
 		-- stop on start of body statements
-		if node:type() == "{" then
+		if node:type() == "{" or node:type() == ":" then
 			-- result[#result] = { text, "@" .. name .. "" }
 			break
 		end
@@ -448,7 +448,7 @@ function M.init()
 	-- Define an autocommand for when color scheme and Tree-sitter are ready
 	vim.api.nvim_create_autocmd({ "FileType" }, {
 		group = group,
-		pattern = { "c", "cpp", "rust" },
+		pattern = { "c", "cpp", "rust", "python" },
 		callback = function()
 			-- Ensure Tree-sitter and color scheme are ready
 			vim.schedule(function()

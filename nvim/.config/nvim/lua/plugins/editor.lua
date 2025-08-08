@@ -42,7 +42,7 @@ return {
 					rust = { "rustfmt" },
 					c = { "clang-format" },
 					cpp = { "clang-format" },
-					python = { "isort", "black" },
+					python = { "ruff" },
 					json = { "jq" },
 					javascript = { "deno_fmt" },
 					typescript = { "deno_fmt" },
@@ -58,6 +58,11 @@ return {
 					["deno_fmt"] = {
 						command = "deno",
 						args = { "fmt", "-" }, -- format from stdin
+						stdin = true,
+					},
+					["ruff"] = {
+						command = "ruff",
+						args = { "format", "-" },
 						stdin = true,
 					},
 				},
