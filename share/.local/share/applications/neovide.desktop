@@ -1,6 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Neovide
-Path=/home/eransa
-Exec=bash -c "/home/eransa/.local/bin/neovide.sh"
-Icon=nvim

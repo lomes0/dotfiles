@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Bank
+Comment=Launch bank
+Exec=/usr/bin/google-chrome --class=bank --user-data-dir=/home/eransa/.config/web-bank --app=https://www.bankotsar.co.il/ --no-first-run --no-default-browser-check --disable-background-networking --disable-component-update --disable-default-apps --disable-sync --password-store=basic --disable-extensions
+Icon=/home/eransa/_/imgs/bank2.png
+Terminal=false
+Type=Application
+Categories=Network;
+StartupWMClass=bank

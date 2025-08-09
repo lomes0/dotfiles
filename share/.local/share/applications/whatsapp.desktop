@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Whatsapp
+Comment=Launch Web Whatsapp
+Exec=/usr/bin/google-chrome --window-size=1200,750 --window-position=200,200 --class=whatsapp --app=https://web.whatsapp.com/ --user-data-dir=/home/eransa/.config/web-whatsapp --no-first-run --no-default-browser-check --disable-background-networking --disable-component-update --disable-default-apps --disable-sync --password-store=basic --disable-extensions 
+Icon=/home/eransa/_/imgs/whatsapp2.png
+Terminal=false
+Type=Application
+Categories=Network;
+StartupWMClass=whatsapp

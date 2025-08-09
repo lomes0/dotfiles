@@ -1,13 +1,13 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=kitty
+Name=Alacritty
 GenericName=Terminal emulator
 Comment=Fast, feature-rich, GPU based terminal
-TryExec=/home/eransa/.local/kitty.app/bin/kitty
+TryExec=/home/eransa/.cargo/bin/alacritty
 StartupNotify=true
-Exec=/home/eransa/.local/kitty.app/bin/kitty
-Icon=/home/eransa/.local/kitty.app/share/icons/hicolor/256x256/apps/kitty.png
+Exec=/home/eransa/.cargo/bin/alacritty
+Icon=/usr/local/share/icons/hicolor/128x128/apps/alacritty.png
 Categories=System;TerminalEmulator;
 X-TerminalArgExec=--
 X-TerminalArgTitle=--title
