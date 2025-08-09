@@ -271,16 +271,16 @@ return {
 			},
 			right = {
 				"Trouble",
-				-- {
-				-- 	title = "Trouble Symbols",
-				-- 	ft = "trouble",
-				-- 	open = function()
-				-- 		vim.cmd("Trouble lsp_document_symbols win.position=right")
-				-- 	end,
-				-- 	size = { height = 0.5 },
-				-- 	pinned = true,
-				-- 	collapsed = false, -- show window as closed/collapsed on start
-				-- },
+				{
+					title = "Trouble",
+					ft = "trouble",
+					open = function()
+						vim.cmd("Trouble lsp_document_symbols win.position=right")
+					end,
+					size = { height = 1.0 },
+					pinned = false,
+					collapsed = false, -- show window as closed/collapsed on start
+				},
 			},
 			left = {
 				-- NvimTree - constant sidebar that won't be interfered with
