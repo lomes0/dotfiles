@@ -28,6 +28,8 @@ function M.set_color_win_separator()
 		end,
 		pattern = "*",
 	})
+	local hl = vim.api.nvim_get_hl(0, { name = "LspInlayHint" })
+	vim.api.nvim_set_hl(0, "LspInlayHint", M.m(hl, { bg = "none" }))
 end
 
 function M.set_color_ts_context(opts_ts)
