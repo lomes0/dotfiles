@@ -23,12 +23,12 @@ opacity = 0.65
 blur = true
 
 [window.padding]
-x = 20
-y = 30
+x = 10
+y = 10
 
 [window.dimensions]
-lines = 44
-columns = 240
+lines = 40
+columns = 200
 
 [[keyboard.bindings]]
 action = "ToggleFullscreen"
