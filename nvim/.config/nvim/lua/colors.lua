@@ -216,6 +216,7 @@ function M.SetColorScheme(scheme)
 		M.set_color_win_separator()
 		M.set_color_visual()
 		M.set_color_debug()
+		vim.api.nvim_set_hl(0, "FloatBorder", { fg = "none" })
 
 		-- Apply custom highlights if they exist
 		if custom_highlights then
