@@ -193,19 +193,9 @@ return {
 				---@type table<string, trouble.Mode>
 				modes = {
 					diagnostics = {
-						win = {
-							position = "right",
-							relative = "win",
-							size = 0.3,
-						},
 						auto_open = false,
 					},
 					lsp_document_symbols = {
-						win = {
-							position = "right",
-							relative = "win",
-							size = 0.3,
-						},
 						auto_open = false,
 					},
 					-- sources define their own modes, which you can use directly,

@@ -269,15 +269,32 @@ return {
 			animate = {
 				enabled = false,
 			},
-			right = {
-				"Trouble",
+			bottom = {
 				{
-					title = "Trouble",
+					title = "Diagnostics",
 					ft = "trouble",
-					open = function()
-						vim.cmd("Trouble lsp_document_symbols win.position=right")
+					filter = function(buf, win)
+						return vim.w[win].trouble and vim.w[win].trouble.mode == "diagnostics"
 					end,
-					size = { height = 1.0 },
+					open = function()
+						vim.cmd("Trouble diagnostics")
+					end,
+					size = { height = 12 },
+					pinned = false,
+					collapsed = false, -- show window as closed/collapsed on start
+				},
+			},
+			right = {
+				{
+					title = "Symbols",
+					ft = "trouble",
+					filter = function(buf, win)
+						return vim.w[win].trouble and vim.w[win].trouble.mode == "lsp_document_symbols"
+					end,
+					open = function()
+						vim.cmd("Trouble lsp_document_symbols")
+					end,
+					size = { width = 55, height = 1.0 },
 					pinned = false,
 					collapsed = false, -- show window as closed/collapsed on start
 				},
@@ -911,57 +928,57 @@ return {
 			})
 		end,
 	},
-	{
-		"nvim-lualine/lualine.nvim",
-		event = "VeryLazy",
-		dependencies = { "nvim-tree/nvim-web-devicons" },
-		config = function()
-			require("lualine").setup({
-				options = {
-					icons_enabled = true,
-					theme = "auto",
-					component_separators = { left = "", right = "" },
-					section_separators = { left = "", right = "" },
-					disabled_filetypes = {
-						statusline = {},
-						winbar = {},
-					},
-					ignore_focus = {},
-					always_divide_middle = true,
-					globalstatus = false,
-					refresh = {
-						statusline = 1000,
-						tabline = 1000,
-						winbar = 1000,
-					},
-				},
-				sections = {
-					lualine_a = { "mode" },
-					lualine_b = { "branch", "diff", "diagnostics" },
-					lualine_c = {
-						{
-							"filename",
-							path = 2,
-						},
-						{
-							"_G.clipboard_icon",
-						},
-					},
-					lualine_e = {},
-					lualine_x = { "encoding", "fileformat", "filetype" },
-					lualine_y = { "progress" },
-					lualine_z = { "location" },
-				},
-				inactive_sections = {
-					lualine_a = {},
-				},
-				tabline = {},
-				winbar = {},
-				inactive_winbar = {},
-				extensions = {},
-			})
-		end,
-	},
+	-- {
+	-- 	"nvim-lualine/lualine.nvim",
+	-- 	event = "VeryLazy",
+	-- 	dependencies = { "nvim-tree/nvim-web-devicons" },
+	-- 	config = function()
+	-- 		require("lualine").setup({
+	-- 			options = {
+	-- 				icons_enabled = true,
+	-- 				theme = "auto",
+	-- 				component_separators = { left = "", right = "" },
+	-- 				section_separators = { left = "", right = "" },
+	-- 				disabled_filetypes = {
+	-- 					statusline = {},
+	-- 					winbar = {},
+	-- 				},
+	-- 				ignore_focus = {},
+	-- 				always_divide_middle = true,
+	-- 				globalstatus = false,
+	-- 				refresh = {
+	-- 					statusline = 1000,
+	-- 					tabline = 1000,
+	-- 					winbar = 1000,
+	-- 				},
+	-- 			},
+	-- 			sections = {
+	-- 				lualine_a = { "mode" },
+	-- 				lualine_b = { "branch", "diff", "diagnostics" },
+	-- 				lualine_c = {
+	-- 					{
+	-- 						"filename",
+	-- 						path = 2,
+	-- 					},
+	-- 					{
+	-- 						"_G.clipboard_icon",
+	-- 					},
+	-- 				},
+	-- 				lualine_e = {},
+	-- 				lualine_x = { "encoding", "fileformat", "filetype" },
+	-- 				lualine_y = { "progress" },
+	-- 				lualine_z = { "location" },
+	-- 			},
+	-- 			inactive_sections = {
+	-- 				lualine_a = {},
+	-- 			},
+	-- 			tabline = {},
+	-- 			winbar = {},
+	-- 			inactive_winbar = {},
+	-- 			extensions = {},
+	-- 		})
+	-- 	end,
+	-- },
 	{
 		"nvim-telescope/telescope.nvim",
 		event = "VeryLazy",
