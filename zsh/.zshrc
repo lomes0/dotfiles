@@ -70,7 +70,7 @@ alias nv=nvim
 
 export DELTA_FEATURES='+side-by-side my-feature'
 alias ls="eza --sort=type --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt"
-alias ll="eza --sort=type --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt --all"
+alias ll="eza --sort=type --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt"
 alias cat="bat"
 # alias z="~/.local/bin/zoxide"
 
@@ -101,6 +101,8 @@ export ZSH_HIGHLIGHT_STYLES[alias]='fg=#af99ba,bold'
 export ZSH_HIGHLIGHT_STYLES[precommand]='fg=#a7cbcc'
 export ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#a5acb8,bold'
 export ZSH_HIGHLIGHT_STYLES[path]='fg=#e9f5ef,underline'
+export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=244'
+
 # default,unknown-token,reserved-word,alias,builtin,function,command,hashed-command,precommand,commandseparator,
 # autodirectory,path,globbing,history-expansion,single-hyphen-option,double-hyphen-option,back-quoted-argument,
 # single-quoted-argument,double-quoted-argument,dollar-double-quoted-argument,back-double-quoted-argument,assign,
@@ -134,4 +136,4 @@ export PATH="${CARGO_HOME}/bin:$PATH"
 #
 # source $HOME/.config/television/shell/integration.zsh
 
-export PATH="$PATH:$HOME/opt/llvm/llvm-20.1.8-build/bin"
+export PATH="$PATH:$HOME/var/llvm/llvm-20.1.8-build/bin"

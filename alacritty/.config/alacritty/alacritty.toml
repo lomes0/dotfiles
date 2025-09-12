@@ -40,7 +40,11 @@ background = "#15141b"
 foreground = "#d5e6e6" 
 
 [cursor.style]
-shape = "block"
+shape = "beam"
+
+# [colors.cursor]
+# text = "#111111"    # Color of the text under the cursor
+# cursor = "#e6eaeb"  # Cursor color
 
 [colors.selection]
 text = "CellForeground"

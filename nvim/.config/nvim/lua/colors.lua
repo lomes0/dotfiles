@@ -138,7 +138,7 @@ M.colorscheme_opts = {
 			end
 		end,
 	},
-	["nightfox"] = {
+	["nordfox"] = {
 		treesitter_context = {
 			bg = "#3d3e42",
 			italic = true,
@@ -226,7 +226,7 @@ function M.SetColorScheme(scheme)
 end
 
 function M.init()
-	M.SetColorScheme("nightfox")
+	M.SetColorScheme("nordfox")
 	-- M.SetColorScheme("catppuccin-macchiato")
 	-- M.SetColorScheme("tokyonight-moon")
 end
