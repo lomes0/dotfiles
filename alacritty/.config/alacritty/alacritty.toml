@@ -15,11 +15,11 @@ family = "JetBrainsMono Nerd Font Mono"
 style = "Bold Italic"
 
 [font]
-size = 12.0
+size = 9.0
 
 [window]
 opacity = 0.55
-# decorations = 'none'
+decorations = 'none'
 blur = true
 
 [window.padding]
@@ -27,8 +27,8 @@ x = 20
 y = 20
 
 [window.dimensions]
-lines = 40
-columns = 200
+lines = 35
+columns = 165
 
 [[keyboard.bindings]]
 action = "ToggleFullscreen"
