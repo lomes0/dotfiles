@@ -427,18 +427,15 @@ vim.keymap.set({ "n", "x" }, "<lt>gg", function()
 		return
 	end
 
-	local term_win = vim.api.nvim_get_current_win()
-	local prev_buf = vim.api.nvim_get_current_buf()
+	vim.cmd("tabnew")
 	local term_buf = vim.api.nvim_create_buf(false, true)
+	local term_win = vim.api.nvim_get_current_win()
 
 	vim.api.nvim_win_set_buf(term_win, term_buf)
 	vim.fn.termopen("lazygit -w=" .. gitdir, {
 		on_exit = function()
-			-- First ensure the buffer is still valid, then delete it.
-			vim.api.nvim_win_set_buf(term_win, prev_buf)
-			if vim.api.nvim_buf_is_valid(term_buf) then
-				vim.api.nvim_buf_delete(term_buf, { force = true })
-			end
+			-- Close the tab when lazygit exits
+			vim.cmd("tabclose")
 		end,
 	})
 end)
