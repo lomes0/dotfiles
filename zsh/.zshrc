@@ -39,7 +39,7 @@ CASE_SENSITIVE="true"
 COMPLETION_WAITING_DOTS="true"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Optimized plugin loading - lighter plugins first
-plugins=(git zsh-completions zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git zsh-completions zsh-autosuggestions zsh-syntax-highlighting zsh-vi-mode)
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -50,6 +50,7 @@ source $ZSH/oh-my-zsh.sh
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/var/diff-so-fancy:$PATH"
+export PATH=$PATH:/usr/local/go/bin
 
 function yz() {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
