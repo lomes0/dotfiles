@@ -117,6 +117,22 @@ return {
 					relativenumber = false,
 					side = "left",
 					preserve_window_proportions = true,
+					statuscolumn = "no",
+				},
+				renderer = {
+					indent_width = 2,
+					root_folder_label = false,
+					indent_markers = {
+						enable = true,
+						inline_arrows = true,
+						icons = {
+							corner = "└",
+							edge = "│",
+							item = "│",
+							bottom = "─",
+							none = " ",
+						},
+					},
 				},
 				hijack_cursor = false,
 				update_focused_file = {
@@ -155,6 +171,7 @@ return {
 			local function tab_enter()
 				if tree_open then
 					nt_api.tree.open()
+					vim.wo.statuscolumn = "  "
 					vim.api.nvim_command("wincmd p")
 				else
 					nt_api.tree.close()
@@ -162,9 +179,6 @@ return {
 			end
 			nt_api.events.subscribe(nt_api.events.Event.TreeOpen, function()
 				tree_open = true
-			end)
-			nt_api.events.subscribe(nt_api.events.Event.TreeClose, function()
-				tree_open = false
 			end)
 			vim.api.nvim_create_autocmd({ "TabEnter" }, { callback = tab_enter })
 

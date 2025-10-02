@@ -40,7 +40,6 @@ local opts = {
 	{ "ea", false },
 	{ "winfixwidth", false },
 	{ "winfixheight", false },
-	{ "signcolumn", "number" },
 	{ "encoding", "UTF-8" },
 	{ "undodir", os.getenv("HOME") .. "/.vim/undodir" },
 }
@@ -139,7 +138,7 @@ local keymaps = {
 		function()
 			local content = vim.fn.getreg('"')
 			if content and content ~= "" then
-				vim.fn.setreg('+', content)
+				vim.fn.setreg("+", content)
 				print(string.format("Copied %d characters to system clipboard", #content))
 			end
 		end,
@@ -535,18 +534,20 @@ vim.api.nvim_create_user_command("RemoveSnacksNotifWindows", function()
 	end
 end, {})
 
-vim.api.nvim_create_autocmd("FileType", {
-	callback = function(args)
-		local ft = args.match
-		local blacklist = { "qf", "calltree", "CsStackView" }
-		if not vim.tbl_contains(blacklist, ft) then
-			vim.wo.signcolumn = "yes"
-			vim.o.statuscolumn = "%!v:lua.require('statuscolumn').statuscolumn()"
-		else
-			vim.wo.statuscolumn = "   "
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
+	callback = function()
+		local bufname = vim.api.nvim_buf_get_name(0)
+		if bufname:match("NvimTree_") then
+			vim.wo.statuscolumn = "  "
+			vim.wo.signcolumn = "no"
+			vim.wo.numberwidth = 0
 		end
 	end,
 })
+
+vim.wo.signcolumn = "yes"
+vim.wo.statuscolumn = "%!v:lua.require('statuscolumn').statuscolumn()"
+vim.wo.numberwidth = 8
 
 vim.keymap.set("n", "<leader>e", function()
 	local ts_utils = require("nvim-treesitter.ts_utils")
