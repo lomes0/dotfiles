@@ -48,9 +48,15 @@ local opts = {
 local keymaps_noremap = {
 	{
 		{ "n", "v", "x" },
+		"B",
+		"2B",
+		desc = "Jump 2B",
+	},
+	{
+		{ "n", "v", "x" },
 		"W",
-		"4w",
-		desc = "3xw",
+		"2W",
+		desc = "Jump 2W",
 	},
 	{
 		{ "n", "v" },
