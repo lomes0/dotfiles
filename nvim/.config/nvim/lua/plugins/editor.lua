@@ -179,6 +179,9 @@ return {
 			nt_api.events.subscribe(nt_api.events.Event.TreeOpen, function()
 				tree_open = true
 			end)
+			nt_api.events.subscribe(nt_api.events.Event.TreeClose, function()
+				tree_open = false
+			end)
 			vim.api.nvim_create_autocmd({ "TabEnter" }, { callback = tab_enter })
 
 			vim.keymap.set("n", "`", function()
