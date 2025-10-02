@@ -1,6 +1,7 @@
 os:
-  editPreset: nvim-remote
+  editPreset: "nvim-remote"
 gui:
+  quitOnTopLevelReturn: true
   nerdFontsVersion: "3"
   commitHashLength: 6
   showCommandLog: false

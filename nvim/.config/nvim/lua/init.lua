@@ -437,7 +437,7 @@ local function setup_nvim_env()
 	env.NVIM_LISTEN_ADDRESS = server_name -- For compatibility with older tools
 
 	-- Configure editors to use remote editing
-	local nvim_remote_cmd = string.format("nvim --server %s --remote", vim.fn.shellescape(server_name))
+	local nvim_remote_cmd = string.format("nvim --server %s --remote-silent", vim.fn.shellescape(server_name))
 	env.EDITOR = nvim_remote_cmd
 	env.GIT_EDITOR = nvim_remote_cmd
 	env.VISUAL = nvim_remote_cmd
@@ -455,8 +455,12 @@ vim.keymap.set({ "n", "x" }, "<lt>gg", function()
 		return
 	end
 
-	-- Create new tab and open lazygit terminal
-	vim.cmd("tabnew")
+	-- Capture the current buffer and tab before opening lazygit
+	local prev_buf = vim.api.nvim_get_current_buf()
+	local prev_tab = vim.api.nvim_get_current_tabpage()
+
+	-- Create new tab and open lazygit terminal with silent command
+	vim.cmd("silent enew")
 	local term_buf = vim.api.nvim_get_current_buf()
 
 	local cmd = "lazygit -w=" .. vim.fn.fnameescape(gitdir)
@@ -465,28 +469,39 @@ vim.keymap.set({ "n", "x" }, "<lt>gg", function()
 	vim.fn.termopen(cmd, {
 		env = env,
 		on_exit = function(_, code, _)
-			if vim.api.nvim_buf_is_valid(term_buf) then
-				vim.api.nvim_buf_delete(term_buf, { force = true })
-			end
+			-- Close the terminal buffer automatically if lazygit exited successfully
+			if code == 0 then
+				vim.schedule(function()
+					local current_tab = vim.api.nvim_get_current_tabpage()
 
-			-- Close the tab if it's still open
-			vim.cmd("tabclose")
+					if vim.api.nvim_buf_is_valid(term_buf) then
+						vim.api.nvim_buf_delete(term_buf, { force = true })
+					end
 
-			-- Find the most recently used buffer (likely the one lazygit opened for editing)
-			local buflist = vim.fn.getbufinfo({ buflisted = 1 })
-			if #buflist > 0 then
-				table.sort(buflist, function(a, b)
-					return a.lastused > b.lastused
+					-- Check if tab changed (lazygit opened a new tab with 'e')
+					if current_tab ~= prev_tab then
+						-- Tab changed, close the previous tab
+						if vim.api.nvim_tabpage_is_valid(prev_tab) then
+							vim.api.nvim_set_current_tabpage(prev_tab)
+							vim.cmd("tabclose")
+							-- Switch back to the new tab
+							if vim.api.nvim_tabpage_is_valid(current_tab) then
+								vim.api.nvim_set_current_tabpage(current_tab)
+							end
+						end
+					else
+						-- Tab didn't change, restore the previous buffer
+						if vim.api.nvim_buf_is_valid(prev_buf) then
+							vim.api.nvim_set_current_buf(prev_buf)
+						end
+					end
 				end)
-
-				-- Switch to the most recently used buffer
-				local most_recent_buf = buflist[1]
-				if most_recent_buf and vim.api.nvim_buf_is_valid(most_recent_buf.bufnr) then
-					vim.api.nvim_set_current_buf(most_recent_buf.bufnr)
-				end
 			end
 		end,
 	})
+
+	-- Set terminal options to reduce visual noise
+	vim.api.nvim_set_option_value("scrolloff", 0, { scope = "local" })
 end)
 
 local api = vim.api
