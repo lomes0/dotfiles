@@ -227,8 +227,6 @@ end
 
 function M.init()
 	M.SetColorScheme("nordfox")
-	-- M.SetColorScheme("catppuccin-macchiato")
-	-- M.SetColorScheme("tokyonight-moon")
 end
 
 M.init()

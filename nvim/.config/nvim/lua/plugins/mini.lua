@@ -176,9 +176,9 @@ return {
 				width_preview = 25,
 			},
 		},
-		config = function (_, opts)
+		config = function(_, opts)
 			require("mini.files").setup(opts)
-		end
+		end,
 	},
 	-- {
 	-- 	"echasnovski/mini.indentscope",

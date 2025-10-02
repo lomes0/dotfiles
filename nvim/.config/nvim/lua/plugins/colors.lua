@@ -53,10 +53,6 @@ return {
 	},
 	{
 		"xiyaowong/transparent.nvim",
-		dependencies = {
-			"folke/tokyonight.nvim",
-			"catppuccin/nvim",
-		},
 		lazy = false,
 	},
 	{
