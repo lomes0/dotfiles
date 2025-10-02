@@ -4,6 +4,8 @@ return {
 		event = "VeryLazy",
 		config = function()
 			require("gitsigns").setup({
+				-- Git base navigation and hunk iteration functionality
+				-- Key mappings for changing git base and iterating through files with hunks
 				signs = {
 					add = { text = "+" },
 					change = { text = "~" },
@@ -94,8 +96,92 @@ return {
 						buffer = bufnr,
 						desc = "Gitsigns diffthis",
 					})
+
+					-- git base navigation
+					-- Track base state per buffer
+					if not vim.b.gitsigns_base_level then
+						vim.b.gitsigns_base_level = 0
+					end
+
+					vim.keymap.set("n", "c=", function()
+						vim.b.gitsigns_base_level = vim.b.gitsigns_base_level + 1
+						local new_base = "HEAD~" .. vim.b.gitsigns_base_level
+						gitsigns.change_base(new_base, true)
+						vim.notify("Git base changed to: " .. new_base)
+					end, {
+						noremap = true,
+						silent = true,
+						buffer = bufnr,
+						desc = "Gitsigns increase base (go further back)",
+					})
+
+					vim.keymap.set("n", "c-", function()
+						if vim.b.gitsigns_base_level > 0 then
+							vim.b.gitsigns_base_level = vim.b.gitsigns_base_level - 1
+							if vim.b.gitsigns_base_level == 0 then
+								gitsigns.change_base(nil, true)
+								vim.notify("Git base reset to HEAD")
+							else
+								local new_base = "HEAD~" .. vim.b.gitsigns_base_level
+								gitsigns.change_base(new_base, true)
+								vim.notify("Git base changed to: " .. new_base)
+							end
+						else
+							vim.notify("Already at HEAD")
+						end
+					end, {
+						noremap = true,
+						silent = true,
+						buffer = bufnr,
+						desc = "Gitsigns decrease base (go closer to HEAD)",
+					})
+
+					-- reset git base to HEAD
+					vim.keymap.set("n", "c0", function()
+						vim.b.gitsigns_base_level = 0
+						gitsigns.change_base(nil, true)
+						vim.notify("Git base reset to HEAD")
+					end, {
+						noremap = true,
+						silent = true,
+						buffer = bufnr,
+						desc = "Gitsigns reset base to HEAD",
+					})
 				end,
 			})
+
+			-- Get git staged files and open them in quickfix window
+			vim.keymap.set("n", "<leader>hq", function()
+				local handle = io.popen("git diff --name-only")
+				if not handle then
+					vim.notify("Failed to execute git command", vim.log.levels.ERROR)
+					return
+				end
+
+				local staged_files = {}
+				for file in handle:lines() do
+					if file ~= "" then
+						table.insert(staged_files, {
+							filename = file,
+							text = "Staged file",
+						})
+					end
+				end
+				handle:close()
+
+				if #staged_files == 0 then
+					vim.notify("No staged files found", vim.log.levels.INFO)
+					return
+				end
+
+				vim.fn.setqflist(staged_files, "r")
+				vim.cmd("copen")
+				vim.notify(string.format("Found %d staged files", #staged_files), vim.log.levels.INFO)
+			end, { desc = "Send Git staged files to quickfix" })
+
+			vim.keymap.set("n", "<leader>hl", function()
+				require("gitsigns").setloclist(0, "all")
+			end, { desc = "Send Git hunks to loclist" })
 		end,
 	},
 	{
