@@ -1,6 +1,5 @@
 require("config.lazy")
 require("init")
-require("folding")
+require("colors")
 require("floatterm")
-require("colors").init()
--- require("neovide")
+require("folding")

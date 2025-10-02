@@ -231,4 +231,4 @@ function M.init()
 	-- M.SetColorScheme("tokyonight-moon")
 end
 
-return M
+M.init()
