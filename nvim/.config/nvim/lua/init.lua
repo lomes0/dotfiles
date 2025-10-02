@@ -129,17 +129,15 @@ local keymaps = {
 	},
 	{
 		"n",
-		"_",
+		"-",
 		function()
-			if vim.opt.clipboard:get()[1] == "unnamedplus" then
-				vim.opt.clipboard = ""
-				_G.clipboard_icon = ""
-			else
-				vim.opt.clipboard = "unnamedplus"
-				_G.clipboard_icon = "💻"
+			local content = vim.fn.getreg('"')
+			if content and content ~= "" then
+				vim.fn.setreg('+', content)
+				print(string.format("Copied %d characters to system clipboard", #content))
 			end
 		end,
-		desc = "copy to system clipboard",
+		desc = "copy default register to system clipboard",
 	},
 	{
 		"v",
@@ -296,12 +294,6 @@ local keymaps = {
 		"<C-\\><C-n><C-w>",
 		desc = "Terminal window cmd",
 	},
-	-- {
-	-- 	"t",
-	-- 	"<C-_>",
-	-- 	"<C-\\><C-n>/",
-	-- 	desc = "Terminal search buffer",
-	-- },
 	{
 		"t",
 		"<C-;>",
@@ -443,11 +435,6 @@ vim.keymap.set({ "n", "x" }, "<lt>gg", function()
 			end
 		end,
 	})
-end)
-
-vim.keymap.set({ "n", "x" }, "-", function()
-	Snacks.notifier.hide()
-	require("notify").dismiss({ silent = true, pending = true })
 end)
 
 local api = vim.api
