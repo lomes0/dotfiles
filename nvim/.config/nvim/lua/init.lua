@@ -419,6 +419,35 @@ register_keymaps(keymaps_noremap, false)
 
 set_cwd()
 
+-- Setup environment for nvim-remote communication
+local function setup_nvim_env()
+	local env = vim.fn.environ()
+
+	-- Ensure we have a server running
+	local server_name = vim.v.servername
+	if not server_name or server_name == "" then
+		-- Create a server if none exists
+		local socket_path = vim.fn.stdpath("run") .. "/nvim_" .. vim.fn.getpid() .. ".sock"
+		vim.fn.serverstart(socket_path)
+		server_name = socket_path
+	end
+
+	-- Set environment variables for nvim-remote communication
+	env.NVIM = server_name
+	env.NVIM_LISTEN_ADDRESS = server_name -- For compatibility with older tools
+
+	-- Configure editors to use remote editing
+	local nvim_remote_cmd = string.format("nvim --server %s --remote", vim.fn.shellescape(server_name))
+	env.EDITOR = nvim_remote_cmd
+	env.GIT_EDITOR = nvim_remote_cmd
+	env.VISUAL = nvim_remote_cmd
+
+	-- Set lazygit-specific environment if needed
+	env.LG_CONFIG_FILE = vim.fn.expand("~/.config/lazygit/config.yml")
+
+	return env
+end
+
 vim.keymap.set({ "n", "x" }, "<lt>gg", function()
 	local gitdir = M.gitroot(M.bufdir())
 	if gitdir == nil then
@@ -426,15 +455,36 @@ vim.keymap.set({ "n", "x" }, "<lt>gg", function()
 		return
 	end
 
+	-- Create new tab and open lazygit terminal
 	vim.cmd("tabnew")
-	local term_buf = vim.api.nvim_create_buf(false, true)
-	local term_win = vim.api.nvim_get_current_win()
+	local term_buf = vim.api.nvim_get_current_buf()
 
-	vim.api.nvim_win_set_buf(term_win, term_buf)
-	vim.fn.termopen("lazygit -w=" .. gitdir, {
-		on_exit = function()
-			-- Close the tab when lazygit exits
+	local cmd = "lazygit -w=" .. vim.fn.fnameescape(gitdir)
+	local env = setup_nvim_env()
+
+	vim.fn.termopen(cmd, {
+		env = env,
+		on_exit = function(_, code, _)
+			if vim.api.nvim_buf_is_valid(term_buf) then
+				vim.api.nvim_buf_delete(term_buf, { force = true })
+			end
+
+			-- Close the tab if it's still open
 			vim.cmd("tabclose")
+
+			-- Find the most recently used buffer (likely the one lazygit opened for editing)
+			local buflist = vim.fn.getbufinfo({ buflisted = 1 })
+			if #buflist > 0 then
+				table.sort(buflist, function(a, b)
+					return a.lastused > b.lastused
+				end)
+
+				-- Switch to the most recently used buffer
+				local most_recent_buf = buflist[1]
+				if most_recent_buf and vim.api.nvim_buf_is_valid(most_recent_buf.bufnr) then
+					vim.api.nvim_set_current_buf(most_recent_buf.bufnr)
+				end
+			end
 		end,
 	})
 end)
@@ -540,7 +590,7 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
 		if bufname:match("NvimTree_") then
 			vim.wo.statuscolumn = "  "
 			vim.wo.signcolumn = "no"
-			vim.wo.numberwidth = 0
+			vim.wo.numberwidth = 1
 		end
 	end,
 })

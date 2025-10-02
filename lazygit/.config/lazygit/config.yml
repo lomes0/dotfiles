@@ -1,10 +1,11 @@
+os:
+  editPreset: nvim-remote
 gui:
-  # enlargedSideViewLocation: 'top'
+  nerdFontsVersion: "3"
   commitHashLength: 6
   showCommandLog: false
   screenMode: 'normal'
   mainPanelSplitMode: 'vertical'
-  editor: "nvr --remote-wait-silent"
   showIcons: false
   sidePanelWidth: 0.2
   theme:

@@ -117,7 +117,6 @@ return {
 					relativenumber = false,
 					side = "left",
 					preserve_window_proportions = true,
-					statuscolumn = "no",
 				},
 				renderer = {
 					indent_width = 2,
@@ -567,6 +566,13 @@ return {
 					Snacks.lazygit.log()
 				end,
 				desc = "Snacks Lazygit Log (cwd)",
+			},
+			{
+				"<lt>go",
+				function()
+					Snacks.lazygit.open()
+				end,
+				desc = "Snacks Lazygit (cwd)",
 			},
 			{
 				"<c-\\>",
