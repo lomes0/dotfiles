@@ -1066,7 +1066,7 @@ return {
 				},
 			})
 
-			vim.keymap.set("n", "<lt>ff", function()
+			vim.keymap.set("n", "<lt>f", function()
 				require("telescope.builtin").find_files({
 					cwd = vim.g.snacks_dir or vim.fn.getcwd(),
 					path_display = { "smart" },
