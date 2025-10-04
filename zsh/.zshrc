@@ -138,3 +138,7 @@ export PATH="${CARGO_HOME}/bin:$PATH"
 # source $HOME/.config/television/shell/integration.zsh
 
 export PATH="$PATH:$HOME/var/llvm/llvm-20.1.8-build/bin"
+
+alias load_npm="source .env && source ~/.nvm/nvm.sh"
+alias stop_blog_service="sudo systemctl stop blog-simple.service"
+alias start_blog_service="sudo systemctl start blog-simple.service"

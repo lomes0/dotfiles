@@ -18,7 +18,7 @@ style = "Bold Italic"
 size = 9.0
 
 [window]
-opacity = 0.55
+opacity = 0.65
 decorations = 'none'
 blur = true
 
@@ -27,8 +27,8 @@ x = 20
 y = 20
 
 [window.dimensions]
-lines = 35
-columns = 165
+lines = 55
+columns = 275
 
 [[keyboard.bindings]]
 action = "ToggleFullscreen"
