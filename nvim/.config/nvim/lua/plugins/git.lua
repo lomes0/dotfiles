@@ -14,7 +14,21 @@ return {
 					changedelete = { text = "~" },
 				},
 				signcolumn = true,
-				sign_priority = 6, -- Default priority for all gitsigns
+				sign_priority = 6,
+				update_debounce = 1000, -- ms
+				max_file_length = 20000, -- lines
+				preview_config = {
+					border = "single",
+					style = "minimal",
+					relative = "cursor",
+					row = 0,
+					col = 1,
+				},
+				watch_gitdir = {
+					follow_files = true,
+				},
+				attach_to_untracked = false,
+				current_line_blame = false,
 				on_attach = function(bufnr)
 					local gitsigns = require("gitsigns")
 					vim.keymap.set("n", "  ", function()
@@ -243,8 +257,8 @@ return {
 					-- 	folder_statuses = "only_folded", -- One of 'never', 'only_folded' or 'always'.
 					-- },
 					win_config = { -- See |diffview-config-win_config|
-						position = "right",
-						width = 47,
+						position = "left",
+						width = 37,
 						win_opts = {},
 					},
 				},
