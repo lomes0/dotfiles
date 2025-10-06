@@ -48,31 +48,33 @@ function FoldtextCoding()
 	local bufnr = vim.api.nvim_get_current_buf()
 	local foldstart = vim.v.foldstart
 	local cache_key = bufnr .. ":" .. foldstart
-	
+
 	-- Check cache first
 	if folding_cache.fold_text[cache_key] then
 		return folding_cache.fold_text[cache_key]
 	end
-	
+
 	local lang = ts.language.get_lang(vim.bo.filetype)
-	
+	if lang == nil then
+		return nil
+	end
+
 	-- Use cached parser or create new one
 	if not folding_cache.parsers[bufnr] then
 		folding_cache.parsers[bufnr] = {}
 	end
-	
-	local parser = folding_cache.parsers[bufnr][lang]
-	if not parser then
-		parser = ts.get_parser(bufnr, lang)
-		folding_cache.parsers[bufnr][lang] = parser
+
+	local parser = ts.get_parser(bufnr, lang)
+	if parser == nil then
+		return nil
 	end
-	
+
 	-- Use cached query or create new one
 	if not folding_cache.queries[lang] then
 		folding_cache.queries[lang] = ts.query.get(parser:lang(), "highlights")
 	end
 	local query = folding_cache.queries[lang]
-	
+
 	if query == nil then
 		return vim.fn.foldtext()
 	end
@@ -136,16 +138,21 @@ function FoldtextCoding()
 			break
 		end
 
-		if name == "constant.macro" or name == "constant.macro.cpp" or name == "keyword.directive" or name == "keyword.directive.cpp" then
+		if
+			name == "constant.macro"
+			or name == "constant.macro.cpp"
+			or name == "keyword.directive"
+			or name == "keyword.directive.cpp"
+		then
 			next_break = true
 		end
 
 		::continue::
 	end
-	
+
 	-- Cache the result for future use
 	folding_cache.fold_text[cache_key] = result
-	
+
 	return result
 end
 
@@ -154,8 +161,11 @@ function FoldtextDefault()
 	local line = vim.api.nvim_buf_get_lines(0, pos - 1, pos, false)[1]
 	local lang = ts.language.get_lang(vim.bo.filetype)
 	local parser = ts.get_parser(0, lang)
-	local query = ts.query.get(parser:lang(), "highlights")
+	if parser == nil then
+		return vim.fn.foldtext()
+	end
 
+	local query = ts.query.get(parser:lang(), "highlights")
 	if query == nil then
 		return vim.fn.foldtext()
 	end
@@ -206,23 +216,23 @@ function M.CreateFoldGroups(groups)
 
 		-- Batch highlight group creation for better performance
 		local highlight_batch = {}
-		
+
 		for _, group in ipairs(groups) do
 			-- Use cached highlight if available
 			if not folding_cache.highlight_groups[group] then
 				folding_cache.highlight_groups[group] = get_highlight(group)
 			end
-			
+
 			local hl = folding_cache.highlight_groups[group]
 			if hl then
-				highlight_batch[group .. ".folded"] = { 
-					fg = hl.fg, 
-					bg = "#51576d", 
-					underline = false 
+				highlight_batch[group .. ".folded"] = {
+					fg = hl.fg,
+					bg = "#51576d",
+					underline = false,
 				}
 			end
 		end
-		
+
 		-- Apply all highlights in a batch
 		for group_name, opts in pairs(highlight_batch) do
 			vim.api.nvim_set_hl(0, group_name, opts)

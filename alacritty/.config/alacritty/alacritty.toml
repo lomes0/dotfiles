@@ -1,3 +1,6 @@
+[font]
+size = 9.0
+
 [font.normal]
 family = "JetBrainsMono Nerd Font Mono"
 style = "Regular"
@@ -14,12 +17,9 @@ style = "Italic"
 family = "JetBrainsMono Nerd Font Mono"
 style = "Bold Italic"
 
-[font]
-size = 9.0
-
 [window]
-opacity = 0.65
-decorations = 'none'
+opacity = 1.0
+decorations = "none"
 blur = true
 
 [window.padding]
@@ -35,16 +35,35 @@ action = "ToggleFullscreen"
 key = "F11"
 mods = "Control"
 
+[[keyboard.bindings]]
+key = "Minus"
+mods = "Alt"
+
+[keyboard.bindings.command]
+program = "/home/eransa/.local/bin/alacritty_config.py"
+args = [
+    "--key",
+    "window.opacity",
+    "--decrease",
+    "0.05",
+]
+
+[[keyboard.bindings]]
+key = "Equals"
+mods = "Alt"
+
+[keyboard.bindings.command]
+program = "/home/eransa/.local/bin/alacritty_config.py"
+args = [
+    "--key",
+    "window.opacity",
+    "--increase",
+    "0.05",
+]
+
 [colors.primary]
 background = "#15141b"
-foreground = "#d5e6e6" 
-
-[cursor.style]
-shape = "beam"
-
-# [colors.cursor]
-# text = "#111111"    # Color of the text under the cursor
-# cursor = "#e6eaeb"  # Cursor color
+foreground = "#d5e6e6"
 
 [colors.selection]
 text = "CellForeground"
@@ -60,6 +79,10 @@ magenta = "#a277ff"
 cyan = "#61ffca"
 white = "#edecee"
 
+[colors.cursor]
+text = "0x131313"
+cursor = "0x959dbd"
+
 [colors.bright]
 black = "#4d4d4d"
 red = "#ff6767"
@@ -69,3 +92,6 @@ blue = "#6ca9ff"
 magenta = "#a277ff"
 cyan = "#61ffca"
 white = "#edecee"
+
+[cursor.style]
+shape = "beam"

@@ -32,17 +32,17 @@ function M.set_color_win_separator()
 	vim.api.nvim_set_hl(0, "LspInlayHint", M.m(hl, { bg = "none" }))
 end
 
-function M.set_color_ts_context(opts_ts)
-	opts_ts = opts_ts or {
-		bg = "#51576d",
-		italic = true,
-	}
-	vim.api.nvim_set_hl(0, "TreesitterContext", M.m(opts_ts, {}))
-	vim.api.nvim_set_hl(0, "TreesitterContextBottom", M.m(opts_ts, { fg = "none" }))
-	vim.api.nvim_set_hl(0, "TreesitterContextSeparator", M.m(opts_ts, { fg = "none" }))
-	vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", M.m(opts_ts, { fg = "white" }))
-	vim.api.nvim_set_hl(0, "TreesitterContextLineNumberBottom", M.m(opts_ts, {}))
-end
+-- function M.set_color_ts_context(opts_ts)
+-- 	opts_ts = opts_ts or {
+-- 		bg = "#51576d",
+-- 		italic = true,
+-- 	}
+-- 	vim.api.nvim_set_hl(0, "TreesitterContext", M.m(opts_ts, {}))
+-- 	vim.api.nvim_set_hl(0, "TreesitterContextBottom", M.m(opts_ts, { fg = "none" }))
+-- 	vim.api.nvim_set_hl(0, "TreesitterContextSeparator", M.m(opts_ts, { fg = "none" }))
+-- 	vim.api.nvim_set_hl(0, "TreesitterContextLineNumber", M.m(opts_ts, { fg = "white" }))
+-- 	vim.api.nvim_set_hl(0, "TreesitterContextLineNumberBottom", M.m(opts_ts, {}))
+-- end
 
 function M.set_color_debug()
 	vim.api.nvim_set_hl(0, "DapStoppedLine", {
@@ -67,77 +67,7 @@ function M.set_color_debug()
 	})
 end
 
-function M.set_color_bufferline()
-	local buffer_bg = "#4a4a4a"
-	vim.api.nvim_set_hl(0, "BufferLineFill", { bg = "none", fg = "none" })
-	vim.api.nvim_set_hl(0, "BufferLineSeparator", { bg = buffer_bg, fg = buffer_bg })
-	vim.api.nvim_set_hl(0, "BufferLineSeparatorSelected", { bg = buffer_bg, fg = buffer_bg })
-	vim.api.nvim_set_hl(0, "BufferLineModifiedSelected", { bg = buffer_bg, fg = "none" })
-	vim.api.nvim_set_hl(0, "BufferLineBuffer", { bg = buffer_bg, fg = "none" })
-	vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { bg = buffer_bg, fg = "none" })
-end
-
 M.colorscheme_opts = {
-	["kanagawa"] = {
-		treesitter_context = {
-			bg = "#3d3e42",
-			italic = true,
-		},
-		custom_highlights = function()
-			-- Batch highlight setting for performance
-			local highlights = {
-				-- Git highlights
-				SignColumn = { fg = "none", bg = "none" },
-				GitSignsAdd = { bg = "none", fg = "#8bb38e" },
-				GitSignsChange = { bg = "none", fg = "#fce2bb" },
-				GitSignsDelete = { bg = "none", fg = "#c34043" },
-				LineNr = { fg = "#808080", bg = "none" },
-
-				-- Noice highlights
-				NoiceCmdlinePopupBorderSearch = { fg = "#ffd675", bg = "none" },
-				NoiceCmdlineIconSearch = { fg = "#ffd675", bg = "none" },
-				NoiceCmdline = { fg = "#b1c9b8", bg = "none" },
-				NoiceCmdlineIcon = { fg = "#b1c9b8", bg = "none" },
-				NoiceCmdlinePopupBorder = { fg = "#b1c9b8", bg = "none" },
-
-				-- Float highlights
-				NormalFloat = { link = "Normal" },
-				Float = { link = "Normal" },
-
-				-- LSP and Treesitter highlights (grouped by color)
-				["@type.builtin.c"] = { fg = "#e6b791" },
-				["@type.builtin.cpp"] = { fg = "#e6b791" },
-				["@lsp.type.class.c"] = { fg = "#e6b791" },
-				["@lsp.mod.defaultLibrary.c"] = { fg = "#e6b791" },
-
-				["@variable.parameter"] = { fg = "#e6e3be" },
-				["@lsp.type.variable.c"] = { fg = "#e6e3be" },
-
-				["@lsp.type.function.c"] = { fg = "#abd1c8" },
-				["@variable.c"] = { fg = "#dedac5" },
-				["@function.call"] = { fg = "#82abc4", bg = "none", bold = true },
-				["@keyword.modifier"] = { fg = "#937ba8", bg = "none" },
-
-				-- Keyword highlights (all using same color)
-				["@keyword.directive"] = { fg = "#c2a9d9", bg = "none" },
-				["@keyword.directive.cpp"] = { fg = "#c2a9d9", bg = "none" },
-				["@keyword.repeat"] = { fg = "#c2a9d9", bg = "none" },
-				["@keyword.repeat.c"] = { fg = "#c2a9d9", bg = "none" },
-				["@keyword.conditional"] = { fg = "#c2a9d9", bg = "none" },
-				["@keyword.function"] = { fg = "#c2a9d9", bg = "none" },
-				["@keyword.function.rust"] = { fg = "#c2a9d9", bg = "none" },
-				["@keyword.modifier.rust"] = { fg = "#c2a9d9", bg = "none" },
-				["@keyword.rust"] = { fg = "#c2a9d9", bg = "none" },
-
-				["@_parent"] = { fg = "#f2eca7", bg = "none" },
-			}
-
-			-- Batch apply all highlights
-			for group, opts in pairs(highlights) do
-				vim.api.nvim_set_hl(0, group, opts)
-			end
-		end,
-	},
 	["nordfox"] = {
 		treesitter_context = {
 			bg = "#3d3e42",
@@ -151,43 +81,8 @@ M.colorscheme_opts = {
 				CurSearch = { bg = "#738994", fg = "white" },
 				IncSearch = { bg = "#738994", fg = "white" },
 				Search = { bg = "#738994", fg = "white" },
-			}
-			for group, opts in pairs(highlights) do
-				vim.api.nvim_set_hl(0, group, opts)
-			end
-		end,
-	},
-	["tokyonight-moon"] = {
-		treesitter_context = {
-			bg = "#3d3e42",
-			italic = true,
-		},
-		custom_highlights = function()
-			local highlights = {
-				NormalFloat = { link = "Normal" },
-				FloatBorder = { link = "Normal" },
-				Float = { link = "Normal" },
-				CurSearch = { bg = "#738994", fg = "white" },
-				IncSearch = { bg = "#738994", fg = "white" },
-				Search = { bg = "#738994", fg = "white" },
-			}
-			for group, opts in pairs(highlights) do
-				vim.api.nvim_set_hl(0, group, opts)
-			end
-		end,
-	},
-	["catppuccin-macchiato"] = {
-		treesitter_context = {
-			bg = "#51576d",
-			italic = true,
-		},
-		custom_highlights = function()
-			local highlights = {
-				FloatBorder = { link = "Normal" },
-				NormalFloat = { link = "Normal" },
-				Float = { link = "Normal" },
-				["@type.builtin.c"] = { fg = "#abd4d6" },
-				["@type.builtin.cpp"] = { fg = "#abd4d6" },
+				["@_parent"] = { fg = "#d5dee3", bg = "none" },
+				["@type.c"] = { fg = "#b5ada3", bg = "none" },
 			}
 			for group, opts in pairs(highlights) do
 				vim.api.nvim_set_hl(0, group, opts)
@@ -224,9 +119,3 @@ function M.SetColorScheme(scheme)
 		end
 	end)
 end
-
-function M.init()
-	M.SetColorScheme("nordfox")
-end
-
-M.init()

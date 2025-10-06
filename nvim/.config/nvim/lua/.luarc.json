@@ -1,0 +1,16 @@
+{
+  "workspace": {
+    "ignoreDir": [
+      "LuaSnip"
+    ]
+  },
+  "diagnostics": {
+    "globals": [
+      "vim",
+      "Snacks"
+    ],
+	"disable": [
+      "missing-fields"
+	]
+  }
+}

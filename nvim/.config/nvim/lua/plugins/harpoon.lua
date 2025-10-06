@@ -1,0 +1,231 @@
+return {
+	-- {
+	-- 	"ThePrimeagen/harpoon",
+	-- 	event = "VeryLazy",
+	-- 	branch = "harpoon2",
+	-- 	dependencies = {
+	-- 		"nvim-lua/plenary.nvim",
+	-- 		"nvim-telescope/telescope.nvim",
+	-- 	},
+	-- 	keys = function()
+	-- 		local harpoon = require("harpoon")
+	-- 		return {
+	-- 			-- Toggle add/remove a "spot" (file+row) at the current cursor
+	-- 			{
+	-- 				"<C-'>",
+	-- 				function()
+	-- 					local list = harpoon:list("spots")
+	-- 					local file = vim.api.nvim_buf_get_name(0)
+	-- 					local row = vim.api.nvim_win_get_cursor(0)[1]
+	-- 					local target = { file = file, row = row }
+	--
+	-- 					-- find existing exact match
+	-- 					local found_index
+	-- 					for i, item in ipairs(list.items) do
+	-- 						local v = item.value
+	-- 						if v and v.file == target.file and v.row == target.row then
+	-- 							found_index = i
+	-- 							break
+	-- 						end
+	-- 					end
+	--
+	-- 					if found_index then
+	-- 						list:remove_at(found_index)
+	-- 					else
+	-- 						-- create_list_item below will read the current cursor for us
+	-- 						list:add()
+	-- 					end
+	--
+	-- 					vim.schedule(function()
+	-- 						-- Clear harpoon cache in statuscolumn
+	-- 						local statuscolumn = require("statuscolumn")
+	-- 						if statuscolumn.refresh_harpoon_cache then
+	-- 							statuscolumn.refresh_harpoon_cache()
+	-- 						end
+	-- 					end)
+	-- 				end,
+	-- 				desc = "Harpoon spot: toggle here",
+	-- 			},
+	-- 			-- Previous / next spot
+	-- 			{
+	-- 				"!",
+	-- 				function()
+	-- 					require("harpoon"):list("spots"):prev()
+	-- 				end,
+	-- 				desc = "Harpoon prev",
+	-- 			},
+	-- 			{
+	-- 				"@",
+	-- 				function()
+	-- 					require("harpoon"):list("spots"):next()
+	-- 				end,
+	-- 				desc = "Harpoon next",
+	-- 			},
+	-- 		}
+	-- 	end,
+	-- 	config = function()
+	-- 		local harpoon = require("harpoon")
+	-- 		harpoon:setup({
+	-- 			-- keep the popup width dynamic (from the README)
+	-- 			menu = { width = vim.api.nvim_win_get_width(0) - 4 }, -- :contentReference[oaicite:1]{index=1}
+	-- 			-- make list state persist when the UI closes
+	-- 			settings = { sync_on_ui_close = true }, -- :contentReference[oaicite:2]{index=2}
+	--
+	-- 			-- custom list that stores file + line number
+	-- 			["spots"] = {
+	-- 				create_list_item = function(_, _)
+	-- 					local file = vim.api.nvim_buf_get_name(0)
+	-- 					local row = vim.api.nvim_win_get_cursor(0)[1]
+	-- 					return { value = { file = file, row = row } }
+	-- 				end,
+	-- 				display = function(li)
+	-- 					return string.format("%s:%d", vim.fn.fnamemodify(li.value.file, ":."), li.value.row)
+	-- 				end,
+	-- 				equals = function(a, b)
+	-- 					if not a or not b or not a.value or not b.value then
+	-- 						return false
+	-- 					end
+	-- 					return a.value.file == b.value.file and a.value.row == b.value.row
+	-- 				end,
+	-- 				select = function(li)
+	-- 					if not li or not li.value then
+	-- 						return
+	-- 					end
+	-- 					vim.cmd.edit(vim.fn.fnameescape(li.value.file))
+	-- 					pcall(vim.api.nvim_win_set_cursor, 0, { li.value.row, 0 })
+	-- 				end,
+	-- 				encode = function(item)
+	-- 					return item.value
+	-- 				end,
+	-- 				decode = function(obj)
+	-- 					return { value = obj }
+	-- 				end,
+	-- 			},
+	-- 		})
+	--
+	-- 		-- Telescope UI (pattern matches the official example, but with our custom entries)
+	-- 		local conf = require("telescope.config").values
+	-- 		local function open_spots_picker(list)
+	-- 			local results = {}
+	-- 			for _, item in ipairs(list.items) do
+	-- 				if item.value then
+	-- 					table.insert(results, item.value) -- README iterates `harpoon_files.items` and uses `item.value` :contentReference[oaicite:3]{index=3}
+	-- 				end
+	-- 			end
+	--
+	-- 			local entry_maker = function(entry)
+	-- 				local short = string.format("%s:%d", vim.fn.fnamemodify(entry.file, ":."), entry.row)
+	-- 				return {
+	-- 					value = entry,
+	-- 					display = short,
+	-- 					ordinal = short,
+	-- 					path = entry.file,
+	-- 					lnum = entry.row,
+	-- 				}
+	-- 			end
+	--
+	-- 			require("telescope.pickers")
+	-- 				.new({}, {
+	-- 					prompt_title = "Harpoon (spots)",
+	-- 					finder = require("telescope.finders").new_table({
+	-- 						results = results,
+	-- 						entry_maker = entry_maker,
+	-- 					}),
+	-- 					previewer = conf.file_previewer({}),
+	-- 					sorter = conf.generic_sorter({}),
+	-- 					on_close = function()
+	-- 						-- Clear statuscolumn cache when telescope closes
+	-- 						vim.schedule(function()
+	-- 							local statuscolumn = require("statuscolumn")
+	-- 							if statuscolumn.refresh_harpoon_cache then
+	-- 								statuscolumn.refresh_harpoon_cache()
+	-- 							end
+	-- 						end)
+	-- 					end,
+	-- 					attach_mappings = function(prompt_bufnr, map)
+	-- 						local actions = require("telescope.actions")
+	-- 						local action_state = require("telescope.actions.state")
+	--
+	-- 						-- open selection at stored line
+	-- 						actions.select_default:replace(function()
+	-- 							local sel = action_state.get_selected_entry()
+	-- 							if sel and sel.value then
+	-- 								actions.close(prompt_bufnr)
+	-- 								vim.cmd.edit(vim.fn.fnameescape(sel.value.file))
+	-- 								pcall(vim.api.nvim_win_set_cursor, 0, { sel.value.row, 0 })
+	--
+	-- 								-- Clear statuscolumn cache after selection
+	-- 								vim.schedule(function()
+	-- 									local statuscolumn = require("statuscolumn")
+	-- 									if statuscolumn.refresh_harpoon_cache then
+	-- 										statuscolumn.refresh_harpoon_cache()
+	-- 									end
+	-- 								end)
+	-- 							end
+	-- 						end)
+	--
+	-- 						-- <C-d> = delete the selected spot from Harpoon, then refresh the picker
+	-- 						map("i", "<C-d>", function()
+	-- 							local state = require("telescope.actions.state")
+	-- 							local entry = state.get_selected_entry()
+	-- 							local picker = state.get_current_picker(prompt_bufnr)
+	-- 							if entry and entry.value then
+	-- 								local list = require("harpoon"):list("spots")
+	-- 								-- Find the index of the item to remove
+	-- 								local found_index
+	-- 								for i, item in ipairs(list.items) do
+	-- 									if
+	-- 										item
+	-- 										and item.value
+	-- 										and item.value.file == entry.value.file
+	-- 										and item.value.row == entry.value.row
+	-- 									then
+	-- 										found_index = i
+	-- 										break
+	-- 									end
+	-- 								end
+	--
+	-- 								if found_index then
+	-- 									list:remove_at(found_index)
+	--
+	-- 									-- Clear statuscolumn cache after deletion
+	-- 									vim.schedule(function()
+	-- 										local statuscolumn = require("statuscolumn")
+	-- 										if statuscolumn.refresh_harpoon_cache then
+	-- 											statuscolumn.refresh_harpoon_cache()
+	-- 										end
+	-- 									end)
+	--
+	-- 									local updated = {}
+	-- 									for _, item in ipairs(list.items) do
+	-- 										if item.value then
+	-- 											table.insert(updated, item.value)
+	-- 										end
+	-- 									end
+	-- 									picker:refresh(require("telescope.finders").new_table({
+	-- 										results = updated,
+	-- 										entry_maker = entry_maker,
+	-- 									}))
+	-- 								end
+	-- 							end
+	-- 						end)
+	--
+	-- 						return true
+	-- 					end,
+	-- 				})
+	-- 				:find()
+	-- 		end
+	--
+	-- 		-- Open the Telescope picker for the "spots" list
+	-- 		vim.keymap.set("n", "<lt>H", function()
+	-- 			-- Clear statuscolumn cache before opening picker
+	-- 			local statuscolumn = require("statuscolumn")
+	-- 			if statuscolumn.refresh_harpoon_cache then
+	-- 				statuscolumn.refresh_harpoon_cache()
+	-- 			end
+	--
+	-- 			open_spots_picker(harpoon:list("spots"))
+	-- 		end, { desc = "Open Harpoon spots picker" })
+	-- 	end,
+	-- },
+}

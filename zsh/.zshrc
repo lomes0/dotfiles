@@ -39,7 +39,8 @@ CASE_SENSITIVE="true"
 COMPLETION_WAITING_DOTS="true"
 DISABLE_UNTRACKED_FILES_DIRTY="true"
 # Optimized plugin loading - lighter plugins first
-plugins=(git zsh-completions zsh-autosuggestions zsh-syntax-highlighting zsh-vi-mode)
+# zsh-vi-mode
+plugins=(git zsh-completions zsh-autosuggestions zsh-syntax-highlighting)
 source $ZSH/oh-my-zsh.sh
 
 # User configuration

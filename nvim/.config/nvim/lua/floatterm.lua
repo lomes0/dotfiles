@@ -28,7 +28,9 @@ function Floatterm:toggle()
 
 			-- Start terminal job in the buffer
 			vim.api.nvim_buf_call(self.buf, function()
-				self.job_id = vim.fn.termopen(vim.o.shell)
+				self.job_id = vim.fn.jobstart(vim.o.shell, {
+					term = true,
+				})
 			end)
 		end
 

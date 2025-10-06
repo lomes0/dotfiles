@@ -1,6 +1,6 @@
 # Dotfiles
 
-Mostly neovim, but some other usfull configs as well. Managed with gnu stow.
+Mostly neovim, but some other useful configs as well. Managed with gnu stow.
 
 More:
  - atac

@@ -4,6 +4,9 @@ vim.opt.completeopt = { "noinsert", "noselect" }
 
 vim.loader.enable()
 
+-- Load Snacks module for terminal functionality
+local Snacks = require("snacks")
+
 local opts = {
 	{ "backup", true },
 	{ "writebackup", false },
@@ -45,18 +48,22 @@ local opts = {
 }
 
 local keymaps_noremap = {
-	{
-		{ "n", "v", "x" },
-		"B",
-		"2B",
-		desc = "Jump 2B",
-	},
-	{
-		{ "n", "v", "x" },
-		"W",
-		"2W",
-		desc = "Jump 2W",
-	},
+	-- {
+	-- 	{ "n", "v", "x" },
+	-- 	"B",
+	-- 	function()
+	-- 		vim.fn.search('\\S\\{2,\\}', 'bW')
+	-- 	end,
+	-- 	desc = "Jump to previous word skipping single chars",
+	-- },
+	-- {
+	-- 	{ "n", "v", "x" },
+	-- 	"W",
+	-- 	function()
+	-- 		vim.fn.search('\\S\\{2,\\}', 'W')
+	-- 	end,
+	-- 	desc = "Jump to next word skipping single chars",
+	-- },
 	{
 		{ "n", "v" },
 		"x",
@@ -70,8 +77,6 @@ local keymaps_noremap = {
 		desc = "Delete into void register",
 	},
 }
-
-local move_floating_window_scale = 4
 
 local keymaps = {
 	{
@@ -449,58 +454,79 @@ local function setup_nvim_env()
 end
 
 vim.keymap.set({ "n", "x" }, "<lt>gg", function()
-	local gitdir = M.gitroot(M.bufdir())
+	local dir = M.bufdir() or vim.fn.getcwd()
+	local gitdir = M.gitroot(dir)
 	if gitdir == nil then
 		print("Not a git repo")
 		return
 	end
 
-	-- Capture the current buffer and tab before opening lazygit
+	-- Capture the current buffer, window, and tab before opening lazygit
 	local prev_buf = vim.api.nvim_get_current_buf()
+	local prev_win = vim.api.nvim_get_current_win()
 	local prev_tab = vim.api.nvim_get_current_tabpage()
 
-	-- Create new tab and open lazygit terminal with silent command
-	vim.cmd("silent enew")
-	local term_buf = vim.api.nvim_get_current_buf()
+	-- Create a terminal buffer but don't switch to it yet
+	local term_buf = vim.api.nvim_create_buf(false, true)
 
-	local cmd = "lazygit -w=" .. vim.fn.fnameescape(gitdir)
+	-- Build command + env
+	local cmd = { "lazygit", "-w=" .. gitdir }
 	local env = setup_nvim_env()
 
-	vim.fn.termopen(cmd, {
-		env = env,
-		on_exit = function(_, code, _)
-			-- Close the terminal buffer automatically if lazygit exited successfully
-			if code == 0 then
-				vim.schedule(function()
-					local current_tab = vim.api.nvim_get_current_tabpage()
+	-- Start lazygit in the terminal buffer
+	local job
+	vim.api.nvim_buf_call(term_buf, function()
+		job = vim.fn.jobstart(cmd, {
+			term = true,
+			env = env,
+			on_exit = function(_, code, _)
+				if code == 0 then
+					vim.schedule(function()
+						local current_tab = vim.api.nvim_get_current_tabpage()
 
-					if vim.api.nvim_buf_is_valid(term_buf) then
-						vim.api.nvim_buf_delete(term_buf, { force = true })
-					end
+						-- Switch back to the original window and buffer
+						if vim.api.nvim_win_is_valid(prev_win) then
+							vim.api.nvim_set_current_win(prev_win)
 
-					-- Check if tab changed (lazygit opened a new tab with 'e')
-					if current_tab ~= prev_tab then
-						-- Tab changed, close the previous tab
-						if vim.api.nvim_tabpage_is_valid(prev_tab) then
-							vim.api.nvim_set_current_tabpage(prev_tab)
-							vim.cmd("tabclose")
-							-- Switch back to the new tab
-							if vim.api.nvim_tabpage_is_valid(current_tab) then
-								vim.api.nvim_set_current_tabpage(current_tab)
+							-- Make sure we're showing the original buffer
+							if vim.api.nvim_buf_is_valid(prev_buf) then
+								vim.api.nvim_win_set_buf(prev_win, prev_buf)
 							end
 						end
-					else
-						-- Tab didn't change, restore the previous buffer
-						if vim.api.nvim_buf_is_valid(prev_buf) then
-							vim.api.nvim_set_current_buf(prev_buf)
-						end
-					end
-				end)
-			end
-		end,
-	})
 
-	-- Set terminal options to reduce visual noise
+						-- Clean up the terminal buffer
+						if vim.api.nvim_buf_is_valid(term_buf) then
+							vim.api.nvim_buf_delete(term_buf, { force = true })
+						end
+
+						if current_tab ~= prev_tab then
+							-- Different tab: handle tab switching as before
+							if vim.api.nvim_tabpage_is_valid(prev_tab) then
+								vim.api.nvim_set_current_tabpage(prev_tab)
+								vim.cmd("tabclose")
+								if vim.api.nvim_tabpage_is_valid(current_tab) then
+									vim.api.nvim_set_current_tabpage(current_tab)
+								end
+							end
+						end
+					end)
+				end
+			end,
+		})
+	end)
+
+	if type(job) ~= "number" or job <= 0 then
+		print("Failed to start lazygit terminal")
+		if vim.api.nvim_buf_is_valid(term_buf) then
+			vim.api.nvim_buf_delete(term_buf, { force = true })
+		end
+		return
+	end
+
+	-- Now switch the current window to show the terminal buffer
+	vim.api.nvim_win_set_buf(prev_win, term_buf)
+
+	-- Reduce visual noise in the terminal buffer
 	vim.api.nvim_set_option_value("scrolloff", 0, { scope = "local" })
 end)
 
@@ -599,16 +625,16 @@ vim.api.nvim_create_user_command("RemoveSnacksNotifWindows", function()
 	end
 end, {})
 
-vim.api.nvim_create_autocmd({ "BufEnter" }, {
-	callback = function()
-		local bufname = vim.api.nvim_buf_get_name(0)
-		if bufname:match("NvimTree_") then
-			vim.wo.statuscolumn = "  "
-			vim.wo.signcolumn = "no"
-			vim.wo.numberwidth = 1
-		end
-	end,
-})
+-- vim.api.nvim_create_autocmd({ "BufEnter" }, {
+-- 	callback = function()
+-- 		local bufname = vim.api.nvim_buf_get_name(0)
+-- 		if bufname:match("NvimTree_") then
+-- 			vim.wo.statuscolumn = "  "
+-- 			vim.wo.signcolumn = "no"
+-- 			vim.wo.numberwidth = 1
+-- 		end
+-- 	end,
+-- })
 
 vim.wo.signcolumn = "yes"
 vim.wo.statuscolumn = "%!v:lua.require('statuscolumn').statuscolumn()"
@@ -634,31 +660,29 @@ vim.keymap.set("n", "<leader>e", function()
 	end
 end, { desc = "Go to end of current block" })
 
-vim.lsp.enable({ "clangd", "pylsp", "tsserver", "rust-analyzer" })
+vim.lsp.enable({ "clangd", "pylsp", "tsserver", "rust-analyzer", "lua_ls" })
 
 vim.api.nvim_create_autocmd("LspAttach", {
 	desc = "LSP actions",
 	callback = function(event)
-		local opts = { buffer = event.buf }
+		local lsp_opts = { buffer = event.buf }
 
-		vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
-		vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
-		vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
-		vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
-		vim.keymap.set("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
-		vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
+		vim.keymap.set("n", "gk", "<cmd>lua vim.lsp.buf.hover()<cr>", lsp_opts)
+		vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", lsp_opts)
+		vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", lsp_opts)
+		vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", lsp_opts)
+		vim.keymap.set("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>", lsp_opts)
+		vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", lsp_opts)
 		vim.keymap.set("n", "gi", function()
-			vim.api.nvim_exec("lua vim.lsp.buf.incoming_calls()", false)
+			vim.lsp.buf.incoming_calls()
 			vim.defer_fn(function()
-				vim.api.nvim_exec("LTOpenToCalltree", false)
+				vim.cmd("LTOpenToCalltree")
 			end, 10)
-		end, opts)
-		vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
-		vim.keymap.set("n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-		vim.keymap.set({ "n", "x" }, "<F3>", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", opts)
-		vim.keymap.set("n", "gca", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
-
-		vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
+		end, lsp_opts)
+		vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", lsp_opts)
+		vim.keymap.set("n", "<F2>", "<cmd>lua vim.lsp.buf.rename()<cr>", lsp_opts)
+		vim.keymap.set({ "n", "x" }, "<F3>", "<cmd>lua vim.lsp.buf.format({async = true})<cr>", lsp_opts)
+		vim.keymap.set("n", "gca", "<cmd>lua vim.lsp.buf.code_action()<cr>", lsp_opts)
 	end,
 })
 
@@ -709,27 +733,34 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(args)
 		local client = vim.lsp.get_client_by_id(args.data.client_id)
 
+		if client == nil then
+			return
+		end
+
 		if client:supports_method("textDocument/documentHighlight") then
-			local autocmd = vim.api.nvim_create_autocmd
-			local augroup = vim.api.nvim_create_augroup("lsp_highlight", { clear = false })
+			local lsp_highlight = vim.api.nvim_create_augroup("lsp_highlight", { clear = false })
 
-			vim.api.nvim_clear_autocmds({ buffer = bufnr, group = augroup })
+			vim.api.nvim_clear_autocmds({ buffer = args.buf, group = lsp_highlight })
 
-			autocmd({ "CursorHold" }, {
-				group = augroup,
+			vim.api.nvim_create_autocmd({ "CursorHold" }, {
+				group = lsp_highlight,
 				buffer = args.buf,
 				callback = vim.lsp.buf.document_highlight,
 			})
 
-			autocmd({ "CursorMoved" }, {
-				group = augroup,
+			vim.api.nvim_create_autocmd({ "CursorMoved" }, {
+				group = lsp_highlight,
 				buffer = args.buf,
 				callback = vim.lsp.buf.clear_references,
 			})
 		end
 
 		if client:supports_method("textDocument/inlayHint") then
-			vim.lsp.inlay_hint.enable(true, { bufnr = args.buf })
+			vim.lsp.inlay_hint.enable(false, { bufnr = args.buf })
+		end
+
+		if client and client:supports_method("textDocument/completion") then
+			vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
 		end
 
 		if client:supports_method("textDocument/completion") then
@@ -748,3 +779,51 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		vim.diagnostic.config({ virtual_text = { current_line = true } })
 	end,
 })
+
+-- Keep caret position when leaving insert
+vim.keymap.set("i", "<Esc>", function()
+	local col = vim.fn.col(".")
+	local last = vim.fn.col("$") - 1
+	return (col <= last) and "<Esc>l" or "<Esc>"
+end, { expr = true, silent = true })
+
+-- Do the same for Ctrl-[ (same as Esc)
+vim.keymap.set("i", "<C-[>", function()
+	local col = vim.fn.col(".")
+	local last = vim.fn.col("$") - 1
+	return (col <= last) and "<Esc>l" or "<Esc>"
+end, { expr = true, silent = true })
+
+-- Set custom cursor appearance for better theme integration
+vim.opt.guicursor = table.concat({
+	"n-v-c-sm:blink20", -- blink in normal/visual/cmd
+	"i-ci-ve:ver25", -- vertical bar in insert & select
+	"r-cr-o:hor20", -- thin underline in replace/op-pending
+}, ",")
+
+-- Make insert mode a bit more familiar:
+--  - delete prefix word using ctrl-backspace
+--  - delete suffix word using ctrl-del
+--  - delete entire line using shift-del
+--  - delete to end of line using ctrl-k
+--  - undo using ctrl-d
+vim.keymap.set("i", "<C-BS>", "<C-o>db")
+vim.keymap.set("i", "<C-Del>", "<C-o>dw")
+vim.keymap.set("i", "<S-Del>", "<C-o>dd")
+vim.keymap.set("i", "<C-d>", "<C-o>D")
+vim.keymap.set("i", "<C-z>", "<C-o>u")
+
+local smartw = require("smartw")
+vim.keymap.set({ "n", "x", "o" }, "L", function()
+	smartw.forward(vim.v.count1)
+end, { desc = "Smart forward word" })
+
+vim.keymap.set({ "n", "x", "o" }, "H", function()
+	smartw.backward(vim.v.count1)
+end, { desc = "Smart backward word" })
+
+-- Make Shift+arrows/Home/End/PgUp/PgDn start/extend selection
+vim.opt.keymodel = { "startsel", "stopsel" }
+
+-- Use Select mode so typing replaces the selection (like most editors)
+vim.opt.selectmode = { "key" }

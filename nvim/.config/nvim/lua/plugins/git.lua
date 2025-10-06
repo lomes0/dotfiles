@@ -1,7 +1,7 @@
 return {
 	{
 		"lewis6991/gitsigns.nvim",
-		event = "VeryLazy",
+		event = "BufReadPre",
 		config = function()
 			require("gitsigns").setup({
 				-- Git base navigation and hunk iteration functionality
@@ -15,7 +15,7 @@ return {
 				},
 				signcolumn = true,
 				sign_priority = 6,
-				update_debounce = 1000, -- ms
+				update_debounce = 100, -- ms
 				max_file_length = 20000, -- lines
 				preview_config = {
 					border = "single",
@@ -31,11 +31,12 @@ return {
 				current_line_blame = false,
 				on_attach = function(bufnr)
 					local gitsigns = require("gitsigns")
-					vim.keymap.set("n", "  ", function()
+					vim.keymap.set("n", "<Space><Space>", function()
 						if vim.wo.diff then
 							vim.cmd.normal({ "]c", bang = true })
 						else
-							gitsigns.nav_hunk("next")
+							--[[@diagnostic disable-next-line:param-type-mismatch]]
+							gitsigns.nav_hunk("next", { wrap = true })
 						end
 					end, {
 						noremap = true,
@@ -44,11 +45,12 @@ return {
 						desc = "Gitsigns next change",
 					})
 
-					vim.keymap.set("n", " b", function()
+					vim.keymap.set("n", "<Space>r", function()
 						if vim.wo.diff then
 							vim.cmd.normal({ "[c", bang = true })
 						else
-							gitsigns.nav_hunk("prev")
+							--[[@diagnostic disable-next-line:param-type-mismatch]]
+							gitsigns.nav_hunk("prev", { wrap = true })
 						end
 					end, {
 						noremap = true,
@@ -166,7 +168,7 @@ return {
 
 			-- Get git staged files and open them in quickfix window
 			vim.keymap.set("n", "<leader>hq", function()
-				local handle = io.popen("git diff --name-only")
+				local handle = io.popen("git diff HEAD --name-only")
 				if not handle then
 					vim.notify("Failed to execute git command", vim.log.levels.ERROR)
 					return

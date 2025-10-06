@@ -21,6 +21,12 @@ return {
 				ignore_install = {},
 				incremental_selection = {
 					enable = true,
+					keymaps = {
+						init_selection = "gnn", -- set to `false` to disable one of the mappings
+						node_incremental = "<Enter>",
+						scope_incremental = false,
+						node_decremental = "<BS>",
+					},
 				},
 				-- Only install essential parsers initially
 				ensure_installed = {
@@ -74,15 +80,15 @@ return {
 				sync_install = false,
 				auto_install = false,
 				textobjects = {
-					swap = {
-						enable = true,
-						swap_next = {
-							["L"] = "@parameter.inner",
-						},
-						swap_previous = {
-							["H"] = "@parameter.inner",
-						},
-					},
+					-- swap = {
+					-- 	enable = true,
+					-- 	swap_next = {
+					-- 		["L"] = "@parameter.inner",
+					-- 	},
+					-- 	swap_previous = {
+					-- 		["H"] = "@parameter.inner",
+					-- 	},
+					-- },
 					move = {
 						enable = true,
 						set_jumps = true, -- whether to set jumps in the jumplist

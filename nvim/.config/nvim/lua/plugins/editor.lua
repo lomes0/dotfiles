@@ -1,5 +1,100 @@
 return {
 	{
+		"folke/sidekick.nvim",
+		opts = {
+			-- add any options here
+			cli = {
+				mux = {
+					backend = "zellij",
+					enabled = true,
+				},
+			},
+		},
+		keys = {
+			{
+				"<tab>",
+				function()
+					-- if there is a next edit, jump to it, otherwise apply it if any
+					if not require("sidekick").nes_jump_or_apply() then
+						return "<Tab>" -- fallback to normal tab
+					end
+				end,
+				expr = true,
+				desc = "Goto/Apply Next Edit Suggestion",
+			},
+			{
+				"<c-.>",
+				function()
+					require("sidekick.cli").toggle()
+				end,
+				desc = "Sidekick Toggle",
+				mode = { "n", "t", "i", "x" },
+			},
+			{
+				"<leader>aa",
+				function()
+					require("sidekick.cli").toggle()
+				end,
+				desc = "Sidekick Toggle CLI",
+			},
+			{
+				"<leader>as",
+				function()
+					require("sidekick.cli").select()
+				end,
+				-- Or to select only installed tools:
+				-- require("sidekick.cli").select({ filter = { installed = true } })
+				desc = "Select CLI",
+			},
+			{
+				"<leader>ad",
+				function()
+					require("sidekick.cli").close()
+				end,
+				desc = "Detach a CLI Session",
+			},
+			{
+				"<leader>at",
+				function()
+					require("sidekick.cli").send({ msg = "{this}" })
+				end,
+				mode = { "x", "n" },
+				desc = "Send This",
+			},
+			{
+				"<leader>af",
+				function()
+					require("sidekick.cli").send({ msg = "{file}" })
+				end,
+				desc = "Send File",
+			},
+			{
+				"<leader>av",
+				function()
+					require("sidekick.cli").send({ msg = "{selection}" })
+				end,
+				mode = { "x" },
+				desc = "Send Visual Selection",
+			},
+			{
+				"<leader>ap",
+				function()
+					require("sidekick.cli").prompt()
+				end,
+				mode = { "n", "x" },
+				desc = "Sidekick Select Prompt",
+			},
+			-- Example of a keybinding to open Claude directly
+			{
+				"<leader>ac",
+				function()
+					require("sidekick.cli").toggle({ name = "claude", focus = true })
+				end,
+				desc = "Sidekick Toggle Claude",
+			},
+		},
+	},
+	{
 		"stevearc/conform.nvim",
 		lazy = true,
 		keys = {
@@ -48,7 +143,6 @@ return {
 					typescript = { "deno_fmt" },
 					javascriptreact = { "deno_fmt" },
 					typescriptreact = { "deno_fmt" },
-					json = { "deno_fmt" },
 					markdown = { "deno_fmt" },
 				},
 				formatters = {
@@ -111,7 +205,18 @@ return {
 	{
 		"nvim-tree/nvim-tree.lua",
 		version = "*",
-		lazy = false,
+		lazy = true,
+		keys = {
+			{
+				"`",
+				function()
+					require("lazy").load({ plugins = { "nvim-tree.lua" } }) -- ensure loaded
+					require("nvim-tree.api").tree.toggle({ focus = false })
+				end,
+				desc = "NvimTree Toggle",
+			},
+		},
+		cmd = { "NvimTreeToggle", "NvimTreeFindFile" },
 		dependencies = {
 			"nvim-tree/nvim-web-devicons",
 		},
@@ -176,10 +281,6 @@ return {
 					vim.keymap.set("n", "<c-y>", api.tree.change_root_to_parent, opts("NvimTree Up"))
 				end,
 			})
-
-			vim.keymap.set("n", "`", function()
-				require("nvim-tree.api").tree.toggle({ focus = false })
-			end, { noremap = true, silent = true, desc = "NvimTree Toggle" })
 		end,
 	},
 	{
@@ -189,7 +290,7 @@ return {
 	{
 		"akinsho/bufferline.nvim",
 		dependencies = "nvim-tree/nvim-web-devicons", -- Fixed: 'requires' should be 'dependencies'
-		event = "VeryLazy", -- Fixed: 'even' should be 'event'
+		event = "VeryLazy",
 		config = function()
 			require("bufferline").setup({
 				options = {
@@ -199,7 +300,7 @@ return {
 					show_buffer_close_icons = false,
 					show_close_icon = false,
 					tab_size = 20, -- Set the fixed width of tabs
-					diagnostics = false,
+					diagnostics = true,
 					always_show_bufferline = true,
 					show_tab_indicators = false,
 					buffer_close_icon = "", -- Icon to close buffer
@@ -264,7 +365,7 @@ return {
 				{
 					title = "Diagnostics",
 					ft = "trouble",
-					filter = function(buf, win)
+					filter = function(_, win)
 						return vim.w[win].trouble and vim.w[win].trouble.mode == "diagnostics"
 					end,
 					open = function()
@@ -279,13 +380,26 @@ return {
 				{
 					title = "Symbols",
 					ft = "trouble",
-					filter = function(buf, win)
+					filter = function(_, win)
 						return vim.w[win].trouble and vim.w[win].trouble.mode == "lsp_document_symbols"
 					end,
 					open = function()
 						vim.cmd("Trouble lsp_document_symbols")
 					end,
 					size = { width = 55, height = 1.0 },
+					pinned = false,
+					collapsed = false, -- show window as closed/collapsed on start
+				},
+				{
+					title = "Sidekick",
+					ft = "sidekick_terminal",
+					-- filter = function(_, win)
+					-- 	return vim.w[win].trouble and vim.w[win].trouble.mode == "lsp_document_symbols"
+					-- end,
+					open = function()
+						vim.cmd("Sidekick cli toggle opencode")
+					end,
+					size = { width = 85, height = 1.0 },
 					pinned = false,
 					collapsed = false, -- show window as closed/collapsed on start
 				},
@@ -354,7 +468,6 @@ return {
 		"folke/snacks.nvim",
 		priority = 1000,
 		lazy = false,
-		---@type snacks.Config
 		opts = {
 			win = {
 				enabled = true,
@@ -418,12 +531,6 @@ return {
 			picker = {
 				enabled = true,
 			},
-			zen = {
-				enabled = true,
-				toggles = {
-					dim = false,
-				},
-			}, -- Removed duplicate zen configuration
 		},
 		keys = {
 			{
@@ -603,7 +710,7 @@ return {
 						.option("background", { off = "light", on = "dark", name = "Dark Background" })
 						:map("<lt>ub")
 					Snacks.toggle.inlay_hints({ name = "Inlay Hints" }):map("<lt>uh")
-					Snacks.toggle.zen({ name = "Zen Mode" }):map("<lt>z")
+					Snacks.toggle.zen():map("<lt>z")
 
 					-- Use local variable instead of global
 					local snacks_dir = vim.fn.getcwd()
@@ -647,7 +754,7 @@ return {
 	},
 	{
 		"nvim-tree/nvim-web-devicons",
-		event = "VeryLazy",
+		lazy = true,
 		config = function()
 			require("nvim-web-devicons").setup({
 				-- your personnal icons can go here (to override)
@@ -733,13 +840,11 @@ return {
 				},
 				-- default options for require('noice').redirect
 				-- see the section on Command Redirection
-				---@type NoiceRouteConfig
 				redirect = {
 					view = "popup",
 					filter = { event = "msg_show" },
 				},
 				-- You can add any custom commands below that will be available with `:Noice command`
-				---@type table<string, NoiceCommand>
 				commands = {
 					history = {
 						filter_opts = { count = 1 },
@@ -815,9 +920,6 @@ return {
 					progress = {
 						enabled = false,
 					},
-					hover = { enabled = false },
-					signature = { enabled = false },
-					message = { enabled = false },
 					override = {
 						-- override the default lsp markdown formatter with Noice
 						["vim.lsp.util.convert_input_to_markdown_lines"] = false,
@@ -830,7 +932,6 @@ return {
 						enabled = true,
 						silent = false, -- set to true to not show a message if hover is not available
 						view = nil, -- when nil, use defaults from documentation
-						---@type NoiceViewOptions
 						opts = {}, -- merged with defaults from documentation
 					},
 					signature = {
@@ -842,7 +943,6 @@ return {
 							throttle = 50, -- Debounce lsp signature help request by 50ms
 						},
 						view = nil, -- when nil, use defaults from documentation
-						---@type NoiceViewOptions
 						opts = {}, -- merged with defaults from documentation
 					},
 					message = {
@@ -854,7 +954,6 @@ return {
 					-- defaults for hover and signature help
 					documentation = {
 						view = "hover",
-						---@type NoiceViewOptions
 						opts = {
 							lang = "markdown",
 							replace = true,
@@ -949,7 +1048,15 @@ return {
 				},
 				sections = {
 					lualine_a = { "mode" },
-					lualine_b = { "branch", "diff", "diagnostics" },
+					lualine_b = {
+						"branch",
+						"diff",
+						{
+							"diagnostics",
+							sources = { "nvim_diagnostic" },
+							symbols = { error = " ", warn = " ", info = " ", hint = " " },
+						},
+					},
 					lualine_c = {
 						{
 							"filename",
@@ -1078,6 +1185,7 @@ return {
 			-- })
 			--
 			require("telescope").load_extension("fzf")
+			require("telescope").load_extension("harpoon")
 		end,
 	},
 	{
@@ -1129,81 +1237,3 @@ return {
 		},
 	},
 }
--- {
--- 	"swaits/zellij-nav.nvim",
--- 	lazy = true,
--- 	event = "VeryLazy",
--- 	keys = {
--- 		{ "<C-h>", "<cmd>ZellijNavigateLeft<cr>", { silent = true, desc = "navigate left" } },
--- 		{ "<C-j>", "<cmd>ZellijNavigateDown<cr>", { silent = true, desc = "navigate down" } },
--- 		{ "<C-k>", "<cmd>ZellijNavigateUp<cr>", { silent = true, desc = "navigate up" } },
--- 		{ "<C-l>", "<cmd>ZellijNavigateRight<cr>", { silent = true, desc = "navigate right" } },
--- 	},
--- 	opts = {},
--- },
---
------------------------------------------
--------------- Navigation ---------------
------------------------------------------
--- {
--- 	"ThePrimeagen/harpoon",
--- 	lazy = false,
--- 	branch = "harpoon2",
--- 	dependencies = { "nvim-lua/plenary.nvim" },
--- 	config = function()
--- 		local harpoon = require("harpoon")
---
--- 		-- REQUIRED
--- 		harpoon:setup()
--- 		-- REQUIRED
---
--- 		vim.keymap.set("n", "<leader>a", function()
--- 			harpoon:list():add()
--- 		end)
---
--- 		vim.keymap.set("n", "<C-h>", function()
--- 			harpoon:list():select(1)
--- 		end)
--- 		vim.keymap.set("n", "<C-t>", function()
--- 			harpoon:list():select(2)
--- 		end)
--- 		vim.keymap.set("n", "<C-n>", function()
--- 			harpoon:list():select(3)
--- 		end)
--- 		vim.keymap.set("n", "<C-s>", function()
--- 			harpoon:list():select(4)
--- 		end)
---
--- 		-- Toggle previous & next buffers stored within Harpoon list
--- 		-- vim.keymap.set("n", "", function()
--- 		-- 	harpoon:list():prev()
--- 		-- end)
--- 		-- vim.keymap.set("n", "", function()
--- 		-- 	harpoon:list():next()
--- 		-- end)
---
--- 		-- basic telescope configuration
--- 		local conf = require("telescope.config").values
--- 		local function toggle_telescope(harpoon_files)
--- 			local file_paths = {}
--- 			for _, item in ipairs(harpoon_files.items) do
--- 				table.insert(file_paths, item.value)
--- 			end
---
--- 			require("telescope.pickers")
--- 				.new({}, {
--- 					prompt_title = "Harpoon",
--- 					finder = require("telescope.finders").new_table({
--- 						results = file_paths,
--- 					}),
--- 					previewer = conf.file_previewer({}),
--- 					sorter = conf.generic_sorter({}),
--- 				})
--- 				:find()
--- 		end
---
--- 		vim.keymap.set("n", "<lt>h", function()
--- 			toggle_telescope(harpoon:list())
--- 		end, { desc = "Open harpoon window" })
--- 	end,
--- },
