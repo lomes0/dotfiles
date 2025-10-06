@@ -250,18 +250,6 @@ return {
 		end,
 	},
 	{
-		"nvim-neo-tree/neo-tree.nvim",
-		branch = "v3.x",
-		open_files_do_not_replace_types = { "terminal", "Trouble", "qf", "edgy" },
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-			"MunifTanjim/nui.nvim",
-			"folke/edgy.nvim",
-			-- {"3rd/image.nvim", opts = {}}, -- Optional image support in preview window: See `# Preview Mode` for more information
-		},
-	},
-	{
 		"folke/edgy.nvim",
 		event = "VeryLazy",
 		init = function()
@@ -348,7 +336,7 @@ return {
 			},
 			options = {
 				left = { size = 35 },
-				right = { size = 35 },
+				right = { size = 50 },
 				bottom = { size = 8 },
 				top = { size = 8 },
 			},
