@@ -9,7 +9,7 @@ local statuscolumn = {
 statuscolumn.setHl = function()
 	vim.api.nvim_set_hl(0, "FoldSign", { fg = "#ffffff" })
 	vim.api.nvim_set_hl(0, "CurrentLineNr", { fg = "#d9a46c", bold = true })
-	-- vim.api.nvim_set_hl(0, "HarpoonIndicator", { fg = "#61afef", bold = true })
+	vim.api.nvim_set_hl(0, "HarpoonIndicator", { fg = "#61afef", bold = true })
 end
 
 statuscolumn.foldsMarkCond = function(foldlevel)
@@ -75,64 +75,39 @@ statuscolumn.folds = function()
 end
 
 -- Show a mark on lines that have a harpoon spot
--- statuscolumn.harpoon_sign = function()
--- 	-- Initialize harpoon cache if needed
--- 	if not statuscolumn.harpoon_cache then
--- 		statuscolumn.harpoon_cache = {
--- 			bufnr = -1,
--- 			lines = {},
--- 		}
--- 	end
--- 
--- 	local ok, harpoon = pcall(require, "harpoon")
--- 	if not ok then
--- 		return ""
--- 	end
--- 
--- 	local bufnr = vim.api.nvim_get_current_buf()
--- 	local current_file = vim.api.nvim_buf_get_name(bufnr)
--- 	if current_file == "" then
--- 		return ""
--- 	end
--- 
--- 	-- Normalize the file path to avoid comparison issues
--- 	current_file = vim.fn.fnamemodify(current_file, ":p")
+statuscolumn.harpoon_sign = function()
+	local ok, harpoon = pcall(require, "harpoon")
+	if not ok then
+		return ""
+	end
 
--- 	-- Rebuild cache if buffer changed
--- 	if statuscolumn.harpoon_cache.bufnr ~= bufnr then
--- 		statuscolumn.harpoon_cache.bufnr = bufnr
--- 		statuscolumn.harpoon_cache.lines = {}
--- 
--- 		local list = harpoon:list("spots")
--- 		if list and list.items then
--- 			for _, item in ipairs(list.items) do
--- 				if item and item.value and item.value.file and item.value.row then
--- 					-- Normalize the harpoon file path as well
--- 					local harpoon_file = vim.fn.fnamemodify(item.value.file, ":p")
--- 					if harpoon_file == current_file then
--- 						statuscolumn.harpoon_cache.lines[item.value.row] = true
--- 					end
--- 				end
--- 			end
--- 		end
--- 	end
--- 
--- 	local lnum = vim.v.lnum
--- 	if statuscolumn.harpoon_cache.lines[lnum] then
--- 		return "%#HarpoonIndicator#󰃃%*"
--- 	end
--- 
--- 	return ""
--- end
+	-- Get the buffer for the window being rendered, not the currently focused buffer
+	local winid = vim.g.statusline_winid or vim.fn.win_getid()
+	local bufnr = vim.fn.winbufnr(winid)
+	local file = vim.api.nvim_buf_get_name(bufnr)
+	if file == "" then
+		return ""
+	end
 
--- -- Function to force refresh the harpoon cache
--- statuscolumn.refresh_harpoon_cache = function()
--- 	if statuscolumn.harpoon_cache then
--- 		statuscolumn.harpoon_cache.bufnr = -1
--- 		statuscolumn.harpoon_cache.lines = {}
--- 	end
--- 	vim.cmd("redraw!")
--- end
+	-- Normalize the file path to avoid comparison issues
+	file = vim.fn.fnamemodify(file, ":p")
+	local lnum = vim.v.lnum
+
+	local list = harpoon:list("spots")
+	if list and list.items then
+		for _, item in ipairs(list.items) do
+			if item and item.value and item.value.file and item.value.row then
+				-- Normalize the harpoon file path as well
+				local harpoon_file = vim.fn.fnamemodify(item.value.file, ":p")
+				if harpoon_file == file and item.value.row == lnum then
+					return "%#HarpoonIndicator#󰃃%*"
+				end
+			end
+		end
+	end
+
+	return ""
+end
 
 statuscolumn.line_number = function()
 	local is_current_line = vim.v.relnum == 0
@@ -146,18 +121,18 @@ statuscolumn.line_number = function()
 end
 
 statuscolumn.statuscolumn = function()
-	local text = ""
 	statuscolumn.setHl()
 
-	text = table.concat({
-		"%s%=",
+	return table.concat({
+		"%s", -- sign column
+		statuscolumn.harpoon_sign(),
+		" ",
+		"%=", -- right-align the rest
 		statuscolumn.line_number(),
 		" ",
 		statuscolumn.folds(),
 		" ",
 	})
-
-	return text
 end
 
 local function statuscolumn_update()
@@ -171,12 +146,6 @@ local function statuscolumn_update()
 			statuscolumn.cache.last_result = ""
 		end
 
-		-- -- Clear harpoon cache
-		-- if statuscolumn.harpoon_cache then
-		-- 	statuscolumn.harpoon_cache.bufnr = -1
-		-- 	statuscolumn.harpoon_cache.lines = {}
-		-- end
-		--
 		vim.cmd("redraw!")
 
 		local zvals = ""
