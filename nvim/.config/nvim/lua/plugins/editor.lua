@@ -65,6 +65,11 @@ return {
 						args = { "format", "-" },
 						stdin = true,
 					},
+					["jq"] = {
+						command = "jq",
+						args = { "." },
+						stdin = true,
+					},
 				},
 				log_level = vim.log.levels.ERROR,
 				notify_on_error = true,
