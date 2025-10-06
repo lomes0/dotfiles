@@ -24,7 +24,7 @@ return {
 				mccabe = { enabled = false },
 				black = { enabled = false },
 				isort = { enabled = false },
-				autopeop8 = { enabled = false },
+				autopep8 = { enabled = false },
 			},
 		},
 	},

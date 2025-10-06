@@ -1,12 +1,16 @@
 return {
 	cmd = { "rust-analyzer" },
 	filetypes = { "rust" },
-	root_markers = { "Cargo.toml", ".git" },
+	root_dir = vim.fs.root(0, { "Cargo.toml", "rust-project.json", ".git" }),
 	settings = {
 		["rust-analyzer"] = {
-			cargo = { loadOutDirsFromCheck = true },
-			checkOnSave = { command = "clippy" },
-			-- avoid using rust-project.json if possible
+			checkOnSave = { command = "check" },
+			procMacro = { enable = false },
+			cargo = { buildScripts = { enable = false } },
+			diagnostics = { disabled = { "unresolved-proc-macro" } },
+			files = {
+				excludeDirs = { "target", ".git", "node_modules", ".cargo", ".venv", "venv" },
+			},
 		},
 	},
 }
