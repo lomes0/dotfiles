@@ -27,6 +27,9 @@ gui:
       - '#889599'
   showFileTree: true # for rendering changes files in a tree format
 keybinding:
+  commits:
+    moveDownCommit: "<c-d>"
+    moveUpCommit: "<c-u>"
   universal:
     quit: "q"
 promptToReturnFromSubprocess: false
