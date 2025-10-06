@@ -1016,11 +1016,15 @@ return {
 					},
 					file_ignore_patterns = {
 						"node_modules",
-						".git",
+						"^./.git/",
 						"target",
 						"CMpub",
 						"linux80",
 						"linux90",
+						"%.swp$",
+						"%.bak$",
+						"%.temp$",
+						"*~$",
 					},
 					file_previewer = require("telescope.previewers").vim_buffer_cat.new,
 					grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
@@ -1059,7 +1063,7 @@ return {
 			vim.keymap.set("n", "<lt>f", function()
 				require("telescope.builtin").find_files({
 					cwd = vim.g.snacks_dir or vim.fn.getcwd(),
-					path_display = { "smart" },
+					path_display = { "absolute" },
 				})
 			end, {
 				noremap = true,
