@@ -52,10 +52,6 @@ return {
 		end,
 	},
 	{
-		"xiyaowong/transparent.nvim",
-		lazy = false,
-	},
-	{
 		"norcalli/nvim-colorizer.lua",
 		lazy = false,
 		config = function()
