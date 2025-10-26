@@ -814,11 +814,11 @@ vim.keymap.set("i", "<C-d>", "<C-o>D")
 vim.keymap.set("i", "<C-z>", "<C-o>u")
 
 local smartw = require("smartw")
-vim.keymap.set({ "n", "x", "o" }, "L", function()
+vim.keymap.set({ "n", "x", "o" }, "W", function()
 	smartw.forward(vim.v.count1)
 end, { desc = "Smart forward word" })
 
-vim.keymap.set({ "n", "x", "o" }, "H", function()
+vim.keymap.set({ "n", "x", "o" }, "B", function()
 	smartw.backward(vim.v.count1)
 end, { desc = "Smart backward word" })
 
