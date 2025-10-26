@@ -12,6 +12,7 @@ local config = {
 		"function_declaration",
 		"function", -- function keyword
 		"call_expression",
+		"function_call", -- Lua-specific function call node
 		"method_invocation",
 		"string_literal",
 		"string",
@@ -308,6 +309,17 @@ function contexts.is_in_member_expression(node)
 	return nil
 end
 
+-- Utility function for checking separators
+local function is_separator(node_type)
+	-- Check if this node type is a separator that should be skipped during navigation
+	for _, sep_type in ipairs(config.separator_nodes) do
+		if node_type == sep_type then
+			return true
+		end
+	end
+	return false
+end
+
 -- Node traversal utilities
 local traversal = {}
 
@@ -466,6 +478,13 @@ function traversal.is_target_node(node)
 
 	local node_type = node:type()
 
+	-- Explicitly exclude separator nodes from being targets
+	-- They will be skipped by skip_separators() during post-processing
+	if is_separator(node_type) then
+		utils.debug_log("Excluding separator '" .. node_type .. "' from being a target")
+		return false
+	end
+
 	-- Special handling: if this node is a child of a member expression,
 	-- don't treat it as an independent target (except the root member expression itself)
 	local parent = node:parent()
@@ -511,6 +530,59 @@ end
 
 -- Smart movement implementation
 local movement = {}
+
+function movement.skip_separators(target_node, direction)
+	-- Post-process navigation results to skip over separator nodes
+	-- This wrapper checks if the target is a separator and continues to the next non-separator
+	if not target_node then
+		return nil
+	end
+
+	local max_iterations = 10 -- Prevent infinite loops
+	local iterations = 0
+	local original_node = target_node
+
+	while target_node and is_separator(target_node:type()) and iterations < max_iterations do
+		utils.debug_log("Skipping separator node: " .. target_node:type())
+
+		local parent = target_node:parent()
+
+		-- Get the next target in the specified direction
+		if direction > 0 then
+			local next_target = traversal.get_next_sibling_target(target_node)
+			-- If no sibling, try going up to parent and finding its next sibling
+			if not next_target and parent then
+				local temp_parent = parent
+				while temp_parent and not next_target do
+					next_target = traversal.get_next_sibling_target(temp_parent)
+					temp_parent = temp_parent:parent()
+				end
+			end
+			target_node = next_target
+		else
+			local prev_target = traversal.get_prev_sibling_target(target_node)
+			-- If no sibling, try going up to parent and finding its previous sibling
+			if not prev_target and parent then
+				local temp_parent = parent
+				while temp_parent and not prev_target do
+					prev_target = traversal.get_prev_sibling_target(temp_parent)
+					temp_parent = temp_parent:parent()
+				end
+			end
+			target_node = prev_target
+		end
+
+		iterations = iterations + 1
+	end
+
+	-- If we exhausted iterations, return nil to indicate failure
+	if iterations >= max_iterations then
+		utils.debug_log("Max iterations reached while skipping separators")
+		return nil
+	end
+
+	return target_node
+end
 
 function movement.find_next_target(bufnr, row, col, direction)
 	direction = direction or 1 -- 1 for forward, -1 for backward
@@ -566,6 +638,11 @@ function movement.find_next_target(bufnr, row, col, direction)
 								)
 								return child_row, child_col
 							end
+						else
+							-- No children, but still jump inside empty container
+							utils.debug_log("Opening punctuation -> jumping into empty container")
+							-- Position after the opening bracket
+							return row, col + 1
 						end
 					elseif node_type == "}" or node_type == ")" or node_type == "]" then
 						-- Closing brace: exit container and find next target
@@ -868,9 +945,16 @@ function movement.find_next_target(bufnr, row, col, direction)
 	end
 
 	if target_node then
-		local start_row, start_col = target_node:start()
-		utils.debug_log("Found target: " .. target_node:type() .. " at (" .. start_row .. "," .. start_col .. ")")
-		return start_row, start_col
+		-- Skip over any separator nodes to reach meaningful content
+		target_node = movement.skip_separators(target_node, direction)
+
+		if target_node then
+			local start_row, start_col = target_node:start()
+			utils.debug_log("Found target: " .. target_node:type() .. " at (" .. start_row .. "," .. start_col .. ")")
+			return start_row, start_col
+		else
+			utils.debug_log("skip_separators returned nil, no valid target found")
+		end
 	end
 
 	-- Fallback to regex-based navigation
@@ -1147,7 +1231,36 @@ function movement.navigate_function_call(func_call, current_node, direction)
 					utils.debug_log("Returning first arg: " .. first_arg:type())
 					return first_arg
 				else
-					utils.debug_log("No first arg found!")
+					utils.debug_log("No first arg found, jumping into empty parameter list")
+					-- No arguments, but still jump into the empty parameter list
+					-- Position after the opening bracket
+					local args_start_row, args_start_col = args:start()
+					local args_end_row, args_end_col = args:end_()
+
+					-- Find the opening bracket and position cursor after it
+					local bufnr = 0
+					local lines = utils.get_buffer_text(bufnr)
+					local line = lines[args_start_row + 1]
+					if line then
+						-- Look for opening bracket starting from args start position
+						local opening_bracket_col = line:find("[(%[]", args_start_col + 1)
+						if opening_bracket_col then
+							utils.debug_log(
+								"Jumping to position after opening bracket: ("
+									.. args_start_row
+									.. ","
+									.. opening_bracket_col
+									.. ")"
+							)
+							-- Return position after opening bracket (0-indexed)
+							return args_start_row, opening_bracket_col
+						end
+					end
+					-- Fallback: just go to the start of args node
+					utils.debug_log(
+						"Fallback: jumping to args start: (" .. args_start_row .. "," .. args_start_col .. ")"
+					)
+					return args_start_row, args_start_col + 1
 				end
 			end
 		end
@@ -1189,36 +1302,81 @@ function movement.navigate_member_expression(member_expr, current_node, directio
 	-- e.g., vim.api.nvim_buf_get_lines or Foo.bar.baz
 
 	if direction > 0 then
-		-- Moving forward: check if this member expression is part of a function call
-		-- If so, jump to the first argument instead of the end of the expression
+		-- Moving forward: check if this member expression is part of a function call or declaration
+		-- If so, jump to the first argument/parameter instead of the end of the expression
 		local parent = member_expr:parent()
 		utils.debug_log("Member expr parent: " .. (parent and parent:type() or "nil"))
-		if parent and (parent:type() == "call_expression" or parent:type() == "function_call") then
-			utils.debug_log("Member expression is part of function call, looking for arguments...")
-			-- This is a function call like utils.debug_log(...)
-			-- Look for arguments and jump to first parameter
+		if
+			parent
+			and (
+				parent:type() == "call_expression"
+				or parent:type() == "function_call"
+				or parent:type() == "function_declaration"
+				or parent:type() == "function_definition"
+			)
+		then
+			utils.debug_log(
+				"Member expression is part of function call/declaration, looking for arguments/parameters..."
+			)
+			-- This is a function call like utils.debug_log(...) or function declaration like function M.cache.clear()
+			-- Look for arguments/parameters and jump to first parameter
 			for child in parent:iter_children() do
-				utils.debug_log("Function call child: " .. child:type())
-				if child:type() == "arguments" or child:type() == "argument_list" then
-					utils.debug_log("Found arguments, getting first child target...")
+				utils.debug_log("Function call/declaration child: " .. child:type())
+				if
+					child:type() == "arguments"
+					or child:type() == "argument_list"
+					or child:type() == "parameters"
+					or child:type() == "parameter_list"
+				then
+					utils.debug_log("Found arguments/parameters, getting first child target...")
 					local first_arg = traversal.get_first_child_target(child)
 					if first_arg then
 						local arg_row, arg_col = first_arg:start()
 						utils.debug_log(
 							string.format(
-								"Member expression is function call: jumping to first arg (%d,%d)",
+								"Member expression is function call/declaration: jumping to first arg/param (%d,%d)",
 								arg_row,
 								arg_col
 							)
 						)
 						return arg_row, arg_col
 					else
-						utils.debug_log("No first argument found in arguments container")
+						utils.debug_log("No first argument/parameter found, jumping into empty parameter list")
+						-- No arguments, but still jump into the empty parameter list
+						local args_start_row, args_start_col = child:start()
+						local bufnr = 0
+						local lines = utils.get_buffer_text(bufnr)
+						local line = lines[args_start_row + 1]
+						if line then
+							-- Look for opening bracket starting from args start position
+							local opening_bracket_col = line:find("[(%[]", args_start_col + 1)
+							if opening_bracket_col then
+								utils.debug_log(
+									"Jumping to position after opening bracket: ("
+										.. args_start_row
+										.. ","
+										.. opening_bracket_col
+										.. ")"
+								)
+								return args_start_row, opening_bracket_col
+							end
+						end
+						-- Fallback: just go to the start of args node + 1
+						utils.debug_log(
+							"Fallback: jumping to args start + 1: ("
+								.. args_start_row
+								.. ","
+								.. (args_start_col + 1)
+								.. ")"
+						)
+						return args_start_row, args_start_col + 1
 					end
 					break
 				end
 			end
-			utils.debug_log("No arguments found in function call, continuing with member expr navigation")
+			utils.debug_log(
+				"No arguments/parameters found in function call/declaration, continuing with member expr navigation"
+			)
 		end
 
 		-- Get current cursor position to check if we're already at the end
