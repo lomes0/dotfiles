@@ -18,7 +18,7 @@ family = "JetBrainsMono Nerd Font Mono"
 style = "Bold Italic"
 
 [window]
-opacity = 0.8499999999999999
+opacity = 0.4999999999999996
 decorations = "none"
 blur = true
 

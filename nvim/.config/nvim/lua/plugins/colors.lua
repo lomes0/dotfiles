@@ -18,9 +18,10 @@ return {
 		end,
 	},
 	{
+		"lomes0/chalk.nvim",
+		-- dir = vim.fn.expand("~/code/chalk.nvim"),
 		lazy = false,
 		priority = 1000,
-		dir = vim.fn.expand("~/code/chalk.nvim"),
 		config = function()
 			require("chalk").setup({
 				style = "light",
