@@ -827,3 +827,73 @@ vim.opt.keymodel = { "startsel", "stopsel" }
 
 -- Use Select mode so typing replaces the selection (like most editors)
 vim.opt.selectmode = { "key" }
+
+-- === init.lua ===
+local ns = vim.api.nvim_create_namespace("SelectBG")
+
+-- Highlight group with a dimming/grayed out effect (Low Contrast Gray - Subtle Fade)
+vim.api.nvim_set_hl(0, "SelectBG", {
+	fg = "#555555", -- Very dim gray
+	blend = 40, -- More transparent
+})
+
+local function clear_bg(buf)
+	vim.api.nvim_buf_clear_namespace(buf or 0, ns, 0, -1)
+end
+
+local function paint_bg(buf, srow, scol, erow, ecol)
+	buf = buf or 0
+	-- optional: remove previous overlay
+	clear_bg(buf)
+
+	for l = srow, erow do
+		local cs = (l == srow) and scol or 0
+		local ce
+		if l == erow then
+			ce = ecol
+		else
+			-- Get the actual line length for intermediate lines
+			ce = vim.fn.col({ l + 1, "$" }) - 1
+		end
+		vim.api.nvim_buf_set_extmark(buf, ns, l, cs, {
+			end_row = l,
+			end_col = ce,
+			hl_group = "SelectBG",
+			hl_eol = true, -- color to end of line for partial last line
+			priority = 200, -- high so it wins over Treesitter/syntax if needed
+			-- hl_mode = "combine", -- default; try "replace" if your colorscheme still bleeds through
+		})
+	end
+end
+
+-- From a visual selection
+vim.api.nvim_create_user_command("BGVisual", function()
+	local s = vim.fn.getpos("'<")
+	local e = vim.fn.getpos("'>")
+	local srow, scol = s[2] - 1, math.max(s[3] - 1, 0)
+	local erow, ecol = e[2] - 1, math.max(e[3] - 1, 0)
+	if erow < srow or (erow == srow and ecol < scol) then
+		srow, erow, scol, ecol = erow, srow, ecol, scol
+	end
+	paint_bg(0, srow, scol, erow, ecol)
+end, { range = true })
+
+-- From the Treesitter node under cursor (optional)
+vim.api.nvim_create_user_command("BGTSNode", function()
+	local ok, tsu = pcall(function()
+		return require("nvim-treesitter.ts_utils")
+	end)
+	if not ok then
+		return vim.notify("nvim-treesitter not available", vim.log.levels.WARN)
+	end
+	local node = tsu.get_node_at_cursor()
+	if not node then
+		return vim.notify("No TS node at cursor", vim.log.levels.INFO)
+	end
+	local srow, scol, erow, ecol = node:range()
+	paint_bg(0, srow, scol, erow, ecol)
+end, {})
+
+vim.api.nvim_create_user_command("BGClear", function()
+	clear_bg(0)
+end, {})
