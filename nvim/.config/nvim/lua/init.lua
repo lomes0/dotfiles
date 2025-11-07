@@ -217,53 +217,77 @@ local keymaps = {
 		"<cmd>split<cr><C-\\><C-n><C-w>j<cmd>enew<cr>",
 		desc = "Pane split horizontal",
 	},
+	-- {
+	-- 	"n",
+	-- 	"<C-h>",
+	-- 	"<C-n><C-w>h",
+	-- 	desc = "Move window left",
+	-- },
+	-- {
+	-- 	"n",
+	-- 	"<C-j>",
+	-- 	"<C-n><C-w>j",
+	-- 	desc = "Move window down",
+	-- },
+	-- {
+	-- 	"n",
+	-- 	"<C-k>",
+	-- 	"<C-n><C-w>k",
+	-- 	desc = "Move window up",
+	-- },
+	-- {
+	-- 	"n",
+	-- 	"<C-l>",
+	-- 	"<C-n><C-w>l",
+	-- 	desc = "Move window right",
+	-- },
 	{
 		"t",
 		"<C-h>",
 		"<C-\\><C-n><C-w>h",
-		desc = "Window move left",
+		desc = "Move window left (terminal mode)",
 	},
 	{
 		"t",
 		"<C-j>",
 		"<C-\\><C-n><C-w>j",
-		desc = "Window move down",
+		desc = "Move window down (terminal mode)",
 	},
 	{
 		"t",
 		"<C-k>",
 		"<C-\\><C-n><C-w>k",
-		desc = "Window move up",
+		desc = "Move window up (terminal mode)",
 	},
 	{
 		"t",
 		"<C-l>",
 		"<C-\\><C-n><C-w>l",
-		desc = "Window move right",
+		desc = "Move window right (terminal mode)",
 	},
 	{
 		"t",
 		"<C-w>h",
 		"<C-\\><C-n><C-w>h",
-		desc = "Window move left",
+		desc = "Move window left (terminal mode)",
 	},
 	{
 		"t",
 		"<C-w>j",
 		"<C-\\><C-n><C-w>j",
-		desc = "Window move down",
+		desc = "Move window down (terminal mode)",
 	},
 	{
 		"t",
 		"<C-w>k",
 		"<C-\\><C-n><C-w>k",
-		desc = "Window move up",
+		desc = "Move window up (terminal mode)",
 	},
 	{
 		"t",
 		"<C-w>l",
 		"<C-\\><C-n><C-w>l",
-		desc = "Window move right",
+		desc = "Move window right (terminal mode)",
 	},
 	{
 		"n",
@@ -812,6 +836,21 @@ vim.keymap.set("i", "<C-Del>", "<C-o>dw")
 vim.keymap.set("i", "<S-Del>", "<C-o>dd")
 vim.keymap.set("i", "<C-d>", "<C-o>D")
 vim.keymap.set("i", "<C-z>", "<C-o>u")
+
+-- autowriteall
+vim.api.nvim_create_autocmd("VimResized", {
+	command = "wincmd =",
+})
+
+-------------------------------------------------------
+--- Plugins
+-------------------------------------------------------
+
+-- NOTE: Ensures that when exiting NeoVim, Zellij returns to normal mode
+vim.api.nvim_create_autocmd("VimLeave", {
+	pattern = "*",
+	command = "silent !zellij action switch-mode normal",
+})
 
 local smartw = require("smartw")
 vim.keymap.set({ "n", "x", "o" }, "W", function()

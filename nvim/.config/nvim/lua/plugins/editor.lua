@@ -1,5 +1,22 @@
 return {
 	{
+		"swaits/zellij-nav.nvim",
+		lazy = false,
+		event = "VeryLazy",
+		config = function()
+			require("zellij-nav").setup({})
+			local keys = {
+				{ "<C-h>", "<cmd>ZellijNavigateLeftTab<cr>", { silent = true, desc = "Zellij-nav navigate left or tab" } },
+				{ "<C-j>", "<cmd>ZellijNavigateDown<cr>", { silent = true, desc = "Zellij-nav navigate down" } },
+				{ "<C-k>", "<cmd>ZellijNavigateUp<cr>", { silent = true, desc = "Zellij-nav navigate up" } },
+				{ "<C-l>", "<cmd>ZellijNavigateRightTab<cr>", { silent = true, desc = "Zellij-nav navigate right or tab" } },
+			}
+			for _, entry in ipairs(keys) do
+				vim.keymap.set("n", entry[1], entry[2], entry[3])
+			end
+		end,
+	},
+	{
 		"folke/sidekick.nvim",
 		opts = {
 			-- add any options here
@@ -212,6 +229,7 @@ return {
 				function()
 					require("lazy").load({ plugins = { "nvim-tree.lua" } }) -- ensure loaded
 					require("nvim-tree.api").tree.toggle({ focus = false })
+					vim.cmd("wincmd = ")
 				end,
 				desc = "NvimTree Toggle",
 			},

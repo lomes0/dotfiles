@@ -18,7 +18,7 @@ family = "JetBrainsMono Nerd Font Mono"
 style = "Bold Italic"
 
 [window]
-opacity = 0.95
+opacity = 0.99
 decorations = "none"
 blur = true
 
@@ -36,8 +36,8 @@ key = "F11"
 mods = "Control"
 
 [[keyboard.bindings]]
-key = "Minus"
-mods = "Alt"
+key = "_"
+mods = "Control|Shift"
 
 [keyboard.bindings.command]
 program = "/home/eransa/.local/bin/alacritty_config.py"
@@ -45,12 +45,12 @@ args = [
     "--key",
     "window.opacity",
     "--decrease",
-    "0.05",
+    "0.01",
 ]
 
 [[keyboard.bindings]]
-key = "Equals"
-mods = "Alt"
+key = "+"
+mods = "Control|Shift"
 
 [keyboard.bindings.command]
 program = "/home/eransa/.local/bin/alacritty_config.py"
@@ -58,7 +58,7 @@ args = [
     "--key",
     "window.opacity",
     "--increase",
-    "0.05",
+    "0.01",
 ]
 
 [colors.primary]

@@ -1,0 +1,54 @@
+themes {
+  custom-stacked {
+    bg "#2e3440" // Nord dark background
+    fg "#d8dee9" // Nord light text
+    red "#bf616a"
+    green "#a3be8c"
+    blue "#81a1c1"
+    yellow "#ebcb8b"
+    magenta "#b48ead"
+    orange "#d08770"
+    cyan "#88c0d0"
+    black "#3b4252"
+    white "#eceff4"
+    
+    // Custom frame styles for better stacked pane visibility
+    frame_selected {
+      base "#88c0d0" // Bright cyan for active pane
+      background "#2e3440"
+      emphasis_0 "#eceff4"
+      emphasis_1 "#d8dee9"
+      emphasis_2 "#88c0d0"
+      emphasis_3 "#5e81ac"
+    }
+    
+    frame_highlight {
+      base "#88c0d0" // Same bright cyan for highlighting
+      background "#2e3440"
+      emphasis_0 "#88c0d0"
+      emphasis_1 "#88c0d0"
+      emphasis_2 "#88c0d0"
+      emphasis_3 "#88c0d0"
+    }
+    
+    // Subtle styling for unselected frames
+    text_unselected {
+      base "#4c566a" // Muted gray
+      background "#2e3440"
+      emphasis_0 "#5e81ac"
+      emphasis_1 "#81a1c1"
+      emphasis_2 "#88c0d0"
+      emphasis_3 "#8fbcbb"
+    }
+    
+    // Clear highlighting for selected text/panes
+    text_selected {
+      base "#eceff4" // Bright white
+      background "#434c5e"
+      emphasis_0 "#88c0d0"
+      emphasis_1 "#81a1c1"
+      emphasis_2 "#5e81ac"
+      emphasis_3 "#88c0d0"
+    }
+  }
+}
