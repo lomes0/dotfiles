@@ -92,7 +92,7 @@ return {
 			--       "targetCreateCommands": [
 			--         "target create -c <core> <exe>"
 			--       ],
-			--     },        
+			--     },
 			--     ]
 			-- }
 		end,

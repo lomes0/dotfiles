@@ -1,5 +1,5 @@
 require("config.lazy")
 require("init")
-require("colors")
 require("floatterm")
 require("folding")
+-- require("colors")
