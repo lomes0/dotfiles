@@ -62,7 +62,7 @@ args = [
 ]
 
 [colors.primary]
-background = "#15141b"
+background = "#1F1F28"
 foreground = "#d5e6e6"
 
 [colors.selection]
