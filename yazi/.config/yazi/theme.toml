@@ -2,11 +2,20 @@
 dark = "catppuccin-frappe"
 light = "catppuccin-frappe"
 
+# [icon]
+# prepend_exts = [
+# 	{ name = "*.rs"  , text = "" },
+# 	{ name = "*.lua" , text = "", fg = "#51a0cf" },
+# ]
+# prepend_dirs = [
+# 	{ name = "Desktop/", text = "" },
+# ]
+
 [status]
 separator_open  = ""
 separator_close = ""
 
-[completion]
+[cmp]
 active   = { reversed = true }
 inactive = {}
 

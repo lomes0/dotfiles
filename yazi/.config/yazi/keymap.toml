@@ -12,3 +12,40 @@ desc = "Delete file/s"
 on = [ "\\" ]
 run = "quit"
 desc = "Quit yazi"
+
+# Modern navigation shortcuts
+[[mgr.prepend_keymap]]
+on = [ "g", "f" ]
+run = "linemode flat"
+desc = "Toggle flat view"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "h" ]
+run = "cd ~"
+desc = "Go to home directory"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "d" ]
+run = "cd ~/Downloads"
+desc = "Go to Downloads"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "c" ]
+run = "cd ~/.config"
+desc = "Go to .config directory"
+
+# Git integration keybindings
+[[mgr.prepend_keymap]]
+on = [ "g", "r" ]
+run = 'shell --block --confirm -- ya emit cd "$(git rev-parse --show-toplevel)"'
+desc = "Go to git root"
+
+[[mgr.prepend_keymap]]
+on = [ "g", "v" ]
+run = "plugin vcs-files"
+desc = "Open VCS files"
+
+[[mgr.prepend_keymap]]
+on = [ "<C-d>" ]
+run = "plugin diff"
+desc = "Show git diff"
