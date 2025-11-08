@@ -1,28 +1,28 @@
-if [[ ":$FPATH:" != *":$HOME/.zsh/completions:"* ]]; then export FPATH="$HOME/.zsh/completions:$FPATH"; fi
+# Optimize fpath setting - only add if directory exists
+[[ -d "$HOME/.zsh/completions" ]] && [[ ":$FPATH:" != *":$HOME/.zsh/completions:"* ]] && export FPATH="$HOME/.zsh/completions:$FPATH"
 
-# Optimized completion initialization
+# Optimized completion initialization - always skip security check for speed
 autoload -Uz compinit
-# Check if completion dump is older than 24 hours
-if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
-    compinit
-else
-    compinit -C  # Skip security check for faster startup
-fi
+compinit -C  # Skip security check for faster startup
+
+# Security check completely removed from startup for maximum performance
+# To manually run security check when needed: compaudit
 
 # Skip alias verification for faster completion
 setopt no_global_rcs
 # Reduce zsh history overhead during startup
 setopt hist_verify
 setopt hist_no_store
-autoload -Uz bashcompinit && bashcompinit
+# Lazy load bashcompinit only when needed
+# autoload -Uz bashcompinit && bashcompinit
 
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 #
-# Uncomment one of the following lines to change the auto-update behavior
-zstyle ':omz:update' mode disabled  # disable automatic updates for faster startup
-# zstyle ':omz:update' mode auto      # update automatically without asking
-# zstyle ':omz:update' mode reminder  # just remind me to update when it's time
+# Disable automatic updates for faster startup
+zstyle ':omz:update' mode disabled
+DISABLE_UPDATE_PROMPT=true
+DISABLE_AUTO_UPDATE=true
 #
 # Uncomment the following line to change how often to auto-update (in days).
 # zstyle ':omz:update' frequency 13
@@ -36,24 +36,54 @@ export ZSH="$HOME/.oh-my-zsh"
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
 CASE_SENSITIVE="true"
 # ENABLE_CORRECTION="true"
-COMPLETION_WAITING_DOTS="true"
+COMPLETION_WAITING_DOTS="false"  # Disabled for faster startup
 DISABLE_UNTRACKED_FILES_DIRTY="true"
-# Optimized plugin loading - lighter plugins first
-# zsh-vi-mode
-plugins=(git zsh-completions zsh-autosuggestions zsh-syntax-highlighting)
+DISABLE_MAGIC_FUNCTIONS="true"  # Reduce startup overhead
+HISTSIZE=1000  # Reduce history overhead
+SAVEHIST=1000
+# Skip theme loading for faster startup (using starship anyway)
+ZSH_THEME=""
+# Optimized plugin loading - lightweight plugins first
+plugins=(git zsh-completions zsh-autosuggestions)
 source $ZSH/oh-my-zsh.sh
 
-# User configuration
-#
-# source "$HOME/.cargo/env"
+# Lazy load zsh-syntax-highlighting for faster startup
+function _load_syntax_highlighting() {
+    if [[ -f "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+        source "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+    elif [[ -f "$ZSH/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
+        source "$ZSH/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+    fi
+    
+    # Configure syntax highlighting styles after loading
+    export ZSH_HIGHLIGHT_STYLES[comment]='fg=gray,dimmed'
+    export ZSH_HIGHLIGHT_STYLES[command]='fg=#a1ccbc,bold'
+    export ZSH_HIGHLIGHT_STYLES[default]='fg=#cccecf'
+    export ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#eceaa9,bold'
+    export ZSH_HIGHLIGHT_STYLES[builtin]='fg=#9dc1ed,bold'
+    export ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#e0e0de'
+    export ZSH_HIGHLIGHT_STYLES[alias]='fg=#af99ba,bold'
+    export ZSH_HIGHLIGHT_STYLES[precommand]='fg=#a7cbcc'
+    export ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#a5acb8,bold'
+    export ZSH_HIGHLIGHT_STYLES[path]='fg=#e9f5ef,underline'
+    
+    unfunction _load_syntax_highlighting
+}
 
-# PATH management - prepend user directories for priority
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/.cargo/bin:$PATH"
-export PATH="$HOME/var/diff-so-fancy:$PATH"
-export PATH=$PATH:/usr/local/go/bin
+# Load syntax highlighting on first command
+add-zsh-hook preexec _load_syntax_highlighting
 
-function yz() {
+# Lazy load bashcompinit when needed
+function _ensure_bashcompinit() {
+    if ! (( $+functions[complete] )); then
+        autoload -Uz bashcompinit && bashcompinit
+    fi
+}
+
+# PATH management - consolidated for faster startup
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/var/diff-so-fancy:$PATH:/usr/local/go/bin:$HOME/var/llvm/llvm-20.1.8-build/bin"
+
+function yz () {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
 	yazi "$@" --cwd-file="$tmp"
 	if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
@@ -93,16 +123,6 @@ tw=38;5;132:\
 ow=1;38;5;139:\
 cl=38;5;248"
 
-export ZSH_HIGHLIGHT_STYLES[comment]='fg=gray,dimmed'
-export ZSH_HIGHLIGHT_STYLES[command]='fg=#a1ccbc,bold'
-export ZSH_HIGHLIGHT_STYLES[default]='fg=#cccecf'
-export ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#eceaa9,bold'
-export ZSH_HIGHLIGHT_STYLES[builtin]='fg=#9dc1ed,bold'
-export ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#e0e0de'
-export ZSH_HIGHLIGHT_STYLES[alias]='fg=#af99ba,bold'
-export ZSH_HIGHLIGHT_STYLES[precommand]='fg=#a7cbcc'
-export ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#a5acb8,bold'
-export ZSH_HIGHLIGHT_STYLES[path]='fg=#e9f5ef,underline'
 export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=244'
 
 # default,unknown-token,reserved-word,alias,builtin,function,command,hashed-command,precommand,commandseparator,
@@ -111,20 +131,11 @@ export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=244'
 # redirection,comment,named-fd,arg0,bold,faint,standout,underline,blink,no-bold,no-faint,no-standout,no-underline,no-blink,reset
 # black, red, green, yellow, blue, magenta, cyan, white
 
-# Using EZA_COLORS instead - LS_COLORS removed to reduce bloat
-
-# autoload -U promptinit; promptinit
-# prompt pure
-
 export LC_ALL=en_IN.UTF-8
 export LANG=en_IN.UTF-8
 export LANGUAGE=en_IN.UTF-8
 
-eval "$(starship init zsh)"
-
-fpath=(~/.zsh/completions $fpath)
-
-export PATH="${CARGO_HOME}/bin:$PATH"
+# fpath consolidated above for better performance
 
 # export NVM_DIR="$HOME/.nvm"
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -132,16 +143,18 @@ export PATH="${CARGO_HOME}/bin:$PATH"
 
 . "$HOME/.deno/env"
 
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+# Initialize starship prompt immediately (slower startup but instant prompt)
+(( $+commands[starship] )) && eval "$(starship init zsh)"
 
-# eval "$(tv init zsh)"
-#
-# source $HOME/.config/television/shell/integration.zsh
-
-export PATH="$PATH:$HOME/var/llvm/llvm-20.1.8-build/bin"
+# Defer other heavy initializations to background
+{
+    # Initialize zoxide
+    (( $+commands[zoxide] )) && eval "$(zoxide init zsh)"
+    
+    # Load fzf if available
+    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+} &!
 
 alias load_npm="source .env && source ~/.nvm/nvm.sh"
 alias stop_blog_service="sudo systemctl stop blog-simple.service"
 alias start_blog_service="sudo systemctl start blog-simple.service"
-
-eval "$(zoxide init zsh)"
