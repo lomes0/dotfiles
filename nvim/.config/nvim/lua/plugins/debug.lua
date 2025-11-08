@@ -1,10 +1,10 @@
 return {
 	{
 		"mfussenegger/nvim-dap",
-		lazy = false,
+		lazy = true,
 		dependencies = {
 			"theHamsta/nvim-dap-virtual-text",
-			"williamboman/mason.nvim",
+			"igorlfs/nvim-dap-view",
 			-- "igorlfs/nvim-dap-view",
 		},
 		config = function()
@@ -73,6 +73,10 @@ return {
 			vim.keymap.set("n", "<Leader>dr", function()
 				require("dap").repl.open()
 			end, { silent = true, noremap = true, desc = "Dap repl open" })
+
+			vim.keymap.set("n", "<M-l>", dap.step_over)
+			vim.keymap.set("n", "<M-j>", dap.step_into)
+			vim.keymap.set("n", "<M-k>", dap.step_out)
 
 			-------
 			-- Now use .vscode/launch.json:

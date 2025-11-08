@@ -2,6 +2,7 @@ return {
 	{
 		"nvim-treesitter/nvim-treesitter",
 		event = { "BufReadPost", "BufNewFile" },
+		priority = 800, -- Load after more critical plugins
 		build = ":TSUpdate",
 		config = function()
 			-- Cache parsers to avoid repeated creation
@@ -48,6 +49,7 @@ return {
 						-- Also disable for text files
 						return vim.bo[buf].filetype == "text"
 					end,
+					additional_vim_regex_highlighting = false,
 				},
 				indent = {
 					enable = false, -- Disabled for better performance
@@ -71,7 +73,12 @@ return {
 	},
 	{
 		"nvim-treesitter/nvim-treesitter-textobjects",
-		event = "BufReadPost",
+		keys = {
+			{ "]f", desc = "Next function start" },
+			{ "[f", desc = "Prev function start" },
+			{ "af", mode = { "o", "x" }, desc = "Around function" },
+			{ "if", mode = { "o", "x" }, desc = "Inside function" },
+		},
 		config = function()
 			require("nvim-treesitter.configs").setup({
 				modules = {},
@@ -152,7 +159,7 @@ return {
 	},
 	{
 		"nvim-treesitter/nvim-treesitter-context",
-		event = "BufReadPost",
+		event = "VeryLazy",
 		dependencies = {
 			"nvim-treesitter/nvim-treesitter",
 		},

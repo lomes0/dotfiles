@@ -2,7 +2,7 @@ return {
 	{
 		"echasnovski/mini.ai",
 		version = "*",
-		lazy = false,
+		event = "VeryLazy",
 		config = function(_, opts)
 			require("mini.ai").setup({
 				-- Table with textobject id as fields, textobject specification as values.
@@ -41,7 +41,7 @@ return {
 	},
 	{
 		"echasnovski/mini.basics",
-		lazy = false,
+		event = "VeryLazy",
 		version = false,
 	},
 	{
@@ -72,7 +72,7 @@ return {
 	},
 	{
 		"echasnovski/mini.clue",
-		lazy = false,
+		event = "VeryLazy",
 		version = false,
 		config = function()
 			local miniclue = require("mini.clue")
@@ -158,6 +158,7 @@ return {
 	{
 		"echasnovski/mini.surround",
 		version = "*",
+		event = "VeryLazy",
 		opts = {
 			-- Add custom surroundings to be used on top of builtin ones. For more
 			-- information with examples, see `:h MiniSurround.config`.

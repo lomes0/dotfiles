@@ -316,7 +316,7 @@ return {
 	{
 		"akinsho/bufferline.nvim",
 		dependencies = "nvim-tree/nvim-web-devicons", -- Fixed: 'requires' should be 'dependencies'
-		event = "VeryLazy",
+		event = "UIEnter",
 		config = function()
 			require("bufferline").setup({
 				options = {
@@ -781,6 +781,7 @@ return {
 	{
 		"nvim-tree/nvim-web-devicons",
 		lazy = true,
+		module = false, -- Don't auto-load on require
 		config = function()
 			require("nvim-web-devicons").setup({
 				-- your personnal icons can go here (to override)
@@ -1055,7 +1056,7 @@ return {
 	},
 	{
 		"nvim-lualine/lualine.nvim",
-		event = "VeryLazy",
+		event = "UIEnter",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
 			require("lualine").setup({
@@ -1114,8 +1115,21 @@ return {
 	},
 	{
 		"nvim-telescope/telescope.nvim",
-		event = "VeryLazy",
 		tag = "0.1.4",
+		lazy = true,
+		cmd = { "Telescope" },
+		keys = {
+			{
+				"<lt>f",
+				function()
+					require("telescope.builtin").find_files({
+						cwd = vim.g.snacks_dir or vim.fn.getcwd(),
+						path_display = { "absolute" },
+					})
+				end,
+				desc = "Telescope find files",
+			},
+		},
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-tree/nvim-web-devicons",
@@ -1161,6 +1175,7 @@ return {
 						"linux90",
 						"%.swp$",
 						"%.bak$",
+						"%.tmp$",
 						"%.temp$",
 						"*~$",
 					},
@@ -1198,23 +1213,7 @@ return {
 				},
 			})
 
-			vim.keymap.set("n", "<lt>f", function()
-				require("telescope.builtin").find_files({
-					cwd = vim.g.snacks_dir or vim.fn.getcwd(),
-					path_display = { "absolute" },
-				})
-			end, {
-				noremap = true,
-				silent = true,
-				desc = "Telescope find files",
-			})
-
-			-- vim.keymap.set("n", "<lt>k", require("telescope.builtin").keymaps, {
-			-- 	noremap = true,
-			-- 	silent = true,
-			-- 	desc = "Telescope keymaps",
-			-- })
-			--
+			-- Load extensions after setup
 			require("telescope").load_extension("fzf")
 		end,
 	},

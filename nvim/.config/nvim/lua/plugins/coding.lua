@@ -1,6 +1,7 @@
 return {
 	{
 		"t-troebst/perfanno.nvim",
+		enabled = false,
 		config = function()
 			local perfanno = require("perfanno")
 			local util = require("perfanno.util")
@@ -33,6 +34,12 @@ return {
 	},
 	{
 		"daishengdong/calltree.nvim",
+		lazy = true,
+		cmd = { "CalltreeIncoming", "CalltreeOutgoing" },
+		keys = {
+			{ "<lt>oi", "<cmd>CalltreeIncoming<cr>", desc = "Calltree Incoming" },
+			{ "<lt>og", "<cmd>CalltreeOutgoing<cr>", desc = "Calltree Outgoing" },
+		},
 		dependencies = {
 			"dhananjaylatkar/cscope_maps.nvim",
 		},

@@ -1,7 +1,7 @@
 return {
 	{
 		"lewis6991/gitsigns.nvim",
-		event = "BufReadPre",
+		event = { "BufReadPost", "BufNewFile" },
 		config = function()
 			require("gitsigns").setup({
 				-- Git base navigation and hunk iteration functionality

@@ -761,6 +761,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			return
 		end
 
+		client.server_capabilities.documentHighlightProvider = false
+
 		if client:supports_method("textDocument/documentHighlight") then
 			local lsp_highlight = vim.api.nvim_create_augroup("lsp_highlight", { clear = false })
 
@@ -800,7 +802,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			end
 		end
 
-		vim.diagnostic.config({ virtual_text = { current_line = true } })
+		vim.diagnostic.config({ virtual_text = false, underline = false, signs = false })
 	end,
 })
 

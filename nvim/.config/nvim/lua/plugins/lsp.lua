@@ -2,6 +2,8 @@ return {
 	{
 		"williamboman/mason.nvim",
 		enabled = true,
+		lazy = true,
+		cmd = { "Mason", "MasonInstall", "MasonUninstall", "MasonUninstallAll", "MasonLog" },
 		config = function()
 			require("mason").setup({})
 		end,
