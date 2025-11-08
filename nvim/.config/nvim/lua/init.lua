@@ -649,16 +649,16 @@ vim.api.nvim_create_user_command("RemoveSnacksNotifWindows", function()
 	end
 end, {})
 
--- vim.api.nvim_create_autocmd({ "BufEnter" }, {
--- 	callback = function()
--- 		local bufname = vim.api.nvim_buf_get_name(0)
--- 		if bufname:match("NvimTree_") then
--- 			vim.wo.statuscolumn = "  "
--- 			vim.wo.signcolumn = "no"
--- 			vim.wo.numberwidth = 1
--- 		end
--- 	end,
--- })
+vim.api.nvim_create_autocmd({ "BufEnter" }, {
+	callback = function()
+		local bufname = vim.api.nvim_buf_get_name(0)
+		local filename = vim.fn.fnamemodify(bufname, ":t") -- Get just the filename part
+		if filename:match("^NvimTree_") then
+			vim.wo.signcolumn = "no"
+			vim.wo.statuscolumn = "  "
+		end
+	end,
+})
 
 vim.wo.signcolumn = "yes"
 vim.wo.statuscolumn = "%!v:lua.require('statuscolumn').statuscolumn()"

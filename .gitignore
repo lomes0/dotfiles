@@ -4,3 +4,5 @@ nvim/.config/nvim/lazy-lock.json
 kitty/.config/kitty/kitty-themes/
 **/*.wasm
 nvim/.config/nvim/chalk-overrides.lua
+yazi/.config/yazi/plugins/
+yazi/.config/yazi/flavors/

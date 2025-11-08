@@ -6,10 +6,18 @@ return {
 		config = function()
 			require("zellij-nav").setup({})
 			local keys = {
-				{ "<C-h>", "<cmd>ZellijNavigateLeftTab<cr>", { silent = true, desc = "Zellij-nav navigate left or tab" } },
+				{
+					"<C-h>",
+					"<cmd>ZellijNavigateLeftTab<cr>",
+					{ silent = true, desc = "Zellij-nav navigate left or tab" },
+				},
 				{ "<C-j>", "<cmd>ZellijNavigateDown<cr>", { silent = true, desc = "Zellij-nav navigate down" } },
 				{ "<C-k>", "<cmd>ZellijNavigateUp<cr>", { silent = true, desc = "Zellij-nav navigate up" } },
-				{ "<C-l>", "<cmd>ZellijNavigateRightTab<cr>", { silent = true, desc = "Zellij-nav navigate right or tab" } },
+				{
+					"<C-l>",
+					"<cmd>ZellijNavigateRightTab<cr>",
+					{ silent = true, desc = "Zellij-nav navigate right or tab" },
+				},
 			}
 			for _, entry in ipairs(keys) do
 				vim.keymap.set("n", entry[1], entry[2], entry[3])
@@ -778,6 +786,11 @@ return {
 				-- your personnal icons can go here (to override)
 				-- you can specify color or cterm_color instead of specifying both of them
 				-- DevIcon will be appended to `name`
+				view = {
+					signcolumn = "no", -- from nvim-tree docs
+					number = false,
+					relativenumber = false,
+				},
 				override = {
 					zsh = {
 						icon = "",
