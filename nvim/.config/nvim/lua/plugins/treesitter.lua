@@ -4,6 +4,7 @@ return {
 		event = { "BufReadPost", "BufNewFile" },
 		priority = 800, -- Load after more critical plugins
 		build = ":TSUpdate",
+		priority = 800, -- Load after more critical plugins
 		config = function()
 			-- Cache parsers to avoid repeated creation
 			local parser_cache = {}

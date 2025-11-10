@@ -925,7 +925,9 @@ return {
 					},
 				},
 				throttle = 1000 / 30, -- how frequently does Noice need to check for ui updates? This has no effect when in blocking mode.
-				views = {}, ---@see section on views
+				views = {
+					scrollbar = { enabled = false },
+				}, ---@see section on views
 				status = {}, --- @see section on statusline components
 				format = {}, --- @see section on formatting
 				debug = false,

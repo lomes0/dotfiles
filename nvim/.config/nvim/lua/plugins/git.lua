@@ -15,7 +15,7 @@ return {
 				},
 				signcolumn = true,
 				sign_priority = 6,
-				update_debounce = 100, -- ms
+				update_debounce = 150, -- ms
 				max_file_length = 20000, -- lines
 				preview_config = {
 					border = "single",

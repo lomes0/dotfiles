@@ -4,6 +4,12 @@ vim.opt.completeopt = { "noinsert", "noselect" }
 
 vim.loader.enable()
 
+-- Performance optimizations
+vim.opt.synmaxcol = 300 -- Only syntax highlight first 300 columns
+vim.opt.redrawtime = 1500 -- Time in ms for redrawing screen
+vim.opt.lazyredraw = false -- Don't skip redraws (better for LSP)
+vim.opt.ttyfast = true -- Fast terminal connection
+
 -- Load Snacks module for terminal functionality
 local Snacks = require("snacks")
 
@@ -19,6 +25,7 @@ local opts = {
 	{ "scrolloff", 4 },
 	{ "updatetime", 50 },
 	{ "timeoutlen", 300 },
+	{ "ttimeoutlen", 10 }, -- Fast escape sequences
 	{ "conceallevel", 2 },
 	{ "report", 999 },
 	{ "cmdheight", 0 },
@@ -30,7 +37,6 @@ local opts = {
 	{ "breakindent", true },
 	{ "expandtab", false },
 	{ "swapfile", false },
-	{ "backup", false },
 	{ "wrap", false },
 	{ "undofile", true },
 	{ "incsearch", true },
@@ -649,11 +655,11 @@ vim.api.nvim_create_user_command("RemoveSnacksNotifWindows", function()
 	end
 end, {})
 
+-- Optimize NvimTree detection - cache the pattern matching
 vim.api.nvim_create_autocmd({ "BufEnter" }, {
-	callback = function()
-		local bufname = vim.api.nvim_buf_get_name(0)
-		local filename = vim.fn.fnamemodify(bufname, ":t") -- Get just the filename part
-		if filename:match("^NvimTree_") then
+	callback = function(ev)
+		local bufname = vim.api.nvim_buf_get_name(ev.buf)
+		if bufname:match("NvimTree_") then
 			vim.wo.signcolumn = "no"
 			vim.wo.statuscolumn = "  "
 		end
@@ -684,7 +690,8 @@ vim.keymap.set("n", "<leader>e", function()
 	end
 end, { desc = "Go to end of current block" })
 
-vim.lsp.enable({ "clangd", "pylsp", "tsserver", "rust-analyzer", "lua_ls" })
+-- LSP performance optimizations
+vim.lsp.set_log_level("off") -- Disable LSP logging for better performance
 
 vim.api.nvim_create_autocmd("LspAttach", {
 	desc = "LSP actions",
@@ -761,8 +768,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			return
 		end
 
-		client.server_capabilities.documentHighlightProvider = false
-
 		if client:supports_method("textDocument/documentHighlight") then
 			local lsp_highlight = vim.api.nvim_create_augroup("lsp_highlight", { clear = false })
 
@@ -802,7 +807,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
 			end
 		end
 
-		vim.diagnostic.config({ virtual_text = false, underline = false, signs = false })
+		-- client.server_capabilities.documentHighlightProvider = true
+		vim.diagnostic.config({ signs = false, virtual_text = true, underline = false })
 	end,
 })
 
