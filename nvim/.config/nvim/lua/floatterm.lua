@@ -35,9 +35,9 @@ function Floatterm:toggle()
 		end
 
 		-- Calculate centered window position
-		local win_height = math.ceil(vim.o.lines * 0.85)
+		local win_height = math.ceil(vim.o.lines * 0.80)
 		local win_width = math.ceil(vim.o.columns * 0.85)
-		local row = math.ceil((vim.o.lines - win_height) / 2)
+		local row = math.ceil((vim.o.lines - win_height) / 4)
 		local col = math.ceil((vim.o.columns - win_width) / 2)
 
 		-- Create a window

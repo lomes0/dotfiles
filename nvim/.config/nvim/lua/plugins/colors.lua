@@ -104,7 +104,7 @@ return {
 					mute_factor = 0.3,
 				},
 				style = "light",
-				transparent = true,
+				transparent = false,
 				terminal_colors = true,
 				styles = {
 					comments = { italic = true },
