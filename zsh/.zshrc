@@ -80,9 +80,6 @@ function _ensure_bashcompinit() {
     fi
 }
 
-# PATH management - consolidated for faster startup
-export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/var/diff-so-fancy:$PATH:/usr/local/go/bin:$HOME/var/llvm/llvm-20.1.8-build/bin"
-
 function yz () {
 	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
 	yazi "$@" --cwd-file="$tmp"
@@ -101,8 +98,8 @@ alias tmux='TERM=screen-256color tmux'
 alias nv=nvim
 
 export DELTA_FEATURES='+side-by-side my-feature'
-alias ls="eza --sort=type --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt"
-alias ll="eza --sort=type --color=always --long --git --icons=always --no-permissions --ignore-glob=ctxmnt"
+alias ls="eza --sort=type --color=always --long --icons=always --no-permissions --ignore-glob=ctxmnt"
+alias ll="eza --sort=type --color=always --long --icons=always --no-permissions --ignore-glob=ctxmnt"
 alias cat="bat"
 # alias z="~/.local/bin/zoxide"
 
@@ -140,11 +137,7 @@ export LANGUAGE=en_IN.UTF-8
 # export NVM_DIR="$HOME/.nvm"
 # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-. "$HOME/.deno/env"
-
-# Initialize starship prompt immediately (slower startup but instant prompt)
-(( $+commands[starship] )) && eval "$(starship init zsh)"
+# . "$HOME/.deno/env"
 
 # Defer other heavy initializations to background
 {
@@ -155,6 +148,25 @@ export LANGUAGE=en_IN.UTF-8
     [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 } &!
 
-alias load_npm="source .env && source ~/.nvm/nvm.sh"
-alias stop_blog_service="sudo systemctl stop blog-simple.service"
-alias start_blog_service="sudo systemctl start blog-simple.service"
+# alias load_npm="source .env && source ~/.nvm/nvm.sh"
+# alias stop_blog_service="sudo systemctl stop blog-simple.service"
+# alias start_blog_service="sudo systemctl start blog-simple.service"
+#
+# eval "$(ssh-agent -s)" > /dev/null
+# ssh-add /u/eransa/.ssh/gerrit &> /dev/null
+# ssh-add /u/eransa/.ssh/id_ed25519_comp &> /dev/null
+
+# Consolidated PATH management with auto-deduplication
+# typeset -U ensures no duplicates even if .zshrc is sourced multiple times
+typeset -U path
+path=(
+    $HOME/.local/bin
+    $HOME/.cargo/bin
+    $HOME/var/llvm/llvm-20.1.8-build/bin
+    /usr/local/go/bin
+    $path
+)
+export PATH
+
+# Initialize starship prompt immediately (slower startup but instant prompt)
+eval "$(starship init zsh)"
