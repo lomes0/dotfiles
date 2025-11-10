@@ -1,115 +1,87 @@
-local statuscolumn = {
+-- ============================================================================
+-- StatusColumn Performance Optimized Implementation
+-- ============================================================================
+-- This implementation follows hot/cold path separation:
+-- - Hot path (statuscolumn callback): O(1) operations only, no loops/API calls
+-- - Cold path (setup/autocmds): All expensive precomputation
+-- ============================================================================
+
+local M = {
+	-- Config
 	levels = { true, true, true, true, true },
 	max_level = 5,
 	complement = true,
-	fold = "",
-	-- fold = " ",
+	fold = "",
+
+	-- Precomputed data (cold path)
+	harpoon_rows = {}, -- { [bufnr] = { [row] = true } }
+	harpoon_module = nil, -- Cached module reference
 }
 
-statuscolumn.setHl = function()
+-- ============================================================================
+-- Cold Path: Highlight Setup (called once + on ColorScheme)
+-- ============================================================================
+M.setup_highlights = function()
 	vim.api.nvim_set_hl(0, "FoldSign", { fg = "#ffffff" })
 	vim.api.nvim_set_hl(0, "CurrentLineNr", { fg = "#d9a46c", bold = true })
 	vim.api.nvim_set_hl(0, "HarpoonIndicator", { fg = "#61afef", bold = true })
 end
 
-statuscolumn.foldsMarkCond = function(foldlevel)
-	if statuscolumn.marksInclusive then
-		return statuscolumn.level < foldlevel
-	else
-		return foldlevel <= statuscolumn.level
-	end
-end
-
-statuscolumn.foldMark = function(foldlevel)
-	if
-		(foldlevel <= statuscolumn.max_level and statuscolumn.levels[foldlevel])
-		or (foldlevel > statuscolumn.max_level and statuscolumn.complement)
-	then
-		return "%#FoldSign#" .. statuscolumn.fold
-	end
-	return " "
-end
-
-statuscolumn.folds = function()
-	-- Initialize cache if not exists
-	if not statuscolumn.cache then
-		statuscolumn.cache = {
-			foldlevel = {},
-			foldclosed = {},
-			last_lnum = -1,
-			last_result = "",
-		}
-	end
-
-	local lnum = vim.v.lnum
-
-	-- Use cache if line hasn't changed
-	if statuscolumn.cache.last_lnum == lnum and statuscolumn.cache.last_result ~= "" then
-		return statuscolumn.cache.last_result
-	end
-
-	-- Cache foldlevel and foldclosed calls
-	local foldlevel = statuscolumn.cache.foldlevel[lnum]
-	if not foldlevel then
-		foldlevel = vim.fn.foldlevel(lnum)
-		statuscolumn.cache.foldlevel[lnum] = foldlevel
-	end
-
-	local foldclosed = statuscolumn.cache.foldclosed[lnum]
-	if not foldclosed then
-		foldclosed = vim.fn.foldclosed(lnum)
-		statuscolumn.cache.foldclosed[lnum] = foldclosed
-	end
-
-	local result = " "
-	if (foldlevel > 0) and (foldclosed ~= -1) and (foldclosed == lnum) then
-		-- line is a closed fold
-		result = statuscolumn.foldMark(foldlevel)
-	end
-
-	-- Cache the result
-	statuscolumn.cache.last_lnum = lnum
-	statuscolumn.cache.last_result = result
-
-	return result
-end
-
--- Show a mark on lines that have a harpoon spot
-statuscolumn.harpoon_sign = function()
+-- ============================================================================
+-- Cold Path: Harpoon Cache Refresh (called on buffer/harpoon changes)
+-- ============================================================================
+M.init_harpoon = function()
 	local ok, harpoon = pcall(require, "harpoon")
-	if not ok then
-		return ""
+	if ok then
+		M.harpoon_module = harpoon
+		M.refresh_harpoon_cache()
+	end
+end
+
+M.refresh_harpoon_cache = function()
+	if not M.harpoon_module then
+		return
 	end
 
-	-- Get the buffer for the window being rendered, not the currently focused buffer
-	local winid = vim.g.statusline_winid or vim.fn.win_getid()
-	local bufnr = vim.fn.winbufnr(winid)
-	local file = vim.api.nvim_buf_get_name(bufnr)
-	if file == "" then
-		return ""
-	end
+	-- Reset cache
+	M.harpoon_rows = {}
 
-	-- Normalize the file path to avoid comparison issues
-	file = vim.fn.fnamemodify(file, ":p")
-	local lnum = vim.v.lnum
-
-	local list = harpoon:list("spots")
+	local list = M.harpoon_module:list("spots")
 	if list and list.items then
 		for _, item in ipairs(list.items) do
 			if item and item.value and item.value.file and item.value.row then
-				-- Normalize the harpoon file path as well
-				local harpoon_file = vim.fn.fnamemodify(item.value.file, ":p")
-				if harpoon_file == file and item.value.row == lnum then
-					return "%#HarpoonIndicator#󰃃%*"
+				-- Get buffer number from file path (normalized)
+				local file = vim.fn.fnamemodify(item.value.file, ":p")
+				local bufnr = vim.fn.bufnr(file)
+
+				if bufnr ~= -1 then
+					if not M.harpoon_rows[bufnr] then
+						M.harpoon_rows[bufnr] = {}
+					end
+					M.harpoon_rows[bufnr][item.value.row] = true
 				end
 			end
 		end
 	end
+end
 
+-- ============================================================================
+-- Hot Path: O(1) Harpoon Lookup
+-- ============================================================================
+M.harpoon_sign = function()
+	local bufnr = vim.api.nvim_get_current_buf()
+	local lnum = vim.v.lnum
+
+	if M.harpoon_rows[bufnr] and M.harpoon_rows[bufnr][lnum] then
+		return "%#HarpoonIndicator#󰃃%*"
+	end
 	return ""
 end
 
-statuscolumn.line_number = function()
+-- ============================================================================
+-- Hot Path: Line Number Rendering
+-- ============================================================================
+M.line_number = function()
 	local is_current_line = vim.v.relnum == 0
 	local number = is_current_line and vim.v.lnum or vim.v.relnum
 
@@ -120,49 +92,43 @@ statuscolumn.line_number = function()
 	end
 end
 
-statuscolumn.statuscolumn = function()
-	statuscolumn.setHl()
-
+-- ============================================================================
+-- Hot Path: Main Statuscolumn Callback (O(1) operations only!)
+-- ============================================================================
+M.statuscolumn = function()
 	return table.concat({
-		"%s", -- sign column
-		statuscolumn.harpoon_sign(),
+		"%s", -- Built-in sign column
+		M.harpoon_sign(), -- O(1) hash lookup
 		" ",
-		"%=", -- right-align the rest
-		statuscolumn.line_number(),
+		"%=", -- Right-align the rest
+		M.line_number(), -- Simple check + format
 		" ",
-		statuscolumn.folds(),
+		"%C", -- Built-in fold column (optimal!)
 		" ",
 	})
 end
 
+-- ============================================================================
+-- Cold Path: Fold Level Toggle (z1-z5, z0 keymaps)
+-- ============================================================================
 local function statuscolumn_update()
-	-- Schedule UI updates to avoid blocking
 	vim.schedule(function()
-		-- Clear cache when updating
-		if statuscolumn.cache then
-			statuscolumn.cache.foldlevel = {}
-			statuscolumn.cache.foldclosed = {}
-			statuscolumn.cache.last_lnum = -1
-			statuscolumn.cache.last_result = ""
-		end
-
 		vim.cmd("redraw!")
 
 		local zvals = ""
-		for i = 1, statuscolumn.max_level do
-			if statuscolumn.levels[i] then
-				zvals = zvals .. tostring(i) .. " " .. statuscolumn.fold .. "\n"
+		for i = 1, M.max_level do
+			if M.levels[i] then
+				zvals = zvals .. tostring(i) .. " " .. M.fold .. "\n"
 			else
 				zvals = zvals .. tostring(i) .. " " .. "\n"
 			end
 		end
-		if statuscolumn.complement then
-			zvals = zvals .. "n " .. statuscolumn.fold
+		if M.complement then
+			zvals = zvals .. "n " .. M.fold
 		else
 			zvals = zvals .. "n "
 		end
 
-		-- Schedule notification separately
 		vim.schedule(function()
 			vim.cmd("Noice dismiss")
 			Snacks.notify.info(zvals)
@@ -171,23 +137,65 @@ local function statuscolumn_update()
 end
 
 local function zi_update(i)
-	if i <= statuscolumn.max_level then
-		statuscolumn.levels[i] = not statuscolumn.levels[i]
+	if i <= M.max_level then
+		M.levels[i] = not M.levels[i]
 	else
-		statuscolumn.complement = not statuscolumn.complement
+		M.complement = not M.complement
 	end
 	statuscolumn_update()
 end
 
-for i = 1, statuscolumn.max_level do
-	local zi = "z" .. tostring(i)
-	vim.keymap.set("n", zi, function()
-		zi_update(i)
+-- ============================================================================
+-- Cold Path: Setup Keymaps
+-- ============================================================================
+M.setup_keymaps = function()
+	for i = 1, M.max_level do
+		local zi = "z" .. tostring(i)
+		vim.keymap.set("n", zi, function()
+			zi_update(i)
+		end)
+	end
+
+	vim.keymap.set("n", "z0", function()
+		zi_update(M.max_level + 1)
 	end)
 end
 
-vim.keymap.set("n", "z0", function()
-	zi_update(statuscolumn.max_level + 1)
-end)
+-- ============================================================================
+-- Cold Path: Setup Autocmds
+-- ============================================================================
+M.setup_autocmds = function()
+	-- Refresh highlights on colorscheme change
+	vim.api.nvim_create_autocmd("ColorScheme", {
+		callback = M.setup_highlights,
+		desc = "Refresh statuscolumn highlights",
+	})
 
-return statuscolumn
+	-- Refresh harpoon cache on buffer changes
+	vim.api.nvim_create_autocmd("BufEnter", {
+		callback = M.refresh_harpoon_cache,
+		desc = "Refresh harpoon statuscolumn cache",
+	})
+
+	-- Refresh harpoon cache on harpoon changes (if event exists)
+	vim.api.nvim_create_autocmd("User", {
+		pattern = "HarpoonChanged",
+		callback = M.refresh_harpoon_cache,
+		desc = "Refresh harpoon cache on harpoon changes",
+	})
+end
+
+-- ============================================================================
+-- Cold Path: Main Setup (called once on require)
+-- ============================================================================
+M.setup = function()
+	M.setup_highlights()
+	M.init_harpoon()
+	M.setup_autocmds()
+	M.setup_keymaps()
+end
+
+-- Initialize on require
+M.setup()
+
+return M
