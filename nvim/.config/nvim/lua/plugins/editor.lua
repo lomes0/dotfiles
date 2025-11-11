@@ -278,8 +278,8 @@ return {
 				},
 				hijack_cursor = false,
 				update_focused_file = {
-					enable = true,
-					update_root = false,
+					enable = false,
+					-- update_root = false,
 				},
 				actions = {
 					open_file = {
