@@ -17,6 +17,23 @@ return {
 				name = "lldb",
 			}
 
+			dap.configurations.rust = {
+				{
+					name = "Default",
+					type = "lldb",
+					request = "launch",
+					program = function()
+						return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/target/debug/", "file")
+					end,
+					cwd = "",
+					args = { "exe" },
+					stopOnEntry = false,
+					autoReload = {
+						enable = true,
+					},
+				},
+			}
+
 			dap.configurations.cpp = {
 				{
 					name = "Launch",
@@ -36,7 +53,32 @@ return {
 			}
 
 			dap.configurations.c = dap.configurations.cpp
-			dap.configurations.rust = dap.configurations.cpp
+
+			vim.keymap.set("n", "<F5>", dap.continue)
+			vim.keymap.set("n", "<F9>", dap.toggle_breakpoint)
+			vim.keymap.set("n", "<M-l>", dap.step_over)
+			vim.keymap.set("n", "<M-j>", dap.step_into)
+			vim.keymap.set("n", "<M-k>", dap.step_out)
+
+			-- dap.configurations.cpp = {
+			-- 	{
+			-- 		name = "fwk",
+			-- 		type = "codelldb",
+			-- 		request = "attach",
+			-- 		pid = 11076,
+			-- 		initCommands = {
+			-- 			"platform select remote-linux",
+			-- 			"platform connect connect://172.23.53.48:3444",
+			-- 			"process handle SIGWINCH -p true -n false -s false",
+			-- 			"settings append target.source-map /local_ckp/src/cpis/jess_main/release.dynamic.x64 /u/eransa/code/cpas_profiling/mt/cpis",
+			-- 			"settings append target.source-map /local_ckp/src/kiss_apps/jess_main/debug.dynamic.x32 /u/eransa/code/cpas_profiling/mt/kiss_apps",
+			-- 			"settings append target.source-map /local_ckp/src/streaming/jess_main/debug.dynamic /u/eransa/code/cpas_profiling/mt/streaming",
+			-- 			"settings append target.source-map /local_ckp/src/mux/jess_main/debug.dynamic /u/eransa/code/cpas_profiling/mt/mux",
+			-- 			"settings append target.source-map /local_ckp/src/ws/jess_main/debug.dynamic /u/eransa/code/cpas_profiling/mt/ws",
+			-- 			"settings append target.source-map /local_ckp/src/fw1/jess_main/debug.dynamic.x32 /u/eransa/code/cpas_profiling/mt/fw1",
+			-- 		},
+			-- 	},
+			-- }
 
 			vim.keymap.set("n", "<F5>", function()
 				require("dap").continue()
