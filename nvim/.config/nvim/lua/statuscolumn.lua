@@ -105,6 +105,7 @@ M.statuscolumn = function()
 		" ",
 		"%C", -- Built-in fold column (optimal!)
 		" ",
+		"%#Normal#  %*", -- Padding with Normal bg color (2 spaces)
 	})
 end
 
