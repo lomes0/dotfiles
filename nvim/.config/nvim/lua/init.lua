@@ -693,6 +693,8 @@ end, { desc = "Go to end of current block" })
 -- LSP performance optimizations
 vim.lsp.set_log_level("off") -- Disable LSP logging for better performance
 
+vim.lsp.enable({ "clangd", "pylsp", "tsserver", "rust-analyzer", "lua_ls" })
+
 vim.api.nvim_create_autocmd("LspAttach", {
 	desc = "LSP actions",
 	callback = function(event)
