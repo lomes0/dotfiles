@@ -14,7 +14,7 @@ vim.opt.ttyfast = true -- Fast terminal connection
 local Snacks = require("snacks")
 
 local opts = {
-	{ "backup", true },
+	{ "backup", false },
 	{ "writebackup", false },
 	{ "swapfile", false },
 	{ "guifont", "Hack" },
