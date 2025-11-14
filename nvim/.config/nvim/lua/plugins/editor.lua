@@ -556,6 +556,16 @@ return {
 			},
 			picker = {
 				enabled = true,
+				win = {
+					preview = {
+						wo = {
+							statuscolumn = "   ",
+							signcolumn = "yes",
+							number = false,
+							relativenumber = false,
+						},
+					},
+				},
 			},
 		},
 		keys = {
@@ -574,11 +584,18 @@ return {
 				desc = "Snacks Picker LSP Workspace Symbols", -- Fixed description
 			},
 			{
-				"<lt>n", -- Changed to avoid conflict
+				"<lt>n",
 				function()
 					Snacks.picker.notifications()
 				end,
 				desc = "Snacks Picker Notification History",
+			},
+			{
+				"<lt>f",
+				function()
+					Snacks.picker.files()
+				end,
+				desc = "Snacks Picker Files",
 			},
 			{
 				"<lt>e",
@@ -630,7 +647,7 @@ return {
 				desc = "Snacks Select Scratch Buffer",
 			},
 			{
-				"<lt>hs", -- Changed to avoid conflict
+				"<lt>hs",
 				function()
 					Snacks.notifier.show_history()
 				end,
@@ -1115,110 +1132,110 @@ return {
 			})
 		end,
 	},
-	{
-		"nvim-telescope/telescope.nvim",
-		tag = "0.1.4",
-		lazy = true,
-		cmd = { "Telescope" },
-		keys = {
-			{
-				"<lt>f",
-				function()
-					require("telescope.builtin").find_files({
-						cwd = vim.g.snacks_dir or vim.fn.getcwd(),
-						path_display = { "absolute" },
-					})
-				end,
-				desc = "Telescope find files",
-			},
-		},
-		dependencies = {
-			"nvim-lua/plenary.nvim",
-			"nvim-tree/nvim-web-devicons",
-			{
-				"nvim-telescope/telescope-fzf-native.nvim",
-				build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release",
-			},
-			"debugloop/telescope-undo.nvim",
-			"nvim-telescope/telescope-dap.nvim",
-		},
-		config = function()
-			local focus_preview = function(prompt_bufnr)
-				local action_state = require("telescope.actions.state")
-				local picker = action_state.get_current_picker(prompt_bufnr)
-				local prompt_win = picker.prompt_win
-				local previewer = picker.previewer
-				local winid = previewer.state.winid
-				local bufnr = previewer.state.bufnr
-				vim.keymap.set("n", "<Tab>", function()
-					vim.cmd(string.format("noautocmd lua vim.api.nvim_set_current_win(%s)", prompt_win))
-				end, { buffer = bufnr })
-				vim.cmd(string.format("noautocmd lua vim.api.nvim_set_current_win(%s)", winid))
-				-- api.nvim_set_current_win(winid)
-			end
-			require("telescope").setup({
-				defaults = {
-					layout_config = {
-						prompt_position = "top",
-						horizontal = {
-							preview_cutoff = 120,
-							preview_width = 0.5, -- Ratio of the preview width
-							results_width = 0.5, -- Ratio of the results width
-						},
-						width = 0.75, -- Overall width ratio of the Telescope window
-						height = 0.85, -- Overall height ratio of the Telescope window
-					},
-					file_ignore_patterns = {
-						"node_modules",
-						"^./.git/",
-						"target",
-						"CMpub",
-						"linux80",
-						"linux90",
-						"%.swp$",
-						"%.bak$",
-						"%.tmp$",
-						"%.temp$",
-						"*~$",
-					},
-					file_previewer = require("telescope.previewers").vim_buffer_cat.new,
-					grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
-					qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
-					mappings = {
-						n = {
-							["<C-p>"] = require("telescope.actions.layout").toggle_preview,
-							["<Tab>"] = focus_preview,
-							["<C-]>"] = require("telescope.actions").select_vertical,
-						},
-						i = {
-							["<esc>"] = require("telescope.actions").close,
-							["<C-]>"] = require("telescope.actions").select_vertical,
-							["<C-u>"] = false,
-							["<S-Tab>"] = false,
-							["<Tab>"] = focus_preview,
-							["<C-p>"] = require("telescope.actions.layout").toggle_preview,
-						},
-					},
-				},
-				pickers = {
-					lsp_references = {
-						-- theme = "dropdown",
-					},
-				},
-				extensions = {
-					fzf = {
-						fuzzy = true, -- false will only do exact matching
-						override_generic_sorter = true, -- override the generic sorter
-						override_file_sorter = true, -- override the file sorter
-						case_mode = "smart_case", -- or "ignore_case" or "respect_case"
-					},
-				},
-			})
-
-			-- Load extensions after setup
-			require("telescope").load_extension("fzf")
-		end,
-	},
+	-- {
+	-- 	"nvim-telescope/telescope.nvim",
+	-- 	tag = "0.1.4",
+	-- 	lazy = true,
+	-- 	cmd = { "Telescope" },
+	-- 	keys = {
+	-- 		{
+	-- 			"<lt>f",
+	-- 			function()
+	-- 				require("telescope.builtin").find_files({
+	-- 					cwd = vim.g.snacks_dir or vim.fn.getcwd(),
+	-- 					path_display = { "absolute" },
+	-- 				})
+	-- 			end,
+	-- 			desc = "Telescope find files",
+	-- 		},
+	-- 	},
+	-- 	dependencies = {
+	-- 		"nvim-lua/plenary.nvim",
+	-- 		"nvim-tree/nvim-web-devicons",
+	-- 		{
+	-- 			"nvim-telescope/telescope-fzf-native.nvim",
+	-- 			build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release",
+	-- 		},
+	-- 		"debugloop/telescope-undo.nvim",
+	-- 		"nvim-telescope/telescope-dap.nvim",
+	-- 	},
+	-- 	config = function()
+	-- 		local focus_preview = function(prompt_bufnr)
+	-- 			local action_state = require("telescope.actions.state")
+	-- 			local picker = action_state.get_current_picker(prompt_bufnr)
+	-- 			local prompt_win = picker.prompt_win
+	-- 			local previewer = picker.previewer
+	-- 			local winid = previewer.state.winid
+	-- 			local bufnr = previewer.state.bufnr
+	-- 			vim.keymap.set("n", "<Tab>", function()
+	-- 				vim.cmd(string.format("noautocmd lua vim.api.nvim_set_current_win(%s)", prompt_win))
+	-- 			end, { buffer = bufnr })
+	-- 			vim.cmd(string.format("noautocmd lua vim.api.nvim_set_current_win(%s)", winid))
+	-- 			-- api.nvim_set_current_win(winid)
+	-- 		end
+	-- 		require("telescope").setup({
+	-- 			defaults = {
+	-- 				layout_config = {
+	-- 					prompt_position = "top",
+	-- 					horizontal = {
+	-- 						preview_cutoff = 120,
+	-- 						preview_width = 0.5, -- Ratio of the preview width
+	-- 						results_width = 0.5, -- Ratio of the results width
+	-- 					},
+	-- 					width = 0.75, -- Overall width ratio of the Telescope window
+	-- 					height = 0.85, -- Overall height ratio of the Telescope window
+	-- 				},
+	-- 				file_ignore_patterns = {
+	-- 					"node_modules",
+	-- 					"^./.git/",
+	-- 					"target",
+	-- 					"CMpub",
+	-- 					"linux80",
+	-- 					"linux90",
+	-- 					"%.swp$",
+	-- 					"%.bak$",
+	-- 					"%.tmp$",
+	-- 					"%.temp$",
+	-- 					"*~$",
+	-- 				},
+	-- 				file_previewer = require("telescope.previewers").vim_buffer_cat.new,
+	-- 				grep_previewer = require("telescope.previewers").vim_buffer_vimgrep.new,
+	-- 				qflist_previewer = require("telescope.previewers").vim_buffer_qflist.new,
+	-- 				mappings = {
+	-- 					n = {
+	-- 						["<C-p>"] = require("telescope.actions.layout").toggle_preview,
+	-- 						["<Tab>"] = focus_preview,
+	-- 						["<C-]>"] = require("telescope.actions").select_vertical,
+	-- 					},
+	-- 					i = {
+	-- 						["<esc>"] = require("telescope.actions").close,
+	-- 						["<C-]>"] = require("telescope.actions").select_vertical,
+	-- 						["<C-u>"] = false,
+	-- 						["<S-Tab>"] = false,
+	-- 						["<Tab>"] = focus_preview,
+	-- 						["<C-p>"] = require("telescope.actions.layout").toggle_preview,
+	-- 					},
+	-- 				},
+	-- 			},
+	-- 			pickers = {
+	-- 				lsp_references = {
+	-- 					-- theme = "dropdown",
+	-- 				},
+	-- 			},
+	-- 			extensions = {
+	-- 				fzf = {
+	-- 					fuzzy = true, -- false will only do exact matching
+	-- 					override_generic_sorter = true, -- override the generic sorter
+	-- 					override_file_sorter = true, -- override the file sorter
+	-- 					case_mode = "smart_case", -- or "ignore_case" or "respect_case"
+	-- 				},
+	-- 			},
+	-- 		})
+	--
+	-- 		-- Load extensions after setup
+	-- 		require("telescope").load_extension("fzf")
+	-- 	end,
+	-- },
 	{
 		"mikavilpas/yazi.nvim",
 		lazy = true,
