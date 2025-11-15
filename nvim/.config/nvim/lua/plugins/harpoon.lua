@@ -66,6 +66,9 @@ return {
 							list:add()
 						end
 
+						-- Refresh statuscolumn harpoon indicators
+						require("statuscolumn").refresh_harpoon_cache()
+
 						schedule_redraw()
 					end,
 					desc = "Harpoon spot: toggle here",
