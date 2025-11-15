@@ -230,7 +230,8 @@ return {
 	{
 		"nvim-tree/nvim-tree.lua",
 		version = "*",
-		lazy = true,
+		lazy = false,
+		event = "VeryLazy",
 		keys = {
 			{
 				"`",
