@@ -22,7 +22,7 @@ local opts = {
 	{ "tabstop", 4 },
 	{ "softtabstop", 4 },
 	{ "shiftwidth", 4 },
-	{ "scrolloff", 4 },
+	{ "scrolloff", 8 },
 	{ "updatetime", 50 },
 	{ "timeoutlen", 300 },
 	{ "ttimeoutlen", 10 }, -- Fast escape sequences
@@ -814,19 +814,16 @@ vim.api.nvim_create_autocmd("LspAttach", {
 	end,
 })
 
--- Keep caret position when leaving insert
-vim.keymap.set("i", "<Esc>", function()
+-- Keep caret position when leaving insert mode
+local function esc_with_caret_adjust()
 	local col = vim.fn.col(".")
 	local last = vim.fn.col("$") - 1
 	return (col <= last) and "<Esc>l" or "<Esc>"
-end, { expr = true, silent = true })
+end
 
--- Do the same for Ctrl-[ (same as Esc)
-vim.keymap.set("i", "<C-[>", function()
-	local col = vim.fn.col(".")
-	local last = vim.fn.col("$") - 1
-	return (col <= last) and "<Esc>l" or "<Esc>"
-end, { expr = true, silent = true })
+vim.keymap.set("i", "<Esc>", esc_with_caret_adjust, { expr = true, silent = true })
+vim.keymap.set("i", "<C-[>", esc_with_caret_adjust, { expr = true, silent = true })
+vim.keymap.set("i", "<C-c>", esc_with_caret_adjust, { expr = true, silent = true })
 
 -- Set custom cursor appearance for better theme integration
 vim.opt.guicursor = table.concat({
