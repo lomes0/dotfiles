@@ -31,7 +31,7 @@ local opts = {
 	{ "cmdheight", 0 },
 	{ "numberwidth", 8 },
 	{ "title", true },
-	{ "titlestring", "%t - Nvim" },
+	{ "titlestring", "nvim" },
 	{ "showcmd", true },
 	{ "smartindent", true },
 	{ "autoindent", true },
