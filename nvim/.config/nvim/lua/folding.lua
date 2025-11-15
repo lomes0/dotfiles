@@ -202,6 +202,11 @@ end
 function M.CreateFoldGroups(groups)
 	-- Schedule highlight group creation to avoid blocking
 	vim.schedule(function()
+		-- Remove italic from the Folded highlight group
+		local folded_hl = vim.api.nvim_get_hl(0, { name = "Folded" })
+		folded_hl.italic = false
+		vim.api.nvim_set_hl(0, "Folded", folded_hl)
+
 		-- Helper function to get highlight group details
 		local function get_highlight(group)
 			local id = vim.api.nvim_get_hl_id_by_name(group)
