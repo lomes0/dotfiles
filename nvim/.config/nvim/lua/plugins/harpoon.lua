@@ -5,7 +5,6 @@ return {
 		branch = "harpoon2",
 		dependencies = {
 			"nvim-lua/plenary.nvim",
-			"nvim-telescope/telescope.nvim",
 		},
 		keys = function()
 			local harpoon = require("harpoon")
@@ -145,60 +144,33 @@ return {
 				},
 			})
 
-			-- Telescope UI (pattern matches the official example, but with our custom entries)
-			local conf = require("telescope.config").values
+			-- Snacks picker for harpoon spots
 			local function open_spots_picker(list)
-				local results = {}
+				local items = {}
 				for _, item in ipairs(list.items) do
 					if item.value then
-						table.insert(results, item.value) -- README iterates `harpoon_files.items` and uses `item.value` :contentReference[oaicite:3]{index=3}
+						local display =
+							string.format("%s:%d", vim.fn.fnamemodify(item.value.file, ":."), item.value.row)
+						table.insert(items, {
+							text = display,
+							file = item.value.file,
+							pos = { item.value.row, 1 },
+						})
 					end
 				end
 
-				local entry_maker = function(entry)
-					local short = string.format("%s:%d", vim.fn.fnamemodify(entry.file, ":."), entry.row)
-					return {
-						value = entry,
-						display = short,
-						ordinal = short,
-						filename = entry.file,
-						lnum = entry.row,
-						col = 1,
-					}
-				end
-
-				require("telescope.pickers")
-					.new({}, {
-						prompt_title = "Harpoon (spots)",
-						finder = require("telescope.finders").new_table({
-							results = results,
-							entry_maker = entry_maker,
-						}),
-						previewer = conf.grep_previewer({}),
-						sorter = conf.generic_sorter({}),
-						on_close = schedule_redraw,
-						attach_mappings = function(prompt_bufnr)
-							local actions = require("telescope.actions")
-							local action_state = require("telescope.actions.state")
-
-							-- open selection at stored line
-							actions.select_default:replace(function()
-								local sel = action_state.get_selected_entry()
-								if sel and sel.value then
-									actions.close(prompt_bufnr)
-									vim.cmd.edit(vim.fn.fnameescape(sel.value.file))
-									pcall(vim.api.nvim_win_set_cursor, 0, { sel.value.row, 0 })
-									schedule_redraw()
-								end
-							end)
-
-							return true
-						end,
-					})
-					:find()
-			end
-
-			-- Open the Telescope picker for the "spots" list
+				Snacks.picker.pick({
+					items = items,
+					format = "file",
+					title = "Harpoon Spots",
+					confirm = function(picker, item)
+						picker:close()
+						vim.cmd.edit(vim.fn.fnameescape(item.file))
+						pcall(vim.api.nvim_win_set_cursor, 0, item.pos)
+						schedule_redraw()
+					end,
+				})
+			end -- Open the Telescope picker for the "spots" list
 			vim.keymap.set("n", "<lt>H", function()
 				open_spots_picker(harpoon:list("spots"))
 			end, { desc = "Open Harpoon spots picker" })
