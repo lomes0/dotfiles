@@ -372,7 +372,9 @@ return {
 		event = "VeryLazy",
 		init = function()
 			vim.g.VM_maps = {
-				["Find Under"] = "<c-y>",
+				["Visual ALL"] = "<C-n>",
+				["Find Under"] = "<C-n>",
+				["Skip Region"] = "<down>",
 			}
 		end,
 	},
