@@ -670,7 +670,7 @@ vim.wo.signcolumn = "yes"
 vim.wo.statuscolumn = "%!v:lua.require('statuscolumn').statuscolumn()"
 vim.wo.numberwidth = 8
 
-vim.keymap.set("n", "<leader>e", function()
+vim.keymap.set("n", "<lt>e", function()
 	local ts_utils = require("nvim-treesitter.ts_utils")
 	local node = ts_utils.get_node_at_cursor()
 

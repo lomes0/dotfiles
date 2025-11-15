@@ -167,7 +167,7 @@ return {
 			})
 
 			-- Get git staged files and open them in quickfix window
-			vim.keymap.set("n", "<leader>hq", function()
+			vim.keymap.set("n", "<lt>hq", function()
 				local handle = io.popen("git diff HEAD --name-only")
 				if not handle then
 					vim.notify("Failed to execute git command", vim.log.levels.ERROR)
@@ -195,7 +195,7 @@ return {
 				vim.notify(string.format("Found %d staged files", #staged_files), vim.log.levels.INFO)
 			end, { desc = "Send Git staged files to quickfix" })
 
-			vim.keymap.set("n", "<leader>hl", function()
+			vim.keymap.set("n", "<lt>hl", function()
 				require("gitsigns").setloclist(0, "all")
 			end, { desc = "Send Git hunks to loclist" })
 		end,

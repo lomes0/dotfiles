@@ -44,7 +44,7 @@ return {
 			"dhananjaylatkar/cscope_maps.nvim",
 		},
 		opts = {
-			prefix = "<leader>o", -- keep consistent with cscope_maps
+			prefix = "<lt>o", -- keep consistent with cscope_maps
 			-- brief: only shows a symbol's name
 			-- detailed: shows just more details
 			-- detailed_paths: shows filename and line number
