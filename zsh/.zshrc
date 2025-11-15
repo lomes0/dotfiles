@@ -47,8 +47,32 @@ ZSH_THEME=""
 plugins=(git zsh-completions zsh-autosuggestions)
 source $ZSH/oh-my-zsh.sh
 
+# Syntax highlighting color scheme
+cyan='#76bbc9'
+gray='#a5acb8'
+light_gray='#cccecf'
+yellow='#eceaa9'
+blue='#9dc1ed'
+pale_gray='#e0e0de'
+purple='#af99ba'
+teal='#a7cbcc'
+teal_light='#b8ebe6'
+mint='#e9f5ef'
+violet='#c7a9ff'
+coral_light='#ea999c'
+copper='#e7b493'
+emerald='#b7d0ae'
+lime='#89ccb3'
+
 # Lazy load zsh-syntax-highlighting for faster startup
 function _load_syntax_highlighting() {
+    # Guard against multiple executions
+    [[ -n "$_SYNTAX_HIGHLIGHTING_LOADED" ]] && return
+    _SYNTAX_HIGHLIGHTING_LOADED=1
+    
+    # Remove the hook immediately to prevent race conditions
+    add-zsh-hook -d precmd _load_syntax_highlighting
+    
     if [[ -f "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
         source "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
     elif [[ -f "$ZSH/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]]; then
@@ -56,22 +80,22 @@ function _load_syntax_highlighting() {
     fi
     
     # Configure syntax highlighting styles after loading
-    export ZSH_HIGHLIGHT_STYLES[comment]='fg=gray,dimmed'
-    export ZSH_HIGHLIGHT_STYLES[command]='fg=#a1ccbc,bold'
-    export ZSH_HIGHLIGHT_STYLES[default]='fg=#cccecf'
-    export ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=#eceaa9,bold'
-    export ZSH_HIGHLIGHT_STYLES[builtin]='fg=#9dc1ed,bold'
-    export ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=#e0e0de'
-    export ZSH_HIGHLIGHT_STYLES[alias]='fg=#af99ba,bold'
-    export ZSH_HIGHLIGHT_STYLES[precommand]='fg=#a7cbcc'
-    export ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=#a5acb8,bold'
-    export ZSH_HIGHLIGHT_STYLES[path]='fg=#e9f5ef,underline'
+    export ZSH_HIGHLIGHT_STYLES[command]="fg=$lime,bold"
+    export ZSH_HIGHLIGHT_STYLES[comment]="fg=$gray"
+    export ZSH_HIGHLIGHT_STYLES[default]="fg=$light_gray"
+    export ZSH_HIGHLIGHT_STYLES[reserved-word]="fg=$yellow,bold"
+    export ZSH_HIGHLIGHT_STYLES[builtin]="fg=$blue,bold"
+    export ZSH_HIGHLIGHT_STYLES[unknown-token]="fg=$pale_gray"
+    export ZSH_HIGHLIGHT_STYLES[alias]="fg=$purple,bold"
+    export ZSH_HIGHLIGHT_STYLES[precommand]="fg=$teal"
+    export ZSH_HIGHLIGHT_STYLES[commandseparator]="fg=$gray,bold"
+    export ZSH_HIGHLIGHT_STYLES[path]="fg=$mint,underline"
     
     unfunction _load_syntax_highlighting
 }
 
-# Load syntax highlighting on first command
-add-zsh-hook preexec _load_syntax_highlighting
+# Load syntax highlighting after first prompt is displayed
+add-zsh-hook precmd _load_syntax_highlighting
 
 # Lazy load bashcompinit when needed
 function _ensure_bashcompinit() {
