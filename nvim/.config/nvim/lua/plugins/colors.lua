@@ -1,7 +1,8 @@
 return {
 	{
 		"thesimonho/kanagawa-paper.nvim",
-		lazy = false,
+		lazy = true,
+		cmd = "Kanagawa",
 		priority = 1000,
 		opts = {
 			-- enable undercurls for underlined text
@@ -76,18 +77,20 @@ return {
 	},
 	{
 		"folke/tokyonight.nvim",
-		lazy = false,
+		lazy = true,
+		cmd = "Tokyonight",
 		priority = 1000,
 		opts = {},
 	},
 	{
 		"catppuccin/nvim",
 		name = "catppuccin",
+		lazy = true,
 		priority = 1000,
 	},
 	{
 		"norcalli/nvim-colorizer.lua",
-		lazy = false,
+		event = "BufReadPost",
 		config = function()
 			require("colorizer").setup()
 		end,
